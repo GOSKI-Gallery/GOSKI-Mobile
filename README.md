@@ -1,1 +1,0 @@
-# GoskiGallery-Mobile
