@@ -8,12 +8,3 @@ export default function Index() {
     </View>
   )
 }
-
-const style = StyleSheet.create({
-    container : {
-        flex : 1,
-        justifyContent : 'center',
-        alignItems : 'center',
-        experimental_backgroundImage: 'url(https://picsum.photos/200/300)'
-    }
-})
