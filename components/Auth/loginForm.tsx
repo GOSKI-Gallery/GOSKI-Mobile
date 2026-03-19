@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { Alert, Image, View, Text, TextInput, TouchableOpacity } from 'react-native'
 import { supabase } from '../../lib/supabase'
+import { useRouter } from 'expo-router';
+
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const router = useRouter();
 
   async function signInWithEmail() {
     setLoading(true)
@@ -14,7 +17,13 @@ export default function Login() {
       password: password,
     })
 
-    if (error) Alert.alert(error.message)
+    if (error) {
+      Alert.alert(error.message)
+    } 
+    
+    else {
+      router.navigate('/feed')
+    }
     setLoading(false)
   }
 
@@ -28,7 +37,7 @@ export default function Login() {
         <TextInput
           onChangeText={(text) => setEmail(text)}
           value={email}
-          placeholder="Usuario"
+          placeholder="Email"
           placeholderTextColor="#0000004D"
           className='flex-1 text-black text-center font-bold'
         />
