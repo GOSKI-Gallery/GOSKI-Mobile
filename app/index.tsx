@@ -4,7 +4,7 @@ import Main from '../components/Main'
 
 export default function Index() {
   return (
-    <View>
+    <View className="flex-1">
       <Main />
     </View>
   );
