@@ -22,7 +22,7 @@ export default function LoginForm() {
     } 
     
     else {
-      router.navigate('/feed');
+      router.push('/Feed');
     }
     setLoading(false)
   }

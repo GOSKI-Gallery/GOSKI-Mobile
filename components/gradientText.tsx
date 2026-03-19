@@ -3,6 +3,7 @@ import { Text } from "react-native";
 import { cssInterop } from "nativewind";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
+import { ReactNode } from "react";
 
 cssInterop(LinearGradient, {
   className: "style",
@@ -11,7 +12,6 @@ cssInterop(MaskedView, {
   className: "style",
 });
 
-import { ReactNode } from "react";
 
 interface GradientTextProps {
   children: ReactNode;
