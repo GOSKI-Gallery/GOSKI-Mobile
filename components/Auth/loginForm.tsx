@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useRouter } from 'expo-router';
 
 
-export default function Login() {
+export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -18,11 +18,11 @@ export default function Login() {
     })
 
     if (error) {
-      Alert.alert(error.message)
+      Alert.alert(error.message);
     } 
     
     else {
-      router.navigate('/feed')
+      router.navigate('/feed');
     }
     setLoading(false)
   }
@@ -31,7 +31,7 @@ export default function Login() {
     <View className='pt-4 gap-3 w-full items-center px-4'>
       <View className='flex-row items-center bg-[#D9D9D9] rounded-2xl w-full'>
         <Image
-          source={require('../../assets/icons/icon.png')}
+          source={require('../../assets/icons/email.png')}
           className='left-4 absolute w-5 h-5 opacity-30'
         />
         <TextInput
