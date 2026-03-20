@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import Index from './app/index';
+import Index from './app/(auth)/index';
 import "./global.css"
 
 

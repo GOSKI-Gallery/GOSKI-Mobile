@@ -5,10 +5,10 @@ import { Href, useRouter } from 'expo-router'
 
 interface AuthHeaderProps {
   children?: string,
-  toGo?: Href,
+  toGo: Href<string>,
 }
 
-const AuthHeader = ({ children = "", toGo = { pathname: "" } }: AuthHeaderProps) => {
+const AuthHeader = ({ children = "", toGo }: AuthHeaderProps) => {
   const router = useRouter();
 
   return (
