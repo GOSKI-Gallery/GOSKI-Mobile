@@ -1,14 +1,14 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
-import React, { Children } from 'react'
+import React from 'react'
 import { Href, useRouter } from 'expo-router'
 
 
 interface AuthHeaderProps {
   children?: string,
-  toGo?: Href,
+  toGo: Href,
 }
 
-const AuthHeader = ({ children = "", toGo = { pathname: "" } }: AuthHeaderProps) => {
+const AuthHeader = ({ children = "", toGo }: AuthHeaderProps) => {
   const router = useRouter();
 
   return (
