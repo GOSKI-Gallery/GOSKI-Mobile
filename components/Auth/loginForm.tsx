@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useRouter } from 'expo-router';
 import PrimaryButton from '../StyleComponents/primaryButton';
 import StyledTextInput from '../StyleComponents/styledTextInput';
+import { useAuthStore } from '../../states/useAuthStore';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
@@ -11,9 +12,11 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter();
 
+  const setAuth = useAuthStore((state) => state.setAuth);
+
   async function signInWithEmail() {
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     })
@@ -38,7 +41,6 @@ export default function LoginForm() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-
       <StyledTextInput
         icon={require('../../assets/icons/lock.png')}
         placeholder="Senha"
