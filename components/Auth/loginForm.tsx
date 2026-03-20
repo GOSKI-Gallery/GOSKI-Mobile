@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
-import { Alert, Image, View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { Alert, View  } from 'react-native'
 import { supabase } from '../../lib/supabase'
 import { useRouter } from 'expo-router';
+import { useAuthStore } from '../../states/useAuthStore';
+import PrimaryButton from '../styleComponents/primaryButton';
+import StyledTextInput from '../styleComponents/styledTextInput';
 
 
 export default function LoginForm() {
@@ -10,61 +13,60 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter();
 
+  const setAuth = useAuthStore((state) => state.setAuth);
+
   async function signInWithEmail() {
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     })
 
     if (error) {
-      Alert.alert(error.message);
-    } 
-    
-    else {
-      router.push('/Feed');
+      Alert.alert('Erro', error.message);
+    }
+    else if (data.user && data.session) {
+      setAuth(
+        {
+          id: data.user.id,
+          email: data.user.email!,
+          username: data.user.user_metadata?.username
+        },
+        data.session.access_token
+      );
+
+      router.replace('/Feed');
     }
     setLoading(false)
   }
 
   return (
     <View className='pt-4 gap-3 w-full items-center px-4'>
-      <View className='flex-row items-center bg-[#D9D9D9] rounded-2xl w-full'>
-        <Image
-          source={require('../../assets/icons/email.png')}
-          className='left-4 absolute w-5 h-5 opacity-30'
-        />
-        <TextInput
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          placeholder="Email"
-          placeholderTextColor="#0000004D"
-          className='flex-1 text-black text-center font-bold'
-        />
-      </View>
-
-      <View className='flex-row items-center bg-[#D9D9D9] rounded-2xl w-full'>
-        <Image
-          source={require('../../assets/icons/lock.png')}
-          className='left-4 absolute w-5 h-5 opacity-30'
-        />
-        <TextInput
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          secureTextEntry={true}
-          placeholder="Senha"
-          placeholderTextColor="#0000004D"
-          className='flex-1 text-black text-center font-bold'
-        />
-      </View>
-
-      <TouchableOpacity
-        className="bg-[#1000FF] py-3 px-20 rounded-2xl min-w-lg mt-2"
-        onPress={() => signInWithEmail()}
-        disabled={loading}
-      >
-        <Text className="text-white font-bold text-center text-lg">Entrar</Text>
-      </TouchableOpacity>
+      
+      <StyledTextInput
+        icon={require('../../assets/icons/email.png')}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+  
+      <StyledTextInput
+        icon={require('../../assets/icons/lock.png')}
+        placeholder="Senha"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+  
+      <PrimaryButton 
+        title="Entrar" 
+        onPress={signInWithEmail} 
+        loading={loading}
+        className="mt-2 w-full"
+      />
+  
     </View>
-  )
+  );
 }
