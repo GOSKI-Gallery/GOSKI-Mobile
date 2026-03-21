@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
-import { Alert, View  } from 'react-native'
+import { Alert, View } from 'react-native'
 import { supabase } from '../../lib/supabase'
 import { useRouter } from 'expo-router';
-import { useAuthStore } from '../../states/useAuthStore';
-import PrimaryButton from '../styleComponents/primaryButton';
-import StyledTextInput from '../styleComponents/styledTextInput';
-
+import PrimaryButton from '../StyleComponents/primaryButton';
+import StyledTextInput from '../StyleComponents/styledTextInput';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
@@ -23,26 +21,17 @@ export default function LoginForm() {
     })
 
     if (error) {
-      Alert.alert('Erro', error.message);
+      Alert.alert(error.message);
     }
-    else if (data.user && data.session) {
-      setAuth(
-        {
-          id: data.user.id,
-          email: data.user.email!,
-          username: data.user.user_metadata?.username
-        },
-        data.session.access_token
-      );
 
-      router.replace('/Feed');
+    else {
+      router.replace('/(main)');
     }
     setLoading(false)
   }
 
   return (
     <View className='pt-4 gap-3 w-full items-center px-4'>
-      
       <StyledTextInput
         icon={require('../../assets/icons/email.png')}
         placeholder="Email"
@@ -51,7 +40,7 @@ export default function LoginForm() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-  
+
       <StyledTextInput
         icon={require('../../assets/icons/lock.png')}
         placeholder="Senha"
@@ -59,14 +48,13 @@ export default function LoginForm() {
         onChangeText={setPassword}
         secureTextEntry
       />
-  
-      <PrimaryButton 
-        title="Entrar" 
-        onPress={signInWithEmail} 
+
+      <PrimaryButton
+        title="Entrar"
+        onPress={signInWithEmail}
         loading={loading}
-        className="mt-2 w-full"
+        className="mt-2"
       />
-  
     </View>
-  );
+  )
 }

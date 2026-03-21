@@ -1,15 +1,14 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
-import GradientText from "./gradientText";
-import LoginForm from "./Auth/loginForm";
-import AuthHeader from "./Auth/authHeader";
+import GradientText from "../components/StyleComponents/gradientText";
+import LoginForm from "../components/Auth/loginForm";
+import AuthHeader from "../components/Auth/authHeader";
 
-export default function Main() {
+export default function LoginScreen() {
   return (
     <View className="flex-1 flex-col items-center justify-start w-full">
 
-      <AuthHeader children={"Crie sua conta."} toGo={'/register'} />
-
+      <AuthHeader toGo="register">Crie sua conta.</AuthHeader>
 
       <View className="my-auto w-full">
         <View className="flex flex-col justify-center items-start px-10">

@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function Feed() {
+export default function FeedScreen() {
   return (
     <View>
-      <Text>Feed</Text>
+      <Text>FeedScreen</Text>
     </View>
   )
 }
