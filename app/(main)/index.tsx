@@ -1,10 +1,8 @@
-import { View, Text } from 'react-native'
 import React from 'react'
+import FeedScreen from '../../screens/FeedScreen'
 
-export default function Feed() {
+export default function index() {
   return (
-    <View>
-      <Text>Feed</Text>
-    </View>
+    <FeedScreen />
   )
 }

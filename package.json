@@ -11,6 +11,7 @@
   "dependencies": {
     "@expo-google-fonts/krona-one": "^0.4.1",
     "@expo/ngrok": "^4.1.0",
+    "@expo/react-native-action-sheet": "^4.1.1",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-masked-view/masked-view": "0.3.2",
     "@rneui/themed": "^5.0.0",
@@ -25,6 +26,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
+    "react-native-action-sheet": "^2.2.0",
     "react-native-reanimated": "~4.1.1",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
