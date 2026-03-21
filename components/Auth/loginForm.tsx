@@ -51,7 +51,7 @@ export default function LoginForm() {
         title="Entrar"
         onPress={signInWithEmail}
         loading={loading}
-        className="mt-2 w-full"
+        className="mt-2"
       />
     </View>
   )
