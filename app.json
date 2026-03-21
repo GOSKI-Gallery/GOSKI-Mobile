@@ -29,6 +29,7 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "scheme": "goski"
   }
 }

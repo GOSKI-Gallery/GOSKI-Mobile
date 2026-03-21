@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React from "react";
-import GradientText from "../components/styleComponents/gradientText";
+import GradientText from "../components/StyleComponents/gradientText";
 import LoginForm from "../components/Auth/loginForm";
 import AuthHeader from "../components/Auth/authHeader";
 

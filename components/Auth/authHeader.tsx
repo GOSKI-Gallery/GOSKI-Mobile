@@ -12,7 +12,7 @@ const AuthHeader = ({ children = "", toGo }: AuthHeaderProps) => {
   const router = useRouter();
 
   return (
-    <View className="flex flex-row items-center justify-between w-full px-4">
+    <View className="flex flex-row items-center justify-between w-full px-4 py-10">
 
       <View className='flex flex-row justify-between items-center'>
         <Image source={require('../../assets/icons/icon.png')}

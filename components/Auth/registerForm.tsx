@@ -2,8 +2,8 @@ import { View, Alert, Image, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useRouter } from 'expo-router'
-import PrimaryButton from '../styleComponents/primaryButton'
-import StyledTextInput from '../styleComponents/styledTextInput'
+import PrimaryButton from '../StyleComponents/primaryButton'
+import StyledTextInput from '../StyleComponents/styledTextInput'
 
 export default function RegiterForm() {
   const [username, setUsername] = useState('')
@@ -35,7 +35,7 @@ export default function RegiterForm() {
     }
 
     else if (!session) {
-      router.replace('/');
+      router.replace('/(auth)');
     }
     setLoading(false)
   }
