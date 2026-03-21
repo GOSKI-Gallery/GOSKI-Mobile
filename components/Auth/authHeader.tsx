@@ -16,7 +16,7 @@ const AuthHeader = ({ children = "", toGo }: AuthHeaderProps) => {
 
       <View className='flex flex-row justify-between items-center'>
         <Image source={require('../../assets/icons/icon.png')}
-          className='w-lg h-lg'
+          className='w-12 h-12'
         />
         <Text className='font-bold text-3xl'>GOSKI</Text>
       </View>
