@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import AuthHeader from '../components/Auth/authHeader';
-import GradientText from '../components/styleComponents/gradientText';
+import GradientText from '../components/StyleComponents/gradientText';
 import RegisterForm from '../components/Auth/registerForm';
 
 export default function RegisterScreen() {
