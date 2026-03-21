@@ -11,9 +11,11 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter();
 
+  const setAuth = useAuthStore((state) => state.setAuth);
+
   async function signInWithEmail() {
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     })
