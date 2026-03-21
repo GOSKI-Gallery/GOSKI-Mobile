@@ -8,7 +8,7 @@ export default function Register() {
     return (
         <View className="flex-1 flex-col items-center justify-start w-full">
 
-            <AuthHeader children="Faça seu login." toGo="/" />
+            <AuthHeader toGo="/">Faça seu login.</AuthHeader>
 
             <View className="my-auto w-full">
                 <View className="flex flex-col justify-center items-start px-10">

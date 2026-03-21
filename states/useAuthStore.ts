@@ -29,7 +29,7 @@ export const useAuthStore = create<AuthState>()(
 
             logout: async () => {
                 await supabase.auth.signOut();
-                set({ user: null, token: null, isAuthenticated: false }); // Limpa o Zustand
+                set({ user: null, token: null, isAuthenticated: false });
             },
         }),
         {
