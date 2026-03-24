@@ -33,7 +33,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
     return (
         <TouchableOpacity
             activeOpacity={0.8}
-            className={`h-12 px-20 rounded-xl flex items-center justify-center mt-2 ${buttonClasses} ${isButtonDisabled ? 'opacity-50' : ''} ${className}`}
+            className={`h-14 px-20 rounded-xl flex items-center justify-center mt-2 ${buttonClasses} ${isButtonDisabled ? 'opacity-50' : ''} ${className}`}
             disabled={isButtonDisabled}
             {...props}
         >
