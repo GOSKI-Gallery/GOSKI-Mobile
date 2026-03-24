@@ -79,7 +79,7 @@ export default function RegiterForm() {
         title="Cadastrar"
         onPress={signUpWithEmail}
         loading={loading}
-        className="mt-2 w-full"
+        className="mt-2"
       />
     </View>
   )

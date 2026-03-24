@@ -1002,7 +1002,7 @@
     postcss "~8.4.32"
     resolve-from "^5.0.0"
 
-"@expo/metro-runtime@^6.1.2":
+"@expo/metro-runtime@^6.1.2", "@expo/metro-runtime@~6.1.2":
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/@expo/metro-runtime/-/metro-runtime-6.1.2.tgz#5a4ff117df6115f9c9d4dcc561065e16d69c078b"
   integrity sha512-nvM+Qv45QH7pmYvP8JB1G8JpScrWND3KrMA6ZKe62cwwNiX/BjHU28Ear0v/4bQWXlOY0mv6B8CDIm8JxXde9g==
@@ -4978,9 +4978,9 @@ react-native-url-polyfill@^3.0.0:
   dependencies:
     whatwg-url-without-unicode "8.0.0-3"
 
-react-native-web@~0.21.0:
+react-native-web@^0.21.0:
   version "0.21.2"
-  resolved "https://registry.npmjs.org/react-native-web/-/react-native-web-0.21.2.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.21.2.tgz#0f6983dfea600d9cc1c66fda87ff9ca585eaa647"
   integrity sha512-SO2t9/17zM4iEnFvlu2DA9jqNbzNhoUP+AItkoCOyFmDMOhUnBBznBDCYN92fGdfAkfQlWzPoez6+zLxFNsZEg==
   dependencies:
     "@babel/runtime" "^7.18.6"
