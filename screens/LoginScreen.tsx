@@ -6,7 +6,7 @@ import AuthHeader from "../components/Auth/authHeader";
 
 export default function LoginScreen() {
   return (
-    <View className="flex flex-col items-center h-full w-full pt-5">
+    <View className="flex flex-col items-center h-full w-full pt-10">
       <AuthHeader toGo="register">Crie sua conta.</AuthHeader>
 
       <View className="flex flex-col justify-center items-start px-10 pt-40">

@@ -26,7 +26,17 @@ export default function LoginForm() {
     }
 
     else {
-      router.replace('/(main)');
+      if (data.session && data.user && data.user.email) {
+        setAuth({
+          id: data.user.id,
+          email: data.user.email,
+          username: data.user.user_metadata.username,
+        }, data.session.access_token)
+        router.replace('/(main)');
+      } 
+      else {
+        Alert.alert('Erro de Login', 'Não foi possível obter os dados do usuário.')
+      }
     }
     setLoading(false)
   }
