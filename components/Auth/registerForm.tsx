@@ -1,9 +1,9 @@
-import { View, Alert, Image, TextInput } from 'react-native'
-import React, { useState } from 'react'
-import { supabase } from '../../lib/supabase'
 import { useRouter } from 'expo-router'
-import PrimaryButton from '../StyleComponents/primaryButton'
-import StyledTextInput from '../StyleComponents/styledTextInput'
+import React, { useState } from 'react'
+import { Alert, View } from 'react-native'
+import { supabase } from '../../lib/supabase'
+import StyledTextInput from '../ui/styledTextInput'
+import PrimaryButton from '../ui/primaryButton'
 
 export default function RegiterForm() {
   const [username, setUsername] = useState('')

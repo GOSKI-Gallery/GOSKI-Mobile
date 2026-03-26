@@ -1,8 +1,8 @@
-import { View, Text } from "react-native";
 import React from "react";
-import GradientText from "../components/StyleComponents/gradientText";
-import LoginForm from "../components/Auth/loginForm";
+import { Text, View } from "react-native";
 import AuthHeader from "../components/Auth/authHeader";
+import LoginForm from "../components/Auth/loginForm";
+import GradientText from "../components/ui/gradientText";
 
 export default function LoginScreen() {
   return (

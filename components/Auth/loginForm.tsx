@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import { Alert, View } from 'react-native'
-import { supabase } from '../../lib/supabase'
 import { useRouter } from 'expo-router';
-import PrimaryButton from '../StyleComponents/primaryButton';
-import StyledTextInput from '../StyleComponents/styledTextInput';
+import React, { useState } from 'react';
+import { Alert, View } from 'react-native';
+import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../states/useAuthStore';
+import StyledTextInput from '../ui/styledTextInput';
+import PrimaryButton from '../ui/primaryButton';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
