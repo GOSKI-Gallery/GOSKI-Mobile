@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import { Alert, View } from 'react-native'
-import { supabase } from '../../lib/supabase'
 import { useRouter } from 'expo-router';
-import PrimaryButton from '../StyleComponents/primaryButton';
-import StyledTextInput from '../StyleComponents/styledTextInput';
+import React, { useState } from 'react';
+import { Alert, View } from 'react-native';
+import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../states/useAuthStore';
+import StyledTextInput from '../ui/styledTextInput';
+import PrimaryButton from '../ui/primaryButton';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
@@ -26,7 +26,17 @@ export default function LoginForm() {
     }
 
     else {
-      router.replace('/(main)');
+      if (data.session && data.user && data.user.email) {
+        setAuth({
+          id: data.user.id,
+          email: data.user.email,
+          username: data.user.user_metadata.username,
+        }, data.session.access_token)
+        router.replace('/(main)');
+      } 
+      else {
+        Alert.alert('Erro de Login', 'Não foi possível obter os dados do usuário.')
+      }
     }
     setLoading(false)
   }
