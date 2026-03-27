@@ -5,74 +5,95 @@ import { ImageAnnotatorClient } from "npm:@google-cloud/vision"
 serve(async (req) => {
   try {
     const body = await req.json()
-    console.log("Recebido via Webhook:", JSON.stringify(body))
-
     const record = body.record
-    if (!record) throw new Error("O 'record' veio vazio. Verifique o Webhook.")
+    
+    if (!record) throw new Error("Nenhum registro encontrado no webhook")
 
     const postId = record.id
     const imageUrl = record.image_url
-    
+
     const googleCredentials = JSON.parse(Deno.env.get('GOOGLE_APPLICATION_CREDENTIALS') || '{}')
+    const privateKey = googleCredentials.private_key.replace(/\\n/g, '\n')
 
     const visionClient = new ImageAnnotatorClient({
       credentials: {
         client_email: googleCredentials.client_email,
-        private_key: googleCredentials.private_key,
+        private_key: privateKey,
       },
       projectId: googleCredentials.project_id,
-    })
+      fallback: true, 
+    });
 
-    console.log(`Analisando imagem: ${imageUrl}`)
-
-    const [result] = await visionClient.annotateImage({
+    console.log(`Analisando Post ${postId}: ${imageUrl}`);
+    
+    const visionPromise = visionClient.annotateImage({
       image: { source: { imageUri: imageUrl } },
       features: [
         { type: 'SAFE_SEARCH_DETECTION' },
-        { type: 'LABEL_DETECTION', maxResults: 3 }
+        { type: 'LABEL_DETECTION', maxResults: 5 } 
       ],
-    })
+    });
 
-    // Corrigindo o acesso aos dados (SafeSearch pode vir dentro de result)
-    const safe = result.safeSearchAnnotation
-    if (!safe) throw new Error("Google Vision não retornou SafeSearchAnnotation")
+    const [result] = await Promise.race([
+      visionPromise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout de 20s no Google')), 20000))
+    ]) as any;
+
+    const safe = result.safeSearchAnnotation || result.safe_search_annotation
+    const labels = result.labelAnnotations || result.label_annotations || []
+
+    if (!safe) throw new Error("Google Vision não retornou dados de SafeSearch.")
 
     const isUnsafe = 
       safe.adult === 'LIKELY' || safe.adult === 'VERY_LIKELY' ||
-      safe.violence === 'LIKELY' || safe.violence === 'VERY_LIKELY' ||
-      safe.racy === 'VERY_LIKELY'
-
-    console.log(`Resultado moderação: ${isUnsafe ? 'REJEITADO' : 'APROVADO'}`)
+      safe.violence === 'LIKELY' || safe.violence === 'VERY_LIKELY';
 
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const status = isUnsafe ? 'rejected' : 'approved'
+    const status = isUnsafe ? 'rejected' : 'approved';
 
-    // TENTATIVA DE UPDATE COM LOG DE ERRO
-    const { error: updateError } = await supabaseAdmin
+    await supabaseAdmin
       .from('posts')
-      .update({ moderation_status: status })
+      .update({ 
+        moderation_status: status,
+        is_nsfw: isUnsafe 
+      })
       .eq('id', postId)
 
-    if (updateError) {
-      console.error("Erro ao atualizar banco:", updateError)
-      throw updateError
+    if (!isUnsafe && labels.length > 0) {
+      for (const label of labels) {
+        const tagName = label.description.toLowerCase().trim();
+        const confidence = label.score; 
+
+        const { data: tagData } = await supabaseAdmin
+          .from('tags')
+          .upsert({ name: tagName }, { onConflict: 'name' })
+          .select('id')
+          .single();
+
+        if (tagData) {
+          await supabaseAdmin
+            .from('post_tag')
+            .insert({
+              post_id: postId,
+              tag_id: tagData.id,
+              confidence: confidence
+            });
+        }
+      }
     }
 
-    console.log(`Post ${postId} atualizado com sucesso para ${status}!`)
-    return new Response(JSON.stringify({ status: "success", moderation: status }), { 
-      status: 200, 
+    console.log(`Post ${postId} moderado: ${status}`);
+
+    return new Response(JSON.stringify({ status: "success" }), { 
       headers: { "Content-Type": "application/json" } 
     })
 
-  } catch (error) {
-    console.error("ERRO CRÍTICO NA FUNCTION:", error.message)
-    return new Response(JSON.stringify({ error: error.message }), { 
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    })
+  } catch (error: any) {
+    console.error("ERRO:", error.message)
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 })
   }
 })
