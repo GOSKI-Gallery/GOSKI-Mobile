@@ -1,17 +1,17 @@
-import { useRouter } from 'expo-router'
-import React, { useState } from 'react'
-import { Alert, View } from 'react-native'
-import { supabase } from '../../lib/supabase'
-import StyledTextInput from '../ui/styledTextInput'
-import PrimaryButton from '../ui/primaryButton'
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Alert, View } from "react-native";
+import { supabase } from "../../lib/supabase";
+import PrimaryButton from "../ui/PrimaryButton";
+import StyledTextInput from "../ui/StyledTextInput";
 
 export default function RegiterForm() {
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirm, setPasswordConfirm] = useState('')
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function signUpWithEmail() {
     if (password !== passwordConfirm) {
@@ -19,39 +19,39 @@ export default function RegiterForm() {
       return;
     }
 
-    setLoading(true)
-    const { data: { session }, error } = await supabase.auth.signUp({
+    setLoading(true);
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
       email: email,
       password: password,
       options: {
         data: {
           username: username,
-        }
-      }
-    })
+        },
+      },
+    });
 
     if (error) {
-      Alert.alert(error.message)
+      Alert.alert(error.message);
+    } else if (!session) {
+      router.replace("/(auth)");
     }
-
-    else if (!session) {
-      router.replace('/(auth)');
-    }
-    setLoading(false)
+    setLoading(false);
   }
 
   return (
-    <View className='pt-4 gap-3 w-full items-center px-4'>
-
+    <View className="pt-4 gap-3 w-full items-center px-4">
       <StyledTextInput
-        icon={require('../../assets/icons/icon.png')}
+        icon={require("../../assets/icons/icon.png")}
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
       />
 
       <StyledTextInput
-        icon={require('../../assets/icons/email.png')}
+        icon={require("../../assets/icons/email.png")}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
@@ -60,7 +60,7 @@ export default function RegiterForm() {
       />
 
       <StyledTextInput
-        icon={require('../../assets/icons/lock.png')}
+        icon={require("../../assets/icons/lock.png")}
         placeholder="Senha"
         value={password}
         onChangeText={setPassword}
@@ -68,7 +68,7 @@ export default function RegiterForm() {
       />
 
       <StyledTextInput
-        icon={require('../../assets/icons/lock.png')}
+        icon={require("../../assets/icons/lock.png")}
         placeholder="Confirme sua Senha"
         value={passwordConfirm}
         onChangeText={setPasswordConfirm}
@@ -82,5 +82,5 @@ export default function RegiterForm() {
         className="mt-2"
       />
     </View>
-  )
+  );
 }
