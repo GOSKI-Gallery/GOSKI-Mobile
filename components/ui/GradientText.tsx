@@ -1,9 +1,8 @@
-import React from "react";
-import { Text, View } from "react-native";
-import { cssInterop } from "nativewind";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
-import { ReactNode } from "react";
+import { cssInterop } from "nativewind";
+import React, { ReactNode } from "react";
+import { Text } from "react-native";
 
 cssInterop(LinearGradient, {
   className: "style",
@@ -21,9 +20,7 @@ const GradientText = ({ children, className = "" }: GradientTextProps) => {
   return (
     <MaskedView
       className="h-12 flex-row"
-      maskElement={
-        <Text className={`${className}`}>{children}</Text>
-      }
+      maskElement={<Text className={`${className}`}>{children}</Text>}
     >
       <LinearGradient
         colors={["#FF0000", "#AF054D", "#1B0EDB"]}

@@ -1,8 +1,8 @@
 import React from "react";
 import { Text, View } from "react-native";
-import AuthHeader from "../components/Auth/authHeader";
-import RegisterForm from "../components/Auth/registerForm";
-import GradientText from "../components/ui/gradientText";
+import AuthHeader from "../components/auth/AuthHeader";
+import RegisterForm from "../components/auth/RegisterForm";
+import GradientText from "../components/ui/GradientText";
 
 export default function RegisterScreen() {
   return (
@@ -10,10 +10,11 @@ export default function RegisterScreen() {
       <AuthHeader toGo="/">Faça seu login.</AuthHeader>
 
       <View className="flex flex-col justify-center items-start px-10 pt-40">
-        
         <View className="flex flex-col justify-center items-start pb-8">
-          <Text className="font-bold text-4xl text-start">Crie sua conta e se</Text>
-            <GradientText className="text-4xl font-bold">expresse.</GradientText>
+          <Text className="font-bold text-4xl text-start">
+            Crie sua conta e se
+          </Text>
+          <GradientText className="text-4xl font-bold">expresse.</GradientText>
         </View>
 
         <View className="flex flex-col justify-center items-start">
@@ -22,7 +23,6 @@ export default function RegisterScreen() {
           </Text>
           <RegisterForm />
         </View>
-
       </View>
     </View>
   );

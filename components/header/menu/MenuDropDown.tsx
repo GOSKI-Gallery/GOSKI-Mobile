@@ -1,5 +1,10 @@
-import React, { useRef, useEffect, useState, ReactNode } from 'react';
-import { View, Modal, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import React, { ReactNode, useEffect, useRef, useState } from "react";
+import {
+  Modal,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 interface DropdownMenuProps {
   visible: boolean;
@@ -8,7 +13,7 @@ interface DropdownMenuProps {
   trigger: React.ReactNode;
   children: React.ReactNode;
   dropdownWidth?: number;
-};
+}
 
 export const MenuTrigger = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
@@ -16,17 +21,17 @@ export const MenuTrigger = ({ children }: { children: ReactNode }) => {
 
 export const MenuOption = ({
   onSelect,
-  children}: 
-  {
-    onSelect: () => void;
-    children: ReactNode;
-  }) => {
+  children,
+}: {
+  onSelect: () => void;
+  children: ReactNode;
+}) => {
   return (
-    <TouchableOpacity onPress={onSelect} className='py-3 px-2'>
+    <TouchableOpacity onPress={onSelect} className="py-3 px-2">
       {children}
     </TouchableOpacity>
   );
-  };
+};
 
 const menuDropDown: React.FC<DropdownMenuProps> = ({
   visible,
@@ -63,17 +68,19 @@ const menuDropDown: React.FC<DropdownMenuProps> = ({
           transparent={true}
           visible={visible}
           animationType="fade"
-          onRequestClose={handleClose}>
+          onRequestClose={handleClose}
+        >
           <TouchableWithoutFeedback onPress={handleClose}>
-            <View className='flex justify-start items-start bg-transparent w-full h-full'>
-            <View
+            <View className="flex justify-start items-start bg-transparent w-full h-full">
+              <View
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: position.y,
                   left: position.x,
                   width: dropdownWidth,
                 }}
-                className='bg-[#ECECEC] rounded-md p-2 shadow-lg shadow-black'>
+                className="bg-[#ECECEC] rounded-md p-2 shadow-lg shadow-black"
+              >
                 {childrenArray.map((child, index) => (
                   <React.Fragment key={index}>
                     {child}
