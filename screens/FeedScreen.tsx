@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import Header from "../components/header";
-import Post from "../components/post/PostCard";
+import Post from "../components/post/";
 
 export default function FeedScreen() {
   return (
@@ -9,7 +9,7 @@ export default function FeedScreen() {
       <Header />
 
       <View className="flex-1">
-        <Post isLoading={true} posts={[]} />
+        <Post />
       </View>
     </View>
   );
