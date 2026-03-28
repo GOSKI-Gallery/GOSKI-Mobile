@@ -10,7 +10,8 @@ serve(async (req) => {
     if (!record) throw new Error("Nenhum registro encontrado no webhook")
 
     const postId = record.id
-    const imageUrl = record.image_url
+    const imageUrl = record.image_url 
+    const filePath = imageUrl.split('/posts/')[1];
 
     const googleCredentials = JSON.parse(Deno.env.get('GOOGLE_APPLICATION_CREDENTIALS') || '{}')
     const privateKey = googleCredentials.private_key.replace(/\\n/g, '\n')
@@ -53,17 +54,32 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const status = isUnsafe ? 'rejected' : 'approved';
+    if (isUnsafe) {
+      console.log(`[!] Conteúdo NSFW detectado no Post ${postId}. Iniciando expurgo...`);
+
+      if (filePath) {
+        const { error: storageError } = await supabaseAdmin
+          .storage
+          .from('posts')
+          .remove([filePath]);
+        
+        if (storageError) console.error("Erro ao deletar arquivo do Storage:", storageError.message);
+      }
+
+      await supabaseAdmin
+        .from('posts')
+        .update({ moderation_status: 'rejected', is_nsfw: true })
+        .eq('id', postId);
+
+      return new Response(JSON.stringify({ status: "expelled" }), { headers: { "Content-Type": "application/json" } });
+    }
 
     await supabaseAdmin
       .from('posts')
-      .update({ 
-        moderation_status: status,
-        is_nsfw: isUnsafe 
-      })
+      .update({ moderation_status: 'approved', is_nsfw: false })
       .eq('id', postId)
 
-    if (!isUnsafe && labels.length > 0) {
+    if (labels.length > 0) {
       for (const label of labels) {
         const tagName = label.description.toLowerCase().trim();
         const confidence = label.score; 
@@ -86,7 +102,7 @@ serve(async (req) => {
       }
     }
 
-    console.log(`Post ${postId} moderado: ${status}`);
+    console.log(`Post ${postId} moderado: approved`);
 
     return new Response(JSON.stringify({ status: "success" }), { 
       headers: { "Content-Type": "application/json" } 
