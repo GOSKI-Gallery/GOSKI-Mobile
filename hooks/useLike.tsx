@@ -5,7 +5,7 @@ import { supabase } from "../lib/supabase";
 export const useLike = (
   postId: number,
   initialLiked: boolean,
-  userId: string,
+  userId: string | undefined,
 ) => {
   const [isLiked, setIsLiked] = useState(initialLiked);
 
