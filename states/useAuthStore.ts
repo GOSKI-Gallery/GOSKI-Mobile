@@ -14,7 +14,8 @@ interface AuthState {
     token: string | null;
     isAuthenticated: boolean;
     setAuth: (user: User, token: string) => void;
-    logout: () => void;
+    signOut: () => Promise<void>;
+    clearAuth: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -27,8 +28,11 @@ export const useAuthStore = create<AuthState>()(
             setAuth: (user, token) =>
                 set({ user, token, isAuthenticated: true }),
 
-            logout: async () => {
+            signOut: async () => {
                 await supabase.auth.signOut();
+            },
+            
+            clearAuth: () => {
                 set({ user: null, token: null, isAuthenticated: false });
             },
         }),

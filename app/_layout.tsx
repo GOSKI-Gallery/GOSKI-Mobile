@@ -1,6 +1,6 @@
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack, useRouter, useSegments } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import "../global.css";
@@ -32,29 +32,27 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const { user, setAuth, logout } = useAuthStore();
+  const { user, setAuth, clearAuth } = useAuthStore();
   const segments = useSegments();
   const router = useRouter();
+  const [authLoaded, setAuthLoaded] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setAuth(session.user, session.access_token);
-      }
-    });
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         setAuth(session.user, session.access_token);
       } else {
-        logout();
+        clearAuth();
       }
+      setAuthLoaded(true);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [setAuth, clearAuth]);
 
   useEffect(() => {
+    if (!authLoaded) return;
+
     const inAuthGroup = segments[0] === "(auth)";
 
     if (!user && !inAuthGroup) {
@@ -62,7 +60,11 @@ function RootLayoutNav() {
     } else if (user && inAuthGroup) {
       router.replace("/(main)");
     }
-  }, [user, segments]);
+  }, [user, segments, authLoaded, router]);
+
+  if (!authLoaded) {
+    return null;
+  }
 
   return (
     <ActionSheetProvider>
