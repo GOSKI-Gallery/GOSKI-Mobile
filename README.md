@@ -1,7 +1,7 @@
 # GOSKI
 
 ## Sobre o App
-O **GOSKI** é uma plataforma mobile para gerenciamento e exposição de arte digital e fotografia. O diferencial do projeto é a automação de processos via Inteligência Artificial, garantindo que todo conteúdo enviado seja moderado e categorizado automaticamente, proporcionando um ambiente seguro e organizado.
+O **GOSKI-Mobile** é uma plataforma mobile para gerenciamento e exposição de arte digital e fotografia. O diferencial do projeto é a automação de processos via Inteligência Artificial, garantindo que todo conteúdo enviado seja moderado e categorizado automaticamente, proporcionando um ambiente seguro e organizado.
 
 ### Funcionalidades
 - [x] **Setup do Projeto:** Integração Laravel + Google IDX + Supabase.
@@ -27,8 +27,7 @@ O **GOSKI** é uma plataforma mobile para gerenciamento e exposição de arte di
 
 ## Protótipos de Tela
 
-* **Link para o Figma:** em desenvolvimento
-* **Protótipo Interativo:** O link acima contém o fluxo de navegação entre as telas de Login, Feed e Upload.
+* **Link para o Figma:** https://www.figma.com/design/BSempdiCWuvVlKI7PH8O0s/GOSKI-Mobile?node-id=0-1&p=f&t=sRHPdzuo6Mb5sUB7-0
 
 ---
 
@@ -96,6 +95,8 @@ Preencher as variaveis com as chaves do Supabase
 yarn start
 ```
 
+---
+
 ## Como preparar o banco de dados
 
 GOSKI é um projeto mobile e web, com a parte web desenvolvida em Laravel sendo responsavel por realizar a migração das tabelas para o Supabase e popular o banco de dados. 
@@ -112,6 +113,19 @@ composer install
 ```
 
 ### Migrar as tabelas e popular o banco de dados
+Realizar o deploy da edge function do supabase
+```bash
+supabase init
+```
+
+```bash
+supabase login
+```
+
+```bash
+supabase functions deploy image-moderator
+```
+
 Migrar
 ```bash
 php artisan migrate
