@@ -111,9 +111,7 @@ git clone https://github.com/GOSKI-Gallery/GOSKI-Laravel.git
 ```bash
 composer install
 ```
-
-### Migrar as tabelas e popular o banco de dados
-Realizar o deploy da edge function do supabase
+### Realizar o deploy da edge function do supabase
 ```bash
 supabase init
 ```
@@ -126,6 +124,7 @@ supabase login
 supabase functions deploy image-moderator
 ```
 
+### Migrar as tabelas e popular o banco de dados
 Migrar
 ```bash
 php artisan migrate
