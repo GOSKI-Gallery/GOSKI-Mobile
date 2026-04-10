@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Image, Text, View } from "react-native";
 import { Path, Svg } from "react-native-svg";
 import MenuDropDown, { MenuOption } from "./MenuDropDown";
+import { useRouter } from "expo-router";
 
 const Menu = () => {
   const [visible, setVisible] = useState(false);
+  const router = useRouter();
 
   return (
     <View className="flex justify-center items-center bg-black rounded-xl">
@@ -27,6 +29,7 @@ const Menu = () => {
       >
         <MenuOption
           onSelect={() => {
+            router.push("/profile")
             false;
           }}
         >
