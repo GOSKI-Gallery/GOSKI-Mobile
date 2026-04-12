@@ -1,40 +1,47 @@
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  Image,
-  TouchableOpacity,
-} from "react-native";
-import React, { useEffect } from "react";
+import { View, Text, ActivityIndicator, Image, TouchableOpacity } from "react-native";
+import React, { useCallback } from "react";
 import { useProfileStore } from "../../states/useProfileStore";
-import { useAuthStore } from "../../states/useAuthStore";
 import UserPosts from "./UserPosts";
 import { Svg, Path } from "react-native-svg";
+import { useFocusEffect } from "expo-router";
 
-export default function Profile() {
-  const { user } = useAuthStore();
+export default function Profile({ userId, isOwnProfile }: { userId: string, isOwnProfile: boolean }) {
+
   const {
     profileUser,
     userPosts,
     followersCount,
     followingCount,
     isLoading,
+    isFollowing,
     fetchProfileData,
+    toggleFollow,
+    clearProfile
   } = useProfileStore();
 
-  useEffect(() => {
-    if (user?.id) {
-      fetchProfileData(user.id);
-    }
-  }, [user]);
+  useFocusEffect(
+    useCallback(() => {
+      if (userId) {
+        fetchProfileData(userId);
+      }
+
+      return () => {
+        clearProfile();
+      };
+    }, [userId])
+  );
 
   if (isLoading) {
     return <ActivityIndicator className="flex-1 justify-center items-center" />;
   }
 
+  const handleFollowToggle = () => {
+    toggleFollow(userId);
+  }
+
   const ProfileHeader = () => (
     <View>
-      <View className="py-32 px-4">
+      <View className="pt-32 px-4">
         <View className="flex-col items-center gap-8 mb-12">
           <View className="w-24 h-24 rounded-full p-1 bg-gray-200">
             <View className="w-full h-full rounded-full border-2 border-white overflow-hidden bg-gray-100">
@@ -55,9 +62,18 @@ export default function Profile() {
                 {profileUser?.username}
               </Text>
               <View className="flex-row gap-2">
-                <TouchableOpacity className="px-6 py-2 bg-white border border-gray-200 rounded-lg">
-                  <Text className="text-sm font-bold">Editar perfil</Text>
-                </TouchableOpacity>
+                {isOwnProfile ? (
+                  <TouchableOpacity className="px-6 py-2 bg-white border border-gray-200 rounded-lg">
+                    <Text className="text-sm font-bold">Editar perfil</Text>
+                  </TouchableOpacity>
+                )
+                : (
+                  <TouchableOpacity onPress={handleFollowToggle} className="px-6 py-2 bg-zinc-900 rounded-lg">
+                    <Text className="text-sm font-bold text-white">
+                      {isFollowing ? 'Seguindo' : 'Seguir'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
 
@@ -81,16 +97,6 @@ export default function Profile() {
         <View className="border-t border-gray-100">
           <View className="flex-row justify-center">
             <View className="flex-row items-center gap-2 py-4 border-t-2 border-gray-900 -mt-px w-1/3 justify-center">
-              
-              <Svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <Path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                />
-              </Svg>
-              
               <Text className="text-xs font-black uppercase tracking-widest text-gray-900">
                 Publicações
               </Text>
