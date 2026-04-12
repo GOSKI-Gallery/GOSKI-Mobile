@@ -9,7 +9,7 @@ export default function ProfileScreen() {
       <Header />
 
       <View className="flex-1">
-        <Profile />
+        <Profile userId={""} isOwnProfile={false} />
       </View>
     </View>
   );

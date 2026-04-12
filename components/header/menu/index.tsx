@@ -2,9 +2,20 @@ import { useState } from "react";
 import { Image, Text, View } from "react-native";
 import { Path, Svg } from "react-native-svg";
 import MenuDropDown, { MenuOption } from "./MenuDropDown";
+import { useRouter } from "expo-router";
+import { useAuthStore } from "../../../states/useAuthStore";
 
 const Menu = () => {
   const [visible, setVisible] = useState(false);
+  const router = useRouter();
+  const { user } = useAuthStore();
+
+  const handleProfileNavigation = () => {
+    setVisible(false);
+    if (user?.id) {
+      router.push(`/${user.id}`);
+    }
+  };
 
   return (
     <View className="flex justify-center items-center bg-black rounded-xl">
@@ -26,9 +37,7 @@ const Menu = () => {
         }
       >
         <MenuOption
-          onSelect={() => {
-            false;
-          }}
+          onSelect={handleProfileNavigation}
         >
           <View className="flex flex-row justify-between items-center w-full">
             <Text className="text-lg font-bold">Meu perfil</Text>
