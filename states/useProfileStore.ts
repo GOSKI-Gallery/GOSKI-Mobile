@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
+import { useAuthStore } from './useAuthStore';
+import { useFollowStore } from './useFollowStore';
 
 interface ProfileState {
   profileUser: any | null;
@@ -7,10 +9,10 @@ interface ProfileState {
   followersCount: number;
   followingCount: number;
   isLoading: boolean;
-  isFollowing: boolean;
   fetchProfileData: (userId: string) => Promise<void>;
-  toggleFollow: (userId: string) => Promise<void>;
   clearProfile: () => void;
+  incrementFollowers: () => void;
+  decrementFollowers: () => void;
 }
 
 export const useProfileStore = create<ProfileState>((set, get) => ({
@@ -19,35 +21,51 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
   followersCount: 0,
   followingCount: 0,
   isLoading: false,
-  isFollowing: false,
 
   fetchProfileData: async (userId: string) => {
     set({ isLoading: true });
+    const currentUserId = useAuthStore.getState().user?.id;
 
     try {
-      const { data: user } = await supabase
+      const { data: user, error: userError } = await supabase
         .from('users')
         .select('*')
         .eq('id', userId)
         .single();
+      if (userError) throw userError;
 
-      const { data: posts } = await supabase
+      const { data: posts, error: postsError } = await supabase
         .from('posts')
-        .select('*')
+        .select('*, users (id, username, profile_photo_url)')
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
+      if (postsError) throw postsError;
 
-      const { count: followers } = await supabase
+      const { count: followers, error: followersError } = await supabase
         .from('follows')
         .select('*', { count: 'exact', head: true })
-        .eq('following_id', userId);
+        .eq('followed_id', userId);
+      if (followersError) throw followersError;
 
-      const { count: following } = await supabase
+      const { count: following, error: followingError } = await supabase
         .from('follows')
         .select('*', { count: 'exact', head: true })
         .eq('follower_id', userId);
+      if (followingError) throw followingError;
 
-      const currentUser = get().profileUser;
+      let isFollowing = false;
+      if (currentUserId) {
+        const { data: followStatus, error: followStatusError } = await supabase
+          .from('follows')
+          .select('*')
+          .eq('follower_id', currentUserId)
+          .eq('followed_id', userId);
+        if (followStatusError) throw followStatusError;
+        isFollowing = followStatus && followStatus.length > 0;
+      }
+
+      useFollowStore.getState().setFollowingState(userId, isFollowing);
+
       set({
         profileUser: user,
         userPosts: posts || [],
@@ -56,17 +74,16 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
         isLoading: false,
       });
 
-    }
-
-    catch (error) {
-      console.error('Erro ao carregar perfil:', error);
+    } catch (error: any) {
+      console.error('Erro ao carregar perfil:', error.message);
       set({ isLoading: false });
     }
   },
+  
+  incrementFollowers: () => set((state) => ({ followersCount: state.followersCount + 1 })),
+  decrementFollowers: () => set((state) => ({ followersCount: state.followersCount - 1 })),
 
-  toggleFollow: async (userId: string) => {
-
-  },
-
-  clearProfile: () => set({ profileUser: null, userPosts: [], followersCount: 0, followingCount: 0, isFollowing: false }),
+  clearProfile: () => {
+    set({ profileUser: null, userPosts: [], followersCount: 0, followingCount: 0, isLoading: false });
+  }
 }));
