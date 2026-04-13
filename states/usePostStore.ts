@@ -19,7 +19,7 @@ export const usePostStore = create<PostStore>((set) => ({
         .from("posts")
         .select(`
           *,
-          users (username, profile_photo_url),
+          users (id, username, profile_photo_url),
           likes (user_id)
         `)
         .eq("moderation_status", "approved")
@@ -27,17 +27,17 @@ export const usePostStore = create<PostStore>((set) => ({
 
       if (error) throw error;
       set({ posts: data || [] });
-    } 
-    
+    }
+
     catch (error) {
       console.error("Erro ao buscar posts:", error);
-    } 
-    
+    }
+
     finally {
       set({ isLoading: false });
     }
   },
 
-  addPostOptimistic: (newPost) => 
+  addPostOptimistic: (newPost) =>
     set((state) => ({ posts: [newPost, ...state.posts] })),
 }));

@@ -30,8 +30,9 @@ export const useAuthStore = create<AuthState>()(
 
             signOut: async () => {
                 await supabase.auth.signOut();
+                set({ user: null, token: null, isAuthenticated: false });
             },
-            
+
             clearAuth: () => {
                 set({ user: null, token: null, isAuthenticated: false });
             },

@@ -38,12 +38,19 @@ function RootLayoutNav() {
   const [authLoaded, setAuthLoaded] = useState(false);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         setAuth(session.user, session.access_token);
       } else {
         clearAuth();
       }
+
+      if (event === "TOKEN_REFRESH_FAILED" || event === "SIGNED_OUT") {
+        clearAuth();
+      }
+
       setAuthLoaded(true);
     });
 
@@ -68,11 +75,11 @@ function RootLayoutNav() {
 
   return (
     <ActionSheetProvider>
-      <Stack 
-        screenOptions={{ 
+      <Stack
+        screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#ECECEC', flex: 1 }, 
-        }} 
+          contentStyle: { backgroundColor: "#ECECEC", flex: 1 },
+        }}
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(main)" options={{ headerShown: false }} />
