@@ -8,7 +8,7 @@ import { useAuthStore } from "../../../states/useAuthStore";
 const Menu = () => {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { user, signOut } = useAuthStore();
 
   const handleProfileNavigation = () => {
     setVisible(false);
@@ -36,9 +36,7 @@ const Menu = () => {
           </View>
         }
       >
-        <MenuOption
-          onSelect={handleProfileNavigation}
-        >
+        <MenuOption onSelect={handleProfileNavigation}>
           <View className="flex flex-row justify-between items-center w-full">
             <Text className="text-lg font-bold">Meu perfil</Text>
             <Image
@@ -49,8 +47,10 @@ const Menu = () => {
         </MenuOption>
 
         <MenuOption
-          onSelect={() => {
+          onSelect={async () => {
             setVisible(false);
+            await signOut();
+            router.replace("/(auth)");
           }}
         >
           <View className="flex flex-row justify-between items-center w-full">

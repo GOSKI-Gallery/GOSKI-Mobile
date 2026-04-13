@@ -7,16 +7,19 @@ interface ProfileState {
   followersCount: number;
   followingCount: number;
   isLoading: boolean;
-
+  isFollowing: boolean;
   fetchProfileData: (userId: string) => Promise<void>;
+  toggleFollow: (userId: string) => Promise<void>;
+  clearProfile: () => void;
 }
 
-export const useProfileStore = create<ProfileState>((set) => ({
+export const useProfileStore = create<ProfileState>((set, get) => ({
   profileUser: null,
   userPosts: [],
   followersCount: 0,
   followingCount: 0,
   isLoading: false,
+  isFollowing: false,
 
   fetchProfileData: async (userId: string) => {
     set({ isLoading: true });
@@ -44,6 +47,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
         .select('*', { count: 'exact', head: true })
         .eq('follower_id', userId);
 
+      const currentUser = get().profileUser;
       set({
         profileUser: user,
         userPosts: posts || [],
@@ -52,11 +56,17 @@ export const useProfileStore = create<ProfileState>((set) => ({
         isLoading: false,
       });
 
-    } 
-    
+    }
+
     catch (error) {
       console.error('Erro ao carregar perfil:', error);
       set({ isLoading: false });
     }
   },
+
+  toggleFollow: async (userId: string) => {
+
+  },
+
+  clearProfile: () => set({ profileUser: null, userPosts: [], followersCount: 0, followingCount: 0, isFollowing: false }),
 }));
