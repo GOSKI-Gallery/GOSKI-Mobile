@@ -19,10 +19,14 @@ export const usePostStore = create<PostStore>((set) => ({
         .from("posts")
         .select(`
           *,
-          users (id, username, profile_photo_url),
+          users (
+            id,
+            username,
+            profile_photo_url,
+            followers:follows!followed_id ( follower_id )
+          ),
           likes (user_id)
         `)
-        .eq("moderation_status", "approved")
         .order("created_at", { ascending: false });
 
       if (error) throw error;

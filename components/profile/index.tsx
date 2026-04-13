@@ -2,22 +2,15 @@ import { View, Text, ActivityIndicator, Image, TouchableOpacity } from "react-na
 import React, { useCallback } from "react";
 import { useProfileStore } from "../../states/useProfileStore";
 import UserPosts from "./UserPosts";
-import { Svg, Path } from "react-native-svg";
 import { useFocusEffect } from "expo-router";
+import { useFollowStore } from "../../states/useFollowStore";
+import { useAuthStore } from "../../states/useAuthStore";
 
 export default function Profile({ userId, isOwnProfile }: { userId: string, isOwnProfile: boolean }) {
-
-  const {
-    profileUser,
-    userPosts,
-    followersCount,
-    followingCount,
-    isLoading,
-    isFollowing,
-    fetchProfileData,
-    toggleFollow,
-    clearProfile
-  } = useProfileStore();
+  const { profileUser, userPosts, followersCount, followingCount, isLoading, fetchProfileData, clearProfile } = useProfileStore();
+  const { following, toggleFollow } = useFollowStore();
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const isFollowing = following[userId] || false;
 
   useFocusEffect(
     useCallback(() => {
@@ -28,7 +21,7 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
       return () => {
         clearProfile();
       };
-    }, [userId])
+    }, [userId, fetchProfileData, clearProfile])
   );
 
   if (isLoading) {
@@ -36,8 +29,8 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
   }
 
   const handleFollowToggle = () => {
-    toggleFollow(userId);
-  }
+    toggleFollow(userId, currentUserId);
+  };
 
   const ProfileHeader = () => (
     <View>
@@ -66,8 +59,7 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
                   <TouchableOpacity className="px-6 py-2 bg-white border border-gray-200 rounded-lg">
                     <Text className="text-sm font-bold">Editar perfil</Text>
                   </TouchableOpacity>
-                )
-                : (
+                ) : (
                   <TouchableOpacity onPress={handleFollowToggle} className="px-6 py-2 bg-zinc-900 rounded-lg">
                     <Text className="text-sm font-bold text-white">
                       {isFollowing ? 'Seguindo' : 'Seguir'}
@@ -100,7 +92,6 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
               <Text className="text-xs font-black uppercase tracking-widest text-gray-900">
                 Publicações
               </Text>
-
             </View>
           </View>
         </View>
