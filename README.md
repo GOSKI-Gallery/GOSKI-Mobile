@@ -8,7 +8,7 @@ O **GOSKI-Mobile** é uma plataforma mobile para gerenciamento e exposição de 
 - [x] **Autenticação:** Sistema de login vinculado ao Auth do Supabase (UUID).
 - [x] **Gerenciamento de Mídia:** Upload de imagens para buckets do Supabase Storage.
 - [x] **Processamento via IA:** Trigger de Edge Functions para moderação e rotulagem automática.
-- [ ] **Perfil do Usuário:** Sincronização de dados de perfil.
+- [x] **Perfil do Usuário:** Sincronização de dados de perfil.
 - [ ] **Sistema de likes e follow:** Lógica para interação de usuários.
 - [ ] **Sistema de Notificação:** Notificação sobre interações entre usuários.
 - [ ] **Sistema de recomendação:** Filtragem de conteúdo com base nas tags geradas pela IA.
@@ -59,7 +59,7 @@ Cronograma estimado para o desenvolvimento do MVP (Minimum Viable Product) focad
 | **Sprint 1** | **Core & Infra:** Setup Supabase e Modelagem do Banco. | 1 semanas | ✅ |
 | **Sprint 2** | **IA & Storage:** Upload de mídia, Edge Functions e Moderação automática. | 1 semanas | ✅ |
 | **Sprint 3** | **Mobile & Auth:** Interface Expo (NativeWind) e Login via Supabase Auth. | 1 semanas | ✅ |
-| **Sprint 4** | **Perfil do Usuário:** Sincronização de dados de perfil.  | 1 semanas | 📅 |
+| **Sprint 4** | **Perfil do Usuário:** Sincronização de dados de perfil.  | 1 semanas | ✅ |
 | **Sprint 5** | **Social Engine:** Lógica de Likes, Follows. | 1 semanas | 📅 |
 | **Sprint 6** | **Inteligência:** Sistema de Recomendação baseado nas Tags da IA. | 2 semanas | 📅 |
 | **Sprint 7** | **Engajamento:** Sistema de Notificações de interações entre usuários. | 1 semanas | 📅 |
