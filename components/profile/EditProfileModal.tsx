@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import { Alert, Dimensions, Image, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
-import uploadPost from '../../services/postService';
+import uploadAvatar from '../../services/avatarService';
 import { useAuthStore } from '../../states/useAuthStore';
 import PrimaryButton from '../ui/PrimaryButton';
 
@@ -15,9 +15,8 @@ interface CreatePostModalProps {
 
 const { height } = Dimensions.get('window');
 
-const CreatePostModal = ({ visible, onClose }: CreatePostModalProps) => {
+const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
     const [image, setImage] = useState<string | null>(null);
-    const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handlePickImage = async () => {
@@ -36,17 +35,17 @@ const CreatePostModal = ({ visible, onClose }: CreatePostModalProps) => {
     const userId = useAuthStore((state) => state.user?.id);
 
     const handlePublish = async () => {
-        if (!image || !description || !userId) return;
+        if (!image || !userId) return;
 
         setLoading(true);
         try {
-            await uploadPost(userId, image, description);
-        } 
-        
+            await uploadAvatar(userId, image,);
+        }
+
         catch (error: any) {
             Alert.alert("Erro ao publicar", error.message || "Ocorreu um erro inesperado.");
-        } 
-        
+        }
+
         finally {
             setLoading(false);
         }
@@ -70,7 +69,7 @@ const CreatePostModal = ({ visible, onClose }: CreatePostModalProps) => {
                         <View className="w-10 h-1.5 bg-zinc-200 rounded-full mb-6" />
 
                         <Text className="text-zinc-900 text-xl font-bold mb-6">
-                            Nova Publicação
+                            Foto de perfil
                         </Text>
 
                         <TouchableOpacity
@@ -87,21 +86,11 @@ const CreatePostModal = ({ visible, onClose }: CreatePostModalProps) => {
                             )}
                         </TouchableOpacity>
 
-                        <TextInput
-                            className="w-full text-zinc-800 p-4 bg-zinc-50 rounded-2xl mt-6 h-28 border border-zinc-100"
-                            placeholder="Escreva uma legenda..."
-                            placeholderTextColor="#a1a1aa"
-                            multiline
-                            textAlignVertical="top"
-                            value={description}
-                            onChangeText={setDescription}
-                        />
-
-                        <PrimaryButton onPress={handlePublish} title={'Publicar'}/>
+                        <PrimaryButton onPress={handlePublish} title={'Definir avatar'} />
                     </View>
                 </KeyboardAvoidingView>
             </View>
         </Modal>
     );
 };
-export default CreatePostModal;
+export default EditProfileModal;

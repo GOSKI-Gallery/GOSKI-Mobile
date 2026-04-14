@@ -5,6 +5,7 @@ import UserPosts from "./UserPosts";
 import { useFocusEffect } from "expo-router";
 import { useFollowStore } from "../../states/useFollowStore";
 import { useAuthStore } from "../../states/useAuthStore";
+import { useModalStore } from "../../states/useModalStore";
 
 export default function Profile({ userId, isOwnProfile }: { userId: string, isOwnProfile: boolean }) {
   const { profileUser, userPosts, followersCount, followingCount, isLoading, fetchProfileData, clearProfile } = useProfileStore();
@@ -32,6 +33,8 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
     toggleFollow(userId, currentUserId);
   };
 
+  const { isOpen, open, close } = useModalStore();
+
   const ProfileHeader = () => (
     <View>
       <View className="pt-32 px-4">
@@ -56,7 +59,9 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
               </Text>
               <View className="flex-row gap-2">
                 {isOwnProfile ? (
-                  <TouchableOpacity className="px-6 py-2 bg-white border border-gray-200 rounded-lg">
+                  <TouchableOpacity
+                    onPress={open}
+                    className="px-6 py-2 bg-white border border-gray-200 rounded-lg">
                     <Text className="text-sm font-bold">Editar perfil</Text>
                   </TouchableOpacity>
                 ) : (

@@ -2,11 +2,11 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import CreatePostModal from "../post/CreatePostModal";
-import { useCreatePostModalStore } from "../../states/useCreatePostModalStore";
+import { useModalStore } from "../../states/useModalStore";
 
 export default function ActionButtons() {
   const router = useRouter();
-  const { isOpen, open, close } = useCreatePostModalStore();
+  const { isOpen, open, close } = useModalStore();
 
   return (
     <>
