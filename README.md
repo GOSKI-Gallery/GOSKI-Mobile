@@ -61,8 +61,8 @@ Cronograma estimado para o desenvolvimento do MVP (Minimum Viable Product) focad
 | **Sprint 3** | **Mobile & Auth:** Interface Expo (NativeWind) e Login via Supabase Auth. | 1 semanas | ✅ |
 | **Sprint 4** | **Perfil do Usuário:** Sincronização de dados de perfil.  | 1 semanas | ✅ |
 | **Sprint 5** | **Social Engine:** Lógica de Likes, Follows. | 1 semanas | ✅ |
-| **Sprint 6** | **Inteligência:** Sistema de Recomendação baseado nas Tags da IA. | 2 semanas | 📅 |
-| **Sprint 7** | **Engajamento:** Sistema de Notificações de interações entre usuários. | 1 semanas | 📅 |
+| **Sprint 6** | **Engajamento:** Sistema de Notificações de interações entre usuários. | 1 semanas | 📅 |
+| **Sprint 7** | **Inteligência:** Sistema de Recomendação baseado nas Tags da IA. | 2 semanas | 📅 |
 | **Sprint 8** | **Finalização:** Refinamento de UI/UX, Testes e Documentação. | 1 semana | 📅 |
 
 ---
@@ -78,7 +78,17 @@ git clone https://github.com/GOSKI-Gallery/GOSKI-Mobile.git
 ```bash
 cd GOSKI-Mobile
 ```
-Abrir o terminal e instalar as dependencias
+
+Recomendamos o uso do NVM para gerenciar versões.
+```bash
+curl -o- [https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh](https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh) | bash
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+```
+
+Instalar as dependencias
 ```bash
 yarn install
 ```
