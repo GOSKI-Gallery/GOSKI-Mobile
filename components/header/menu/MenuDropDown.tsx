@@ -48,7 +48,7 @@ const menuDropDown: React.FC<DropdownMenuProps> = ({
     if (triggerRef.current && visible) {
       triggerRef.current.measure((fx, fy, width, height, px, py) => {
         setPosition({
-          x: px - 45,
+          x: px - 80,
           y: py + height - 20,
           width: width,
         });

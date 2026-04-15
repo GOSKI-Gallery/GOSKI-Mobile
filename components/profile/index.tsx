@@ -55,10 +55,10 @@ export default function Profile({
   };
 
   const ProfileHeader = () => (
-    <View>
+    <View className='flex justify-center'>
       <View className="pt-32 px-4">
-        <View className="flex-col items-center gap-8 mb-12">
-          <View className="w-24 h-24 rounded-full p-1 bg-gray-200">
+        <View className="flex-col items-center gap-4 mb-6">
+          <View className="w-32 h-32 rounded-full p-1 bg-gray-200">
             <View className="w-full h-full rounded-full border-2 border-white overflow-hidden bg-gray-100">
               <Image
                 source={
