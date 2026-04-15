@@ -37,12 +37,14 @@ const SinglePost = ({ post }: { post: any }) => {
           onPress={handleProfileNavigation}
         >
           <View className="w-10 h-10 rounded-full overflow-hidden border border-zinc-200">
-            {post.users?.avatar_url && (
-              <Image
-                source={{ uri: post.users.avatar_url }}
-                className="w-full h-full"
-              />
-            )}
+            <Image
+              source={
+                post.users?.profile_photo_url
+                  ? { uri: post.users.profile_photo_url }
+                  : require("../../assets/icons/icon.png")
+              }
+              className="w-full h-full"
+            />
           </View>
           <Text className="text-zinc-900 font-bold ml-3 text-lg">
             {post.users?.username || "Usuário"}

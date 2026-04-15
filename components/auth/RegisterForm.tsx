@@ -2,44 +2,61 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Alert, View } from "react-native";
 import { supabase } from "../../lib/supabase";
+import { useAuthStore } from "../../states/useAuthStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import StyledTextInput from "../ui/StyledTextInput";
 
-export default function RegiterForm() {
+export default function RegisterForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function signUpWithEmail() {
-    if (password !== passwordConfirm) {
-      Alert.alert("Erro", "As senhas não coincidem!");
+  const setAuth = useAuthStore((state) => state.setAuth);
+
+  const handleRegister = async () => {
+    if (!username.trim() || !email.trim() || !password.trim()) {
+      Alert.alert("Por favor, preencha todos os campos.");
       return;
     }
 
     setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-      options: {
-        data: {
-          username: username,
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: email.trim(),
+        password: password.trim(),
+        options: {
+          data: {
+            username: username.trim(),
+          },
         },
-      },
-    });
+      });
 
-    if (error) {
-      Alert.alert(error.message);
-    } else if (!session) {
-      router.replace("/(auth)");
+      if (authError) throw authError;
+
+      if (authData.user && authData.session) {
+        setAuth(
+          {
+            id: authData.user.id,
+            email: authData.user.email,
+            username: authData.user.user_metadata.username,
+          },
+          authData.session.access_token
+        );
+        router.replace("/(main)");
+      } else {
+        throw new Error("Não foi possível registrar o usuário.");
+      }
+    } catch (error: any) {
+      Alert.alert(
+        "Erro no registro",
+        error.message || "Ocorreu um erro inesperado."
+      );
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }
+  };
 
   return (
     <View className="pt-4 gap-3 w-full items-center px-4">
@@ -67,17 +84,9 @@ export default function RegiterForm() {
         secureTextEntry
       />
 
-      <StyledTextInput
-        icon={require("../../assets/icons/lock.png")}
-        placeholder="Confirme sua Senha"
-        value={passwordConfirm}
-        onChangeText={setPasswordConfirm}
-        secureTextEntry
-      />
-
       <PrimaryButton
-        title="Cadastrar"
-        onPress={signUpWithEmail}
+        title="Registrar"
+        onPress={handleRegister}
         loading={loading}
         className="mt-2"
       />

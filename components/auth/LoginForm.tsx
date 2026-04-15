@@ -16,30 +16,43 @@ export default function LoginForm() {
 
   async function signInWithEmail() {
     setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
 
-    if (error) {
-      Alert.alert(error.message);
-    } else {
-      if (data.session && data.user && data.user.email) {
+    if (authError) {
+      Alert.alert(authError.message);
+      setLoading(false);
+      return;
+    }
+
+    if (authData.session && authData.user) {
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", authData.user.id)
+        .single();
+
+      if (userError) {
+        Alert.alert("Error fetching user data", userError.message);
+      } else if (userData) {
         setAuth(
           {
-            id: data.user.id,
-            email: data.user.email,
-            username: data.user.user_metadata.username,
+            id: userData.id,
+            email: userData.email,
+            username: userData.username,
+            profile_photo_url: userData.profile_photo_url,
           },
-          data.session.access_token,
+          authData.session.access_token
         );
         router.replace("/(main)");
-      } else {
-        Alert.alert(
-          "Erro de Login",
-          "Não foi possível obter os dados do usuário.",
-        );
       }
+    } else {
+      Alert.alert(
+        "Erro de Login",
+        "Não foi possível obter os dados do usuário."
+      );
     }
     setLoading(false);
   }

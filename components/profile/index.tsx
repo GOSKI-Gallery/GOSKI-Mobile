@@ -1,16 +1,38 @@
-import { View, Text, ActivityIndicator, Image, TouchableOpacity } from "react-native";
-import React, { useCallback } from "react";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import React, { useCallback, useState } from "react";
 import { useProfileStore } from "../../states/useProfileStore";
 import UserPosts from "./UserPosts";
 import { useFocusEffect } from "expo-router";
 import { useFollowStore } from "../../states/useFollowStore";
 import { useAuthStore } from "../../states/useAuthStore";
+import EditProfileModal from "./EditProfileModal";
 
-export default function Profile({ userId, isOwnProfile }: { userId: string, isOwnProfile: boolean }) {
-  const { profileUser, userPosts, followersCount, followingCount, isLoading, fetchProfileData, clearProfile } = useProfileStore();
+export default function Profile({
+  userId,
+  isOwnProfile,
+}: {
+  userId: string;
+  isOwnProfile: boolean;
+}) {
+  const {
+    profileUser,
+    userPosts,
+    followersCount,
+    followingCount,
+    isLoading,
+    fetchProfileData,
+    clearProfile,
+  } = useProfileStore();
   const { following, toggleFollow } = useFollowStore();
   const currentUserId = useAuthStore((state) => state.user?.id);
   const isFollowing = following[userId] || false;
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -21,7 +43,7 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
       return () => {
         clearProfile();
       };
-    }, [userId, fetchProfileData, clearProfile])
+    }, [userId, fetchProfileData, clearProfile]),
   );
 
   if (isLoading) {
@@ -33,15 +55,15 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
   };
 
   const ProfileHeader = () => (
-    <View>
+    <View className='flex justify-center'>
       <View className="pt-32 px-4">
-        <View className="flex-col items-center gap-8 mb-12">
-          <View className="w-24 h-24 rounded-full p-1 bg-gray-200">
+        <View className="flex-col items-center gap-4 mb-6">
+          <View className="w-32 h-32 rounded-full p-1 bg-gray-200">
             <View className="w-full h-full rounded-full border-2 border-white overflow-hidden bg-gray-100">
               <Image
                 source={
-                  profileUser?.avatar_url
-                    ? { uri: profileUser.avatar_url }
+                  profileUser?.profile_photo_url
+                    ? { uri: profileUser.profile_photo_url }
                     : require("../../assets/icons/icon.png")
                 }
                 className="w-full h-full object-cover"
@@ -56,13 +78,21 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
               </Text>
               <View className="flex-row gap-2">
                 {isOwnProfile ? (
-                  <TouchableOpacity className="px-6 py-2 bg-white border border-gray-200 rounded-lg">
-                    <Text className="text-sm font-bold">Editar perfil</Text>
+                  <TouchableOpacity
+                    onPress={() => setIsEditModalOpen(true)}
+                    className="px-6 py-2 bg-gray-900 border border-gray-200 rounded-lg"
+                  >
+                    <Text className="text-sm font-bold text-white">
+                      Editar perfil
+                    </Text>
                   </TouchableOpacity>
                 ) : (
-                  <TouchableOpacity onPress={handleFollowToggle} className="px-6 py-2 bg-zinc-900 rounded-lg">
+                  <TouchableOpacity
+                    onPress={handleFollowToggle}
+                    className="px-6 py-2 bg-zinc-900 rounded-lg"
+                  >
                     <Text className="text-sm font-bold text-white">
-                      {isFollowing ? 'Seguindo' : 'Seguir'}
+                      {isFollowing ? "Seguindo" : "Seguir"}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -71,15 +101,21 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
 
             <View className="flex-row gap-8 mb-6">
               <View className="items-center gap-1">
-                <Text className="font-bold text-gray-900">{userPosts.length}</Text>
+                <Text className="font-bold text-gray-900">
+                  {userPosts.length}
+                </Text>
                 <Text className="text-gray-500 text-sm">publicações</Text>
               </View>
               <View className="items-center gap-1">
-                <Text className="font-bold text-gray-900">{followersCount}</Text>
+                <Text className="font-bold text-gray-900">
+                  {followersCount}
+                </Text>
                 <Text className="text-gray-500 text-sm">seguidores</Text>
               </View>
               <View className="items-center gap-1">
-                <Text className="font-bold text-gray-900">{followingCount}</Text>
+                <Text className="font-bold text-gray-900">
+                  {followingCount}
+                </Text>
                 <Text className="text-gray-500 text-sm">seguindo</Text>
               </View>
             </View>
@@ -100,9 +136,12 @@ export default function Profile({ userId, isOwnProfile }: { userId: string, isOw
   );
 
   return (
-    <UserPosts
-      posts={userPosts}
-      ListHeaderComponent={<ProfileHeader />}
-    />
+    <>
+      <UserPosts posts={userPosts} ListHeaderComponent={<ProfileHeader />} />
+      <EditProfileModal
+        visible={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+      />
+    </>
   );
 }

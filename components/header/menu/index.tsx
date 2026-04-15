@@ -13,20 +13,31 @@ const Menu = () => {
   const handleProfileNavigation = () => {
     setVisible(false);
     if (user?.id) {
-      router.push(`/${user.id}`);
+      router.push(`${user.id}`);
     }
   };
 
+  const getImageSource = () => {
+    if (user?.profile_photo_url) {
+      return { uri: user.profile_photo_url };
+    }
+    return require("../../../assets/icons/icon.png");
+  };
+
   return (
-    <View className="flex justify-center items-center bg-black rounded-xl">
+    <View className="flex justify-center items-center">
       <MenuDropDown
         visible={visible}
         handleOpen={() => setVisible(true)}
         handleClose={() => setVisible(false)}
         trigger={
-          <View className="h-10 bg-primary flex-row justify-between items-center w-25 px-5">
-            <Text className="text-base font-bold text-white">Opções</Text>
-            <Svg height={20} width={20} viewBox="0 0 20 20" fill="white">
+          <View className="h-10 bg-primary flex-row justify-between items-center">
+            <Image
+              source={getImageSource()}
+              alt="ProfilePicture"
+              className="w-10 h-10 rounded-full"
+            />
+            <Svg height={20} width={20} viewBox="0 0 20 20" fill="black">
               <Path
                 d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
                 clipRule="evenodd"
@@ -54,7 +65,7 @@ const Menu = () => {
           }}
         >
           <View className="flex flex-row justify-between items-center w-full">
-            <Text className="text-lg font-bold text-red-500">Logout</Text>
+            <Text className="text-lg font-bold text-red-500">Sair</Text>
             <Image
               source={require("../../../assets/icons/exitRed.png")}
               className="w-5 h-5"

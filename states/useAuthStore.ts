@@ -7,6 +7,7 @@ interface User {
     id: string;
     email?: string;
     username?: string;
+    profile_photo_url?: string;
 }
 
 interface AuthState {
@@ -20,7 +21,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             user: null,
             token: null,
             isAuthenticated: false,
@@ -40,6 +41,41 @@ export const useAuthStore = create<AuthState>()(
         {
             name: 'goski-auth-storage',
             storage: createJSONStorage(() => AsyncStorage),
+            onRehydrateStorage: (state) => {
+                return (rehydratedState, error) => {
+                    if (error) {
+                        console.error('Failed to rehydrate auth store:', error);
+                        return;
+                    }
+                    const refreshSession = async () => {
+                        const { data: { session } } = await supabase.auth.getSession();
+                        if (session) {
+                            const { data: userData, error: userError } = await supabase
+                                .from('users')
+                                .select('*')
+                                .eq('id', session.user.id)
+                                .single();
+                            if (userError) {
+                                console.error('Error refreshing user data, signing out', userError);
+                                rehydratedState?.signOut();
+                            } else {
+                                rehydratedState?.setAuth(
+                                    {
+                                        id: userData.id,
+                                        email: userData.email,
+                                        username: userData.username,
+                                        profile_photo_url: userData.profile_photo_url,
+                                    },
+                                    session.access_token
+                                );
+                            }
+                        } else {
+                           rehydratedState?.clearAuth();
+                        }
+                    };
+                    refreshSession();
+                };
+            },
         }
     )
 );
