@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from './useAuthStore';
-import { useFollowStore } from './useFollowStore';
 
 interface ProfileState {
   profileUser: any | null;
@@ -9,13 +8,13 @@ interface ProfileState {
   followersCount: number;
   followingCount: number;
   isLoading: boolean;
-  fetchProfileData: (userId: string) => Promise<void>;
+  fetchProfileData: (userId: string) => Promise<boolean>;
   clearProfile: () => void;
   incrementFollowers: () => void;
   decrementFollowers: () => void;
 }
 
-export const useProfileStore = create<ProfileState>((set, get) => ({
+export const useProfileStore = create<ProfileState>((set) => ({
   profileUser: null,
   userPosts: [],
   followersCount: 0,
@@ -61,10 +60,8 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
           .eq('follower_id', currentUserId)
           .eq('followed_id', userId);
         if (followStatusError) throw followStatusError;
-        isFollowing = followStatus && followStatus.length > 0;
+        isFollowing = !!followStatus?.length;
       }
-
-      useFollowStore.getState().setFollowingState(userId, isFollowing);
 
       set({
         profileUser: user,
@@ -74,12 +71,14 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
         isLoading: false,
       });
 
+      return isFollowing;
     } catch (error: any) {
       console.error('Erro ao carregar perfil:', error.message);
       set({ isLoading: false });
+      return false;
     }
   },
-  
+
   incrementFollowers: () => set((state) => ({ followersCount: state.followersCount + 1 })),
   decrementFollowers: () => set((state) => ({ followersCount: state.followersCount - 1 })),
 

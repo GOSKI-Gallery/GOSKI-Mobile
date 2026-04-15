@@ -1,13 +1,13 @@
 import { supabase } from '../lib/supabase';
 import { decode } from 'base64-arraybuffer';
-import * as FileSystem from 'expo-file-system/legacy'; 
+import * as FileSystem from 'expo-file-system/legacy';
 
 const uploadAvatar = async (userId: string, imageUri: string) => {
   try {
     const fileName = `${userId}/${Date.now()}.jpg`;
 
     const base64 = await FileSystem.readAsStringAsync(imageUri, {
-      encoding: 'base64', 
+      encoding: 'base64',
     });
 
     const { data: storageData, error: storageError } = await supabase.storage
@@ -25,9 +25,10 @@ const uploadAvatar = async (userId: string, imageUri: string) => {
 
     const { data, error } = await supabase
       .from('users')
-      .insert({
+      .update({
         profile_photo_url: publicUrl,
       })
+      .eq('id', userId)
       .select()
       .single();
 
