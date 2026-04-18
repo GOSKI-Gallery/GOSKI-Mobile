@@ -1,12 +1,14 @@
+
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import CreatePostModal from "../post/CreatePostModal";
 import { useModalStore } from "../../states/useModalStore";
+import  NotificationModal  from "../notification/NotificationModal";
 
 export default function ActionButtons() {
-  const router = useRouter();
   const { isOpen, open, close } = useModalStore();
+  const [notificationModalVisible, setNotificationModalVisible] = useState(false);
 
   return (
     <>
@@ -18,7 +20,7 @@ export default function ActionButtons() {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.navigate("/(main)")}>
+        <TouchableOpacity onPress={() => setNotificationModalVisible(true)}>
           <Image
             source={require("../../assets/icons/bell.png")}
             className="w-8 h-8"
@@ -26,6 +28,10 @@ export default function ActionButtons() {
         </TouchableOpacity>
       </View>
       <CreatePostModal visible={isOpen} onClose={close} />
+      <NotificationModal
+        visible={notificationModalVisible}
+        onClose={() => setNotificationModalVisible(false)}
+      />
     </>
   );
 }
