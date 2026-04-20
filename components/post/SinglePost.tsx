@@ -66,7 +66,13 @@ const SinglePost = ({ post }: { post: any }) => {
         resizeMode="cover"
       />
 
-      <View className="flex-row justify-between items-center mt-3 px-5">
+      <View className="flex-row justify-between items-center mt-3 px-2">
+        <View className="mt-2">
+          <Text className="text-zinc-800 leading-5">
+            <Text className="font-bold">{post.users?.username} </Text>
+            <Text className="text-zinc-500">{post.description}</Text>
+          </Text>
+        </View>
         <View className="flex-row items-center gap-2">
           <TouchableOpacity
             onPress={() => toggleLike(post.id, currentUserId)}
@@ -84,14 +90,9 @@ const SinglePost = ({ post }: { post: any }) => {
             </Text>
           </TouchableOpacity>
         </View>
+        
       </View>
 
-      <View className="px-5 mt-2">
-        <Text className="text-zinc-800 leading-5">
-          <Text className="font-bold">{post.users?.username} </Text>
-          <Text className="text-zinc-500">{post.description}</Text>
-        </Text>
-      </View>
     </View>
   );
 };

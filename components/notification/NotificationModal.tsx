@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useNotificationStore } from "../../states/useNotificationStore";
 import { useAuthStore } from "../../states/useAuthStore";
+import { timeAgo } from "../../lib/time";
 
 interface NotificationModalProps {
   visible: boolean;
@@ -27,6 +28,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     unreadCount,
     fetchNotifications,
     markAllAsRead,
+    dismissNotification
   } = useNotificationStore();
   const [loading, setLoading] = useState(false);
 
@@ -52,55 +54,60 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-end bg-black/50">
+      <View className="flex-1 bg-black/80">
+        <TouchableOpacity onPress={onClose} className="flex-1" />
         <View className="bg-white rounded-t-2xl p-4 h-3/4">
           <View className="flex-row justify-between items-center pb-4 border-b border-gray-200">
-            <Text className="text-lg font-bold text-gray-800">Notificações</Text>
+            <View className="flex-row justify-between items-center gap-2">
+            <Text className="text-xl font-bold text-gray-800">Notificações</Text>
+            {unreadCount > 0 && (
+              <TouchableOpacity onPress={handleMarkAllAsRead}>
+                <Text className="text-blue-600 font-semibold">Marcar como lido</Text>
+              </TouchableOpacity>
+            )}
+            </View>
             <TouchableOpacity onPress={onClose}>
-                <Text className="text-gray-500">Fechar</Text>
+              <Text className="text-gray-600 font-semibold">Fechar</Text>
             </TouchableOpacity>
           </View>
 
-          {unreadCount > 0 && (
-            <TouchableOpacity onPress={handleMarkAllAsRead} className="py-2 items-center">
-              <Text className="text-blue-600 font-medium">Marcar todas como lidas</Text>
-            </TouchableOpacity>
-          )}
 
           {loading ? (
             <View className="flex-1 justify-center items-center">
-                <ActivityIndicator size="large" color="#3b82f6" />
+              <ActivityIndicator size="large" color="#3b82f6" />
             </View>
           ) : notifications.length === 0 ? (
             <View className="flex-1 justify-center items-center">
-              <Text className="text-gray-500">Nenhuma notificação por enquanto.</Text>
+              <Text className="text-gray-500 text-lg">Nenhuma notificação por enquanto.</Text>
             </View>
           ) : (
             <ScrollView>
               {notifications.map((notification) => (
                 <View
                   key={notification.id}
-                  className={`p-4 border-b border-gray-100 flex-row items-start gap-3 relative ${
-                    !notification.is_read ? "bg-blue-50" : "bg-white"
-                  }`}
+                  className={`p-4 flex-row items-center gap-4 ${!notification.is_read ? "bg-blue-50/50" : "bg-white"
+                    } rounded-lg`}
                 >
-                  {!notification.is_read && (
-                    <View className="w-2 h-2 bg-blue-500 rounded-full absolute top-4 right-4" />
-                  )}
                   <Image
                     source={{ uri: notification.user.avatar_url || undefined }}
-                    className="w-10 h-10 rounded-full bg-gray-200"
+                    className="w-12 h-12 rounded-full bg-gray-200"
                   />
                   <View className="flex-1">
-                    <Text className="text-sm text-gray-800">
+                    <Text className="text-base text-gray-900 leading-relaxed">
                       <Text className="font-bold">{notification.user.username}</Text>
                       {notification.type === "like"
                         ? " curtiu sua publicação."
                         : " começou a seguir você."}
+                      <Text className="text-sm text-gray-500"> {timeAgo(notification.created_at)}</Text>
                     </Text>
-                    <Text className="text-xs text-gray-500 mt-1">
-                      {new Date(notification.created_at).toLocaleDateString()}
-                    </Text>
+                  </View>
+                  <View className="flex-row items-center gap-3">
+                    {!notification.is_read && (
+                      <View className="w-3 h-3 bg-blue-500 rounded-full" />
+                    )}
+                    <TouchableOpacity onPress={() => dismissNotification(notification.id)}>
+                      <Image source={require('../../assets/icons/delete.png')} className="w-6 h-6 opacity-70" />
+                    </TouchableOpacity>
                   </View>
                 </View>
               ))}
