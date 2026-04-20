@@ -1,26 +1,36 @@
+export const timeAgo = (dateString: string | Date): string => {
+  if (!dateString) {
+    return "agora";
+  }
+  const safeDateString = typeof dateString === 'string' ? dateString.replace(' ', 'T') : dateString;
+  const date = new Date(safeDateString);
 
-export const timeAgo = (date: string) => {
-  const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
-  let interval = seconds / 31536000;
+  if (isNaN(date.getTime()) || date.getFullYear() < 1980) {
+    return "agora";
+  }
 
-  if (interval > 1) {
-    return Math.floor(interval) + "a";
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (seconds < 5) {
+    return "agora";
   }
-  interval = seconds / 2592000;
-  if (interval > 1) {
-    return Math.floor(interval) + "m";
+
+  const rtf = new Intl.RelativeTimeFormat('pt-BR', { numeric: 'auto' });
+
+  if (seconds < 60) {
+    return rtf.format(-seconds, 'second').replace("segundos", "seg");
   }
-  interval = seconds / 86400;
-  if (interval > 1) {
-    return Math.floor(interval) + "d";
+  if (seconds < 3600) {
+    return rtf.format(-Math.floor(seconds / 60), 'minute').replace("minutos", "min");
   }
-  interval = seconds / 3600;
-  if (interval > 1) {
-    return Math.floor(interval) + "h";
+  if (seconds < 86400) {
+    return rtf.format(-Math.floor(seconds / 3600), 'hour').replace("horas", "h");
   }
-  interval = seconds / 60;
-  if (interval > 1) {
-    return Math.floor(interval) + "min";
+  if (seconds < 86400 * 7) {
+      const days = Math.floor(seconds / 86400);
+      return rtf.format(-days, 'day').replace("dias", "d");
   }
-  return Math.floor(seconds) + "s";
+
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };

@@ -78,7 +78,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
             </View>
           ) : notifications.length === 0 ? (
             <View className="flex-1 justify-center items-center">
-              <Text className="text-gray-500 text-lg">Nenhuma notificação por enquanto.</Text>
+              <Text className="text-gray-500 text-lg">Nenhuma notificação.</Text>
             </View>
           ) : (
             <ScrollView>
@@ -89,7 +89,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                     } rounded-lg`}
                 >
                   <Image
-                    source={{ uri: notification.user.avatar_url || undefined }}
+                    source={notification.user.profile_photo_url ? { uri: notification.user.profile_photo_url } : require("../../assets/icons/icon.png")}
                     className="w-12 h-12 rounded-full bg-gray-200"
                   />
                   <View className="flex-1">
