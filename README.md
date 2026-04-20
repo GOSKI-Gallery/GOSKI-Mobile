@@ -10,7 +10,7 @@ O **GOSKI-Mobile** é uma plataforma mobile para gerenciamento e exposição de 
 - [x] **Processamento via IA:** Trigger de Edge Functions para moderação e rotulagem automática.
 - [x] **Perfil do Usuário:** Sincronização de dados de perfil.
 - [x] **Sistema de likes e follow:** Lógica para interação de usuários.
-- [ ] **Sistema de Notificação:** Notificação sobre interações entre usuários.
+- [x] **Sistema de Notificação:** Notificação sobre interações entre usuários.
 - [ ] **Sistema de recomendação:** Filtragem de conteúdo com base nas tags geradas pela IA.
 
 ---
@@ -61,7 +61,7 @@ Cronograma estimado para o desenvolvimento do MVP (Minimum Viable Product) focad
 | **Sprint 3** | **Mobile & Auth:** Interface Expo (NativeWind) e Login via Supabase Auth. | 1 semanas | ✅ |
 | **Sprint 4** | **Perfil do Usuário:** Sincronização de dados de perfil.  | 1 semanas | ✅ |
 | **Sprint 5** | **Social Engine:** Lógica de Likes, Follows. | 1 semanas | ✅ |
-| **Sprint 6** | **Engajamento:** Sistema de Notificações de interações entre usuários. | 1 semanas | 📅 |
+| **Sprint 6** | **Engajamento:** Sistema de Notificações de interações entre usuários. | 1 semanas | ✅ |
 | **Sprint 7** | **Inteligência:** Sistema de Recomendação baseado nas Tags da IA. | 2 semanas | 📅 |
 | **Sprint 8** | **Finalização:** Refinamento de UI/UX, Testes e Documentação. | 1 semana | 📅 |
 
