@@ -47,7 +47,7 @@ export default function Profile({
   );
 
   if (isLoading) {
-    return <ActivityIndicator className="flex-1 justify-center items-center" />;
+    return <ActivityIndicator testID="loading-indicator" className="flex-1 justify-center items-center" />;
   }
 
   const handleFollowToggle = () => {
@@ -61,11 +61,9 @@ export default function Profile({
           <View className="w-32 h-32 rounded-full p-1 bg-gray-200">
             <View className="w-full h-full rounded-full border-2 border-white overflow-hidden bg-gray-100">
               <Image
-                source={
-                  profileUser?.profile_photo_url
-                    ? { uri: profileUser.profile_photo_url }
-                    : require("../../assets/icons/icon.png")
-                }
+                source={{
+                  uri: profileUser?.profile_photo_url || '../../assets/icons/icon.png'
+                }}
                 className="w-full h-full object-cover"
               />
             </View>
