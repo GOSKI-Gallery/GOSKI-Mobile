@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -73,7 +72,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
 
 
           {loading ? (
-            <View className="flex-1 justify-center items-center">
+            <View testID="loading-indicator" className="flex-1 justify-center items-center">
               <ActivityIndicator size="large" color="#3b82f6" />
             </View>
           ) : notifications.length === 0 ? (
@@ -105,7 +104,9 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                     {!notification.is_read && (
                       <View className="w-3 h-3 bg-blue-500 rounded-full" />
                     )}
-                    <TouchableOpacity onPress={() => dismissNotification(notification.id)}>
+                    <TouchableOpacity 
+                      testID={`delete-notification-button-${notification.id}`}
+                      onPress={() => dismissNotification(notification.id)}>
                       <Image source={require('../../assets/icons/delete.png')} className="w-6 h-6 opacity-70" />
                     </TouchableOpacity>
                   </View>
