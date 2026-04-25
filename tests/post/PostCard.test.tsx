@@ -1,5 +1,4 @@
 import '../../jest.setup.js';
-
 import React from "react";
 import { render } from "@testing-library/react-native";
 import PostCard from "../../components/post/PostCard";

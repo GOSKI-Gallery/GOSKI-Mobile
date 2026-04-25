@@ -6,7 +6,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { useAuthStore } from '../../states/useAuthStore';
 import uploadPost from '../../services/postService';
 
-// Mock the external modules and services
 jest.mock('expo-image-picker');
 jest.mock('../../services/postService');
 jest.mock('../../states/useAuthStore');

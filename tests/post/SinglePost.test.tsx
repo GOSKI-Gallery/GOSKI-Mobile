@@ -7,7 +7,6 @@ import { useLikeStore } from '../../states/useLikeStore';
 import { useFollowStore } from '../../states/useFollowStore';
 import { useRouter } from 'expo-router';
 
-// Mock the modules
 jest.mock('expo-router');
 jest.mock('../../states/useAuthStore');
 jest.mock('../../states/useLikeStore');

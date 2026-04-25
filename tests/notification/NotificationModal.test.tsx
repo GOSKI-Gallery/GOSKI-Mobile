@@ -5,7 +5,6 @@ import NotificationModal from '../../components/notification/NotificationModal';
 import { useAuthStore } from '../../states/useAuthStore';
 import { useNotificationStore } from '../../states/useNotificationStore';
 
-// Mock dependencies
 jest.mock('../../states/useAuthStore');
 jest.mock('../../states/useNotificationStore');
 jest.mock('../../lib/time', () => ({

@@ -7,13 +7,11 @@ import { useLikeStore } from '../../states/useLikeStore';
 import { useFollowStore } from '../../states/useFollowStore';
 import { useAuthStore } from '../../states/useAuthStore';
 
-// Mock the stores
 jest.mock('../../states/usePostStore');
 jest.mock('../../states/useLikeStore');
 jest.mock('../../states/useFollowStore');
 jest.mock('../../states/useAuthStore');
 
-// Create typed mocks
 const usePostStoreMock = usePostStore as unknown as jest.Mock;
 const useLikeStoreMock = useLikeStore as unknown as jest.Mock;
 const useFollowStoreMock = useFollowStore as unknown as jest.Mock;

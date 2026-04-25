@@ -7,7 +7,6 @@ import { useFollowStore } from '../../states/useFollowStore';
 import { useAuthStore } from '../../states/useAuthStore';
 import { useFocusEffect } from 'expo-router';
 
-// Mock the 'expo-router' module
 jest.mock('expo-router', () => ({
   useFocusEffect: jest.fn(),
 }));
