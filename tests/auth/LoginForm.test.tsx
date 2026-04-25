@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import LoginForm from '../components/auth/LoginForm';
-import { supabase } from '../lib/supabase';
+import LoginForm from '../../components/auth/LoginForm';
+import { supabase } from '../../lib/supabase';
 import { useRouter } from 'expo-router';
 import { Alert } from 'react-native';
 
@@ -10,11 +10,11 @@ jest.mock('expo-router', () => ({
 }));
 
 const mockSetAuth = jest.fn();
-jest.mock('../states/useAuthStore', () => ({
+jest.mock('../../states/useAuthStore', () => ({
   useAuthStore: (selector: any) => selector({ setAuth: mockSetAuth }),
 }));
 
-jest.mock('../lib/supabase', () => ({
+jest.mock('../../lib/supabase', () => ({
   supabase: {
     auth: {
       signInWithPassword: jest.fn(),

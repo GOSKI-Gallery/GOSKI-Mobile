@@ -78,11 +78,12 @@ const SinglePost = ({ post }: { post: any }) => {
             onPress={() => toggleLike(post.id, currentUserId)}
             disabled={!currentUserId}
             className="flex-row items-center gap-2 pr-3 py-2 rounded-xl active:bg-red-50 transition-all"
+            testID="like-button"
           >
             <Image
               className={`w-6 h-6 opacity-80 transition-all ${isLiked ? 'opacity-100' : ''}`}
               source={require("../../assets/icons/like.png")}
-              alt="Like"
+              accessibilityLabel="Like"
             />
             <Text
               className={`text-sm font-black text-gray-700 transition-all ${isLiked ? 'text-red-600' : ''}`}>
