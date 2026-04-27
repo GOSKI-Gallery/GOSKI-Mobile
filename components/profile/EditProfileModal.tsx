@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import {
   Alert,
   Dimensions,
-  Image,
   KeyboardAvoidingView,
   Platform,
   Text,
@@ -30,7 +29,6 @@ const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
     username,
     email,
     password,
-    profilePhotoUrl,
     imageUri,
     loading,
     setUsername,
@@ -61,17 +59,22 @@ const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
   useEffect(() => {
     if (visible && user) {
       initialize(user);
-    } else if (!visible) {
-      reset();
     }
-  }, [visible, user, initialize, reset]);
+  }, [visible, user, initialize]);
+
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
 
   const handlePublish = async () => {
     if (
       !userId ||
       (!imageUri && !username.trim() && !email.trim() && !password.trim())
-    )
+    ) {
+      handleClose();
       return;
+    }
 
     setLoading(true);
     try {
@@ -83,7 +86,6 @@ const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
         updates.email = email.trim();
       }
       if (password.trim()) {
-        // Note: Password updates might require special handling
         updates.password = password.trim();
       }
       if (imageUri) {
@@ -92,7 +94,7 @@ const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
       }
 
       if (Object.keys(updates).length > 0) {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from("users")
           .update(updates)
           .eq("id", userId)
@@ -102,7 +104,7 @@ const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
         if (error) throw error;
       }
 
-      onClose();
+      handleClose();
     } catch (error: any) {
       Alert.alert(
         "Erro ao atualizar",
@@ -116,8 +118,8 @@ const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
   return (
     <Modal
       isVisible={visible}
-      onBackdropPress={onClose}
-      onSwipeComplete={onClose}
+      onBackdropPress={handleClose}
+      onSwipeComplete={handleClose}
       swipeDirection="down"
       style={{ margin: 0, justifyContent: "flex-end" }}
       backdropOpacity={0.2}
