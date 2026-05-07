@@ -5,26 +5,29 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   Text,
   View,
 } from "react-native";
 import Modal from "react-native-modal";
-import uploadAvatar from "../../services/avatarService";
 import { supabase } from "../../lib/supabase";
+import uploadAvatar from "../../services/avatarService";
 import { useAuthStore } from "../../states/useAuthStore";
 import { useEditProfileStore } from "../../states/useEditProfileStore";
+import { useProfileStore } from "../../states/useProfileStore"; // Importe o useProfileStore
 import PrimaryButton from "../ui/PrimaryButton";
-import UploadButton from "../ui/UploadButton";
 import StyledTextInput from "../ui/StyledTextInput";
-
-interface CreatePostModalProps {
-  visible: boolean;
-  onClose: () => void;
-}
+import UploadButton from "../ui/UploadButton";
 
 const { height } = Dimensions.get("window");
 
-const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
+const EditProfileModal = ({
+  visible,
+  onClose,
+}: {
+  visible: boolean;
+  onClose: () => void;
+}) => {
   const {
     username,
     email,
@@ -55,6 +58,8 @@ const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
 
   const userId = useAuthStore((state) => state.user?.id);
   const user = useAuthStore((state) => state.user);
+  const refreshUser = useAuthStore((state) => state.refreshUser);
+  const fetchProfileData = useProfileStore((state) => state.fetchProfileData); // Puxe a função do profile store
 
   useEffect(() => {
     if (visible && user) {
@@ -75,34 +80,27 @@ const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
       handleClose();
       return;
     }
-
     setLoading(true);
     try {
       const updates: any = {};
-      if (username.trim()) {
-        updates.username = username.trim();
-      }
-      if (email.trim()) {
-        updates.email = email.trim();
-      }
-      if (password.trim()) {
-        updates.password = password.trim();
-      }
-      if (imageUri) {
+      if (username.trim()) updates.username = username.trim();
+      if (email.trim()) updates.email = email.trim();
+      if (password.trim()) updates.password = password.trim();
+      if (imageUri && imageUri !== user?.profile_photo_url) {
         const avatarResult = await uploadAvatar(userId, imageUri);
         updates.profile_photo_url = avatarResult.profile_photo_url;
       }
-
       if (Object.keys(updates).length > 0) {
         const { error } = await supabase
           .from("users")
           .update(updates)
-          .eq("id", userId)
-          .select()
-          .single();
-
+          .eq("id", userId);
         if (error) throw error;
       }
+
+      // Inicia a cascata de atualização
+      await refreshUser(); // 1. Atualiza o estado global de autenticação
+      await fetchProfileData(userId); // 2. Força a atualização dos dados da tela de perfil
 
       handleClose();
     } catch (error: any) {
@@ -123,33 +121,38 @@ const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
       swipeDirection="down"
       style={{ margin: 0, justifyContent: "flex-end" }}
       backdropOpacity={0.2}
+      avoidKeyboard
     >
-      <View className="flex-1 justify-end">
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ justifyContent: "flex-end" }}
+      >
+        <View
+          className="bg-white rounded-t-[35px] p-6 shadow-2xl space-y-6"
+          style={{ height: height * 0.85 }}
         >
-          <View
-            className="bg-white rounded-t-[35px] p-6 items-center shadow-2xl"
-            style={{
-              height: height * 0.8,
-              borderTopWidth: 1,
-              borderTopColor: "#f4f4f5",
-            }}
-          >
-            <View className="w-10 h-1.5 bg-zinc-200 rounded-full mb-6" />
-
-            <Text className="text-zinc-900 text-xl font-bold mb-6">
+          <View className="items-center">
+            <View className="w-10 h-1.5 bg-zinc-200 rounded-full" />
+            <Text className="text-zinc-900 text-xl font-bold mt-6">
               Editar perfil
             </Text>
+          </View>
 
-            <View className="pt-4 gap-3 w-full items-center px-4">
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 20 }}
+          >
+            <View className="items-center mb-6 pt-2">
+              <UploadButton imageUri={imageUri} onPress={handlePickImage} />
+            </View>
+
+            <View className="space-y-4 px-2 gap-2">
               <StyledTextInput
                 icon={require("../../assets/icons/icon.png")}
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
               />
-
               <StyledTextInput
                 icon={require("../../assets/icons/email.png")}
                 placeholder="Email"
@@ -158,26 +161,25 @@ const EditProfileModal = ({ visible, onClose }: CreatePostModalProps) => {
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
-
               <StyledTextInput
                 icon={require("../../assets/icons/lock.png")}
-                placeholder="Senha"
+                placeholder="Nova senha (opcional)"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
               />
             </View>
+          </ScrollView>
 
-            <UploadButton imageUri={imageUri} onPress={handlePickImage} />
-
+          <View className="px-2">
             <PrimaryButton
               onPress={handlePublish}
               title={"Salvar alterações"}
               loading={loading}
             />
           </View>
-        </KeyboardAvoidingView>
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
