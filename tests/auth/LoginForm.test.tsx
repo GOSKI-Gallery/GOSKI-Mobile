@@ -39,11 +39,11 @@ describe('LoginForm', () => {
     (useRouter as unknown as jest.Mock).mockReturnValue({ replace: mockReplace });
   });
 
-  it('deve realizar login com sucesso e buscar dados do perfil', async () => {
+  it('should log in successfully and fetch profile data', async () => {
     (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValue({
       data: {
         user: { id: 'user-123' },
-        session: { access_token: 'token-valido' },
+        session: { access_token: 'valid-token' },
       },
       error: null,
     });
@@ -73,14 +73,14 @@ describe('LoginForm', () => {
 
       expect(mockSetAuth).toHaveBeenCalledWith(
         mockUserData,
-        'token-valido'
+        'valid-token'
       );
       
       expect(mockReplace).toHaveBeenCalledWith('/(main)');
     });
   });
 
-  it('deve mostrar alerta em caso de credenciais inválidas', async () => {
+  it('should show an alert for invalid credentials', async () => {
     (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValue({
       data: { user: null, session: null },
       error: { message: 'Invalid login credentials' },
@@ -88,8 +88,8 @@ describe('LoginForm', () => {
 
     const { getByText, getByPlaceholderText } = render(<LoginForm />);
 
-    fireEvent.changeText(getByPlaceholderText('Email'), 'erro@teste.com');
-    fireEvent.changeText(getByPlaceholderText('Senha'), 'errada');
+    fireEvent.changeText(getByPlaceholderText('Email'), 'error@test.com');
+    fireEvent.changeText(getByPlaceholderText('Senha'), 'wrong');
     fireEvent.press(getByText('Entrar'));
 
     await waitFor(() => {
