@@ -3,13 +3,14 @@
   "compilerOptions": {
     "strict": true,
     "jsx": "react-native",
-    "types": ["jest"]
+    "types": [
+      "jest"
+    ]
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts",
-    "tests/**/*.test.tsx"
+    "tests/**/*.test.tsx",
+    "nativewind-env.d.ts"
   ]
 }

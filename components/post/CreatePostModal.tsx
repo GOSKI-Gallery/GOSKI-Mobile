@@ -1,34 +1,40 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import {
   Alert,
   Dimensions,
-  Image,
   KeyboardAvoidingView,
   Platform,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import Modal from "react-native-modal";
 import uploadPost from "../../services/postService";
 import { useAuthStore } from "../../states/useAuthStore";
+import { useModalStore } from "../../states/useModalStore";
+import { usePostStore } from "../../states/usePostStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import UploadButton from "../ui/UploadButton";
 
-interface CreatePostModalProps {
-  visible: boolean;
-  onClose: () => void;
-}
-
 const { height } = Dimensions.get("window");
 
-const CreatePostModal = ({ visible, onClose }: CreatePostModalProps) => {
+const CreatePostModal = () => {
   const [image, setImage] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [pendingPost, setPendingPost] = useState<any>(null);
+
+  const { isCreatePostModalVisible, closeCreatePostModal } = useModalStore();
+  const { addPostOptimistic } = usePostStore();
+  const user = useAuthStore((state) => state.user);
+
+  const reset = () => {
+    setImage(null);
+    setDescription("");
+    setLoading(false);
+    setPendingPost(null);
+  };
 
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -43,29 +49,47 @@ const CreatePostModal = ({ visible, onClose }: CreatePostModalProps) => {
     }
   };
 
-  const userId = useAuthStore((state) => state.user?.id);
-
   const handlePublish = async () => {
-    if (!image || !description || !userId) return;
+    if (!image || !description || !user) return;
 
     setLoading(true);
     try {
-      await uploadPost(userId, image, description);
+      const newPost = await uploadPost(user.id, image, description);
+      if (newPost) {
+        setPendingPost({
+          ...newPost,
+          users: {
+            id: user.id,
+            username: user.username,
+            profile_photo_url: user.profile_photo_url,
+            followers: [],
+          },
+          likes: [],
+        });
+        closeCreatePostModal();
+      }
     } catch (error: any) {
       Alert.alert(
         "Erro ao publicar",
         error.message || "Ocorreu um erro inesperado.",
       );
-    } finally {
       setLoading(false);
     }
   };
 
+  const onModalHide = () => {
+    if (pendingPost) {
+      addPostOptimistic(pendingPost);
+    }
+    reset();
+  };
+
   return (
     <Modal
-      isVisible={visible}
-      onBackdropPress={onClose}
-      onSwipeComplete={onClose}
+      isVisible={isCreatePostModalVisible}
+      onBackdropPress={closeCreatePostModal}
+      onSwipeComplete={closeCreatePostModal}
+      onModalHide={onModalHide}
       swipeDirection="down"
       style={{ margin: 0, justifyContent: "flex-end" }}
       backdropOpacity={0.2}
@@ -100,7 +124,11 @@ const CreatePostModal = ({ visible, onClose }: CreatePostModalProps) => {
               onChangeText={setDescription}
             />
 
-            <PrimaryButton onPress={handlePublish} title={"Publicar"} />
+            <PrimaryButton
+              onPress={handlePublish}
+              title={"Publicar"}
+              loading={loading}
+            />
           </View>
         </KeyboardAvoidingView>
       </View>

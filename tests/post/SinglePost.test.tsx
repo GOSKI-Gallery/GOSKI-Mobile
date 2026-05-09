@@ -12,7 +12,6 @@ jest.mock('../../states/useAuthStore');
 jest.mock('../../states/useLikeStore');
 jest.mock('../../states/useFollowStore');
 
-// Create typed mocks
 const useAuthStoreMock = useAuthStore as unknown as jest.Mock;
 const useLikeStoreMock = useLikeStore as unknown as jest.Mock;
 const useFollowStoreMock = useFollowStore as unknown as jest.Mock;

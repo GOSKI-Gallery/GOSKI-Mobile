@@ -32,7 +32,7 @@ describe('RegisterForm', () => {
     (useRouter as jest.Mock).mockReturnValue({ replace: mockReplace });
   });
 
-  it('deve mostrar alerta se tentar registrar com campos vazios', () => {
+  it('should show an alert if trying to register with empty fields', () => {
     const { getByText } = render(<RegisterForm />);
     
     const button = getByText('Registrar');
@@ -41,7 +41,7 @@ describe('RegisterForm', () => {
     expect(Alert.alert).toHaveBeenCalledWith("Por favor, preencha todos os campos.");
   });
 
-  it('deve registrar com sucesso e redirecionar para a home', async () => {
+  it('should register successfully and redirect to home', async () => {
     (supabase.auth.signUp as jest.Mock).mockResolvedValue({
       data: {
         user: { id: 'user-123', email: 'carlos@goski.com', user_metadata: { username: 'carlos' } },

@@ -1,18 +1,27 @@
-
 import { create } from 'zustand';
 
 interface ModalState {
-  isOpen: boolean;
-  open: () => void;
-  close: () => void;
+  isCreatePostModalVisible: boolean;
+  openCreatePostModal: () => void;
+  closeCreatePostModal: () => void;
+
+  isEditProfileModalVisible: boolean;
+  openEditProfileModal: () => void;
+  closeEditProfileModal: () => void;
+
   isNotificationModalVisible: boolean;
   setNotificationModalVisible: (visible: boolean) => void;
 }
 
 export const useModalStore = create<ModalState>((set) => ({
-  isOpen: false,
-  open: () => set({ isOpen: true }),
-  close: () => set({ isOpen: false }),
+  isCreatePostModalVisible: false,
+  openCreatePostModal: () => set({ isCreatePostModalVisible: true }),
+  closeCreatePostModal: () => set({ isCreatePostModalVisible: false }),
+
+  isEditProfileModalVisible: false,
+  openEditProfileModal: () => set({ isEditProfileModalVisible: true }),
+  closeEditProfileModal: () => set({ isEditProfileModalVisible: false }),
+
   isNotificationModalVisible: false,
   setNotificationModalVisible: (visible) => set({ isNotificationModalVisible: visible }),
 }));

@@ -17,6 +17,7 @@ interface AuthState {
     setAuth: (user: User, token: string) => void;
     signOut: () => Promise<void>;
     clearAuth: () => void;
+    refreshUser: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -36,6 +37,27 @@ export const useAuthStore = create<AuthState>()(
 
             clearAuth: () => {
                 set({ user: null, token: null, isAuthenticated: false });
+            },
+
+            refreshUser: async () => {
+                const { user } = get();
+                if (!user?.id) return;
+
+                try {
+                    const { data: updatedUserData, error } = await supabase
+                        .from('users')
+                        .select('id, email, username, profile_photo_url')
+                        .eq('id', user.id)
+                        .single();
+
+                    if (error) throw error;
+                    
+                    if (updatedUserData) {
+                        set((state) => ({ ...state, user: updatedUserData }));
+                    }
+                } catch (error) {
+                    console.error('Error refreshing user data:', error);
+                }
             },
         }),
         {

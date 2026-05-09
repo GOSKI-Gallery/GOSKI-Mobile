@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import ActionButtons from '../../components/header/ActionButtons';
@@ -14,7 +13,7 @@ describe('ActionButtons', () => {
     jest.clearAllMocks();
 
     (useModalStore as unknown as jest.Mock).mockReturnValue({
-      open: mockOpen,
+      openCreatePostModal: mockOpen,
       setNotificationModalVisible: mockSetNotificationModalVisible,
     });
   });
