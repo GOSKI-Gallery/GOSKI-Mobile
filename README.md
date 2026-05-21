@@ -132,7 +132,7 @@ Cronograma estimado para o desenvolvimento do MVP (Minimum Viable Product) focad
 - feat: profile page with style improved
 
 ## Video de apresentação
-* **Link:** 
+* **Link:** https://www.youtube.com/watch?v=E0yWtXZH5j4
 
 ---
 
