@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useAuthStore } from "../../states/useAuthStore";
+import { timeAgo } from "../../lib/time";
 import { useRouter } from "expo-router";
 import { useLikeStore } from "../../states/useLikeStore";
 import { useFollowStore } from "../../states/useFollowStore";
@@ -49,9 +50,14 @@ const SinglePost = ({ post }: { post: any }) => {
               className="w-full h-full"
             />
           </View>
-          <Text className="text-zinc-900 font-bold ml-3 text-lg">
-            {post.users?.username || "Usuário"}
-          </Text>
+          <View>
+            <Text className="text-zinc-900 font-bold ml-3 text-lg">
+              {post.users?.username || "Usuário"}
+            </Text>
+            <Text className="text-zinc-400 text-xs ml-3">
+              {timeAgo(post.created_at)}
+            </Text>
+          </View>
         </TouchableOpacity>
 
         {!isOwnPost && (
