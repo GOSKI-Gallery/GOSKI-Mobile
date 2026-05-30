@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useAuthStore } from "../../states/useAuthStore";
 import { useRouter } from "expo-router";
@@ -6,6 +6,8 @@ import { useLikeStore } from "../../states/useLikeStore";
 import { useFollowStore } from "../../states/useFollowStore";
 
 const SinglePost = ({ post }: { post: any }) => {
+  const [profileError, setProfileError] = useState(false);
+  const [postImageError, setPostImageError] = useState(false);
   const user = useAuthStore((state) => state.user);
   const currentUserId = user?.id;
   const router = useRouter();
@@ -39,10 +41,11 @@ const SinglePost = ({ post }: { post: any }) => {
           <View className="w-10 h-10 rounded-full overflow-hidden border border-zinc-200">
             <Image
               source={
-                post.users?.profile_photo_url
+                !profileError && post.users?.profile_photo_url
                   ? { uri: post.users.profile_photo_url }
                   : require("../../assets/icons/icon.png")
               }
+              onError={() => setProfileError(true)}
               className="w-full h-full"
             />
           </View>
@@ -61,7 +64,8 @@ const SinglePost = ({ post }: { post: any }) => {
       </View>
 
       <Image
-        source={{ uri: post.image_url }}
+        source={postImageError ? require("../../assets/icons/icon.png") : { uri: post.image_url }}
+        onError={() => setPostImageError(true)}
         className="w-full aspect-square bg-zinc-50"
         resizeMode="cover"
       />

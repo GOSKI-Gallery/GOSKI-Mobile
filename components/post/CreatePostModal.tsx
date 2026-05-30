@@ -5,6 +5,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   Text,
   TextInput,
   View,
@@ -106,29 +107,34 @@ const CreatePostModal = () => {
               borderTopColor: "#f4f4f5",
             }}
           >
-            <View className="w-10 h-1.5 bg-zinc-200 rounded-full mb-6" />
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ alignItems: "center" }}
+            >
+              <View className="w-10 h-1.5 bg-zinc-200 rounded-full mb-6" />
 
-            <Text className="text-zinc-900 text-xl font-bold mb-6">
-              Nova Publicação
-            </Text>
+              <Text className="text-zinc-900 text-xl font-bold mb-6">
+                Nova Publicação
+              </Text>
 
-            <UploadButton imageUri={image} onPress={handlePickImage} />
+              <UploadButton imageUri={image} onPress={handlePickImage} />
 
-            <TextInput
-              className="w-full text-zinc-800 p-4 bg-zinc-50 rounded-2xl mt-6 h-28 border border-zinc-100"
-              placeholder="Escreva uma legenda..."
-              placeholderTextColor="#a1a1aa"
-              multiline
-              textAlignVertical="top"
-              value={description}
-              onChangeText={setDescription}
-            />
+              <TextInput
+                className="w-full text-zinc-800 p-4 bg-zinc-50 rounded-2xl mt-6 h-28 border border-zinc-100"
+                placeholder="Escreva uma legenda..."
+                placeholderTextColor="#a1a1aa"
+                multiline
+                textAlignVertical="top"
+                value={description}
+                onChangeText={setDescription}
+              />
 
-            <PrimaryButton
-              onPress={handlePublish}
-              title={"Publicar"}
-              loading={loading}
-            />
+              <PrimaryButton
+                onPress={handlePublish}
+                title={"Publicar"}
+                loading={loading}
+              />
+            </ScrollView>
           </View>
         </KeyboardAvoidingView>
       </View>

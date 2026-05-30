@@ -61,10 +61,12 @@ export default function Profile({
           <View className="w-32 h-32 rounded-full p-1 bg-gray-200">
             <View className="w-full h-full rounded-full border-2 border-white overflow-hidden bg-gray-100">
               <Image
-                source={{
-                  uri: profileUser?.profile_photo_url || '../../assets/icons/icon.png'
-                }}
-                className="w-full h-full object-cover"
+                source={
+                  profileUser?.profile_photo_url
+                    ? { uri: profileUser.profile_photo_url }
+                    : require("../../assets/icons/icon.png")
+                }
+                className="w-full h-full"
               />
             </View>
           </View>
