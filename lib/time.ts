@@ -1,7 +1,7 @@
 export const timeAgo = (dateString: string | Date): string => {
   if (!dateString) return "agora";
 
-  const safeDateString = typeof dateString === 'string' ? dateString.replace(' ', 'T') : dateString;
+  const safeDateString = typeof dateString === 'string' ? dateString.replace(' ', 'T') + 'Z' : dateString;
   const date = new Date(safeDateString);
 
   if (isNaN(date.getTime()) || date.getFullYear() < 1980) return "agora";
