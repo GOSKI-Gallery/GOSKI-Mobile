@@ -50,7 +50,7 @@ export const useLikeStore = create<LikeState>((set, get) => ({
       if (!isLiked) {
         const { error } = await supabase
           .from("likes")
-          .insert({ post_id: postId, user_id: userId });
+          .insert({ post_id: postId, user_id: userId, created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
         if (error) throw error;
       } else {
         const { error } = await supabase
