@@ -52,7 +52,7 @@ export const useFollowStore = create<FollowState>((set, get) => ({
       } else {
         const { error } = await supabase
           .from("follows")
-          .insert({ follower_id: followerId, followed_id: followedId });
+          .insert({ follower_id: followerId, followed_id: followedId, created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
 
         if (error) throw error;
       }
