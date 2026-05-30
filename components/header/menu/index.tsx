@@ -7,6 +7,7 @@ import { useAuthStore } from "../../../states/useAuthStore";
 
 const Menu = () => {
   const [visible, setVisible] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const router = useRouter();
   const { user, signOut } = useAuthStore();
 
@@ -15,13 +16,6 @@ const Menu = () => {
     if (user?.id) {
       router.push(`${user.id}`);
     }
-  };
-
-  const getImageSource = () => {
-    if (user?.profile_photo_url) {
-      return { uri: user.profile_photo_url };
-    }
-    return require("../../../assets/icons/icon.png");
   };
 
   return (
@@ -33,7 +27,12 @@ const Menu = () => {
         trigger={
           <View className="h-10 bg-primary flex-row justify-between items-center">
             <Image
-              source={getImageSource()}
+              source={
+                !avatarError && user?.profile_photo_url
+                  ? { uri: user.profile_photo_url }
+                  : require("../../../assets/icons/icon.png")
+              }
+              onError={() => setAvatarError(true)}
               alt="ProfilePicture"
               className="w-10 h-10 rounded-full"
             />
