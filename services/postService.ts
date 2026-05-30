@@ -23,6 +23,7 @@ const uploadPost = async (userId: string, imageUri: string, description: string)
       .from('posts')
       .getPublicUrl(fileName);
 
+    const now = new Date().toISOString();
     const { data, error } = await supabase
       .from('posts')
       .insert({
@@ -30,7 +31,9 @@ const uploadPost = async (userId: string, imageUri: string, description: string)
         description: description,
         image_url: publicUrl,
         moderation_status: 'pending',
-        is_nsfw: false
+        is_nsfw: false,
+        created_at: now,
+        updated_at: now,
       })
       .select()
       .single();
