@@ -96,7 +96,7 @@ const SinglePost = ({ post }: { post: any }) => {
               accessibilityLabel="Like"
             />
             <Text
-              className={`text-sm font-black text-gray-700 transition-all ${isLiked ? 'text-red-600' : ''}`}>
+              className={`text-sm font-black text-zinc-700 transition-all ${isLiked ? 'text-red-600' : ''}`}>
               {likeCount}
             </Text>
           </TouchableOpacity>
