@@ -47,7 +47,7 @@ function RootLayoutNav() {
         clearAuth();
       }
 
-      if (event === "TOKEN_REFRESH_FAILED" || event === "SIGNED_OUT") {
+      if (event === "SIGNED_OUT") {
         clearAuth();
       }
 
