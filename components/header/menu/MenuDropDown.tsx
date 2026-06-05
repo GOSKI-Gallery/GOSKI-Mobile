@@ -79,13 +79,13 @@ const menuDropDown: React.FC<DropdownMenuProps> = ({
                   left: position.x,
                   width: dropdownWidth,
                 }}
-                className="bg-[#ECECEC] rounded-md p-2 shadow-lg shadow-black"
+                className="bg-zinc-100 rounded-md p-2 shadow-lg shadow-black"
               >
                 {childrenArray.map((child, index) => (
                   <React.Fragment key={index}>
                     {child}
                     {index < childrenArray.length - 1 && (
-                      <View className="border-b border-gray-300 mx-2" />
+                      <View className="border-b border-zinc-300 mx-2" />
                     )}
                   </React.Fragment>
                 ))}

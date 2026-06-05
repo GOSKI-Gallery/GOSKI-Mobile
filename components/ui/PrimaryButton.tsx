@@ -23,10 +23,10 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   const isSolid = variant === "solid";
 
   const buttonClasses = isSolid
-    ? "bg-[#000000] border-[#000000]"
-    : "bg-transparent border-[#000000]";
+    ? "bg-zinc-900 border-zinc-900"
+    : "bg-transparent border-zinc-900";
   
-  const textClasses = isSolid ? "text-white" : "text-[#000000]";
+  const textClasses = isSolid ? "text-white" : "text-zinc-900";
 
   const isButtonDisabled = disabled || loading;
 
@@ -38,7 +38,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
       {...props}
     >
       {loading ? (
-        <ActivityIndicator size="small" color={isSolid ? "white" : "#000000"} />
+        <ActivityIndicator size="small" color={isSolid ? "white" : "#18181b"} />
       ) : (
         <Text className={`font-bold text-lg text-center ${textClasses}`}>
           {title}

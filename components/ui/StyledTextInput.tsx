@@ -17,7 +17,7 @@ const StyledTextInput: React.FC<styledTextInputProps> = ({
   ...props
 }) => {
   return (
-    <View className="flex-row items-center bg-[#D9D9D9] rounded-xl w-full px-4 h-14">
+    <View className="flex-row items-center bg-zinc-200 rounded-xl w-full px-4 h-14">
       {icon && (
         <Image
           source={icon}
@@ -26,7 +26,7 @@ const StyledTextInput: React.FC<styledTextInputProps> = ({
         />
       )}
       <TextInput
-        placeholderTextColor="#0000004D"
+        placeholderTextColor="#a1a1aa"
         className={`flex-1 text-black font-bold text-center h-full ${className}`}
         {...props}
       />

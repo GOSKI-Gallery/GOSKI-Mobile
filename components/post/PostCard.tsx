@@ -18,7 +18,7 @@ export default function PostCard({ isLoading, posts }: { isLoading: boolean, pos
   
   if (posts.length === 0) {
     return (
-      <View className="flex-1 justify-center items-center bg-white">
+      <View className="flex-1 justify-center items-center">
         <Text className="text-zinc-400">Nenhum post registrado</Text>
       </View>
     );
