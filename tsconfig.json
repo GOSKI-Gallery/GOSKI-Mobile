@@ -5,12 +5,16 @@
     "jsx": "react-native",
     "types": [
       "jest"
-    ]
+    ],
+    "skipLibCheck": true
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "tests/**/*.test.tsx",
     "nativewind-env.d.ts"
+  ],
+  "exclude": [
+    "supabase/functions"
   ]
 }
