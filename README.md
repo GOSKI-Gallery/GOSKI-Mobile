@@ -11,7 +11,7 @@ O **GOSKI-Mobile** é uma plataforma mobile para gerenciamento e exposição de 
 - [x] **Perfil do Usuário:** Sincronização de dados de perfil.
 - [x] **Sistema de likes e follow:** Lógica para interação de usuários.
 - [x] **Sistema de Notificação:** Notificação sobre interações entre usuários.
-- [ ] **Sistema de recomendação:** Filtragem de conteúdo com base nas tags geradas pela IA.
+- [x] **Sistema de recomendação:** Filtragem de conteúdo com base nas tags geradas pela IA.
 
 ---
 
@@ -26,12 +26,6 @@ O **GOSKI-Mobile** é uma plataforma mobile para gerenciamento e exposição de 
 
 ---
 
-## Protótipos de Tela
-
-* **Link para o Figma:** https://www.figma.com/design/BSempdiCWuvVlKI7PH8O0s/GOSKI-Mobile?node-id=0-1&p=f&t=sRHPdzuo6Mb5sUB7-0
-
----
-
 ## Modelagem do Banco
 O projeto utiliza uma arquitetura de persistência remota baseada em **PostgreSQL** através da plataforma **Supabase**, com lógica de negócio orquestrada por um backend em **Laravel 12**.
 
@@ -42,7 +36,6 @@ O projeto utiliza uma arquitetura de persistência remota baseada em **PostgreSQ
 * **Serverless:** Edge Functions para integração com APIs de visão computacional e IA.
 
 ### Diagrama Entidade-Relacionamento (DER)
-![Diagrama de Banco de Dados GOSKI](https://drive.google.com/uc?export=download&id=181_k0xqLlx3vjZKLCQk_1eoA7keYuQJ5)
 
 * **Users:** Ponto central do banco, vinculado ao `auth.users` do Supabase via UUID.
 * **Posts (1:N):** Relação direta onde um usuário pode publicar múltiplos posts, mas cada post pertence a um único autor.
@@ -63,7 +56,7 @@ Cronograma estimado para o desenvolvimento do MVP (Minimum Viable Product) focad
 | **Sprint 4** | **Perfil do Usuário:** Sincronização de dados de perfil.  | 1 semanas | ✅ |
 | **Sprint 5** | **Social Engine:** Lógica de Likes, Follows. | 1 semanas | ✅ |
 | **Sprint 6** | **Engajamento:** Sistema de Notificações de interações entre usuários. | 1 semanas | ✅ |
-| **Sprint 7** | **Inteligência:** Sistema de Recomendação baseado nas Tags da IA. | 2 semanas | 📅 |
+| **Sprint 7** | **Inteligência:** Sistema de Recomendação baseado nas Tags da IA. | 2 semanas | ✅ |
 | **Sprint 8** | **Finalização:** Refinamento de UI/UX, Testes e Documentação. | 1 semana | 📅 |
 
 ---
