@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
+import { useThemeStore } from "../../states/useThemeStore";
 
 interface PrimaryButtonProps extends TouchableOpacityProps {
   title: string;
@@ -20,15 +21,26 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   className = "",
   ...props
 }) => {
+  const isDark = useThemeStore((s) => s.isDark);
   const isSolid = variant === "solid";
 
   const buttonClasses = isSolid
-    ? "bg-zinc-900 border-zinc-900"
-    : "bg-transparent border-zinc-900";
-  
-  const textClasses = isSolid ? "text-white" : "text-zinc-900";
+    ? "bg-zinc-900 dark:bg-zinc-200 border-zinc-900 dark:border-zinc-200"
+    : "bg-transparent border-zinc-900 dark:border-zinc-200";
+
+  const textClasses = isSolid
+    ? "text-white dark:text-zinc-900"
+    : "text-zinc-900 dark:text-zinc-200";
 
   const isButtonDisabled = disabled || loading;
+
+  const indicatorColor = isSolid
+    ? isDark
+      ? "#18181b"
+      : "white"
+    : isDark
+      ? "#f4f4f5"
+      : "#18181b";
 
   return (
     <TouchableOpacity
@@ -38,7 +50,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
       {...props}
     >
       {loading ? (
-        <ActivityIndicator size="small" color={isSolid ? "white" : "#18181b"} />
+        <ActivityIndicator size="small" color={indicatorColor} />
       ) : (
         <Text className={`font-bold text-lg text-center ${textClasses}`}>
           {title}

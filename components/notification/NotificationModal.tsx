@@ -11,14 +11,17 @@ import {
 import Modal from "react-native-modal";
 import { timeAgo } from "../../lib/time";
 import { useAuthStore } from "../../states/useAuthStore";
+import { useThemeStore } from "../../states/useThemeStore";
 import { useModalStore } from "../../states/useModalStore";
 import { useNotificationStore } from "../../states/useNotificationStore";
+import { DeleteIcon, UserIcon } from "../ui/Icons";
 
 const { height } = Dimensions.get("window");
 
 const NotificationModal = () => {
   const { user } = useAuthStore();
-  const { isNotificationModalVisible, setNotificationModalVisible } =
+  const isDark = useThemeStore((s) => s.isDark);
+  const { isNotificationModalVisible, setNotificationModalVisible, clearAnimating } =
     useModalStore();
   const {
     notifications,
@@ -55,26 +58,30 @@ const NotificationModal = () => {
       isVisible={isNotificationModalVisible}
       onBackdropPress={handleClose}
       onSwipeComplete={handleClose}
+      onModalHide={clearAnimating}
       swipeDirection="down"
       style={{ margin: 0, justifyContent: "flex-end" }}
       backdropOpacity={0.2}
+      animationInTiming={200}
+      animationOutTiming={200}
+      hideModalContentWhileAnimating
     >
       <View
-        className="bg-white rounded-t-[35px] p-6 shadow-2xl"
+        className="bg-white dark:bg-zinc-900 rounded-t-[35px] p-6 shadow-2xl"
         style={{ height: height * 0.8 }}
       >
         <View className="items-center">
           <View className="w-10 h-1.5 bg-zinc-200 rounded-full" />
         </View>
 
-        <View className="flex-row justify-between items-center mt-6 pb-4 border-b border-gray-200">
+        <View className="flex-row justify-between items-center mt-6 pb-4 border-b border-gray-200 dark:border-zinc-700">
           <View className="flex-row items-center gap-2">
-            <Text className="text-xl font-bold text-gray-800">
+            <Text className="text-xl font-bold text-gray-800 dark:text-white">
               Notificações
             </Text>
             {unreadCount > 0 && (
               <TouchableOpacity onPress={handleMarkAllAsRead}>
-                <Text className="text-blue-600 font-semibold">
+                <Text className="text-blue-600 dark:text-blue-400 font-semibold">
                   Marcar como lido
                 </Text>
               </TouchableOpacity>
@@ -91,7 +98,7 @@ const NotificationModal = () => {
           </View>
         ) : notifications.length === 0 ? (
           <View className="flex-1 justify-center items-center">
-            <Text className="text-gray-500 text-lg">
+            <Text className="text-gray-500 dark:text-zinc-400 text-lg">
               Nenhuma notificação.
             </Text>
           </View>
@@ -101,26 +108,28 @@ const NotificationModal = () => {
               <View
                 key={notification.id}
                 className={`p-4 flex-row items-center gap-4 ${
-                  !notification.is_read ? "bg-blue-50/50" : "bg-white"
+                  !notification.is_read ? "bg-blue-50/50 dark:bg-zinc-800" : "bg-white dark:bg-zinc-900"
                 } rounded-lg`}
               >
-                <Image
-                  source={
-                    notification.user.profile_photo_url
-                      ? { uri: notification.user.profile_photo_url }
-                      : require("../../assets/icons/icon.png")
-                  }
-                  className="w-12 h-12 rounded-full bg-gray-200"
-                />
+                <View className="w-12 h-12 rounded-full bg-gray-200 dark:bg-zinc-700 items-center justify-center overflow-hidden">
+                  {notification.user.profile_photo_url ? (
+                    <Image
+                      source={{ uri: notification.user.profile_photo_url }}
+                      className="w-full h-full"
+                    />
+                  ) : (
+                    <UserIcon color={isDark ? "#a1a1aa" : "#71717a"} size={24} />
+                  )}
+                </View>
                 <View className="flex-1">
-                  <Text className="text-base text-gray-900 leading-relaxed">
+                  <Text className="text-base text-gray-900 dark:text-white leading-relaxed">
                     <Text className="font-bold">
                       {notification.user.username}
                     </Text>
                     {notification.type === "like"
                       ? " curtiu sua publicação."
                       : " começou a seguir você."}
-                    <Text className="text-sm text-gray-500">
+                    <Text className="text-sm text-gray-500 dark:text-zinc-400">
                       {" "}
                       {timeAgo(notification.created_at)}
                     </Text>
@@ -134,10 +143,7 @@ const NotificationModal = () => {
                     testID={`delete-notification-button-${notification.id}`}
                     onPress={() => dismissNotification(notification.id)}
                   >
-                    <Image
-                      source={require("../../assets/icons/delete.png")}
-                      className="w-6 h-6 opacity-70"
-                    />
+                    <DeleteIcon color={isDark ? "#a1a1aa" : "#71717a"} size={24} />
                   </TouchableOpacity>
                 </View>
               </View>

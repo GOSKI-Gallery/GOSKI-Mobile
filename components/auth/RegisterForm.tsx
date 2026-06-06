@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase";
 import { useAuthStore } from "../../states/useAuthStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import StyledTextInput from "../ui/StyledTextInput";
+import { EmailIcon, LockIcon, UserIcon } from "../ui/Icons";
 
 export default function RegisterForm() {
   const [username, setUsername] = useState("");
@@ -61,14 +62,14 @@ export default function RegisterForm() {
   return (
     <View className="pt-4 gap-3 w-full items-center px-4">
       <StyledTextInput
-        icon={require("../../assets/icons/icon.png")}
+        icon={<UserIcon />}
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
       />
 
       <StyledTextInput
-        icon={require("../../assets/icons/email.png")}
+        icon={<EmailIcon />}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
@@ -77,7 +78,7 @@ export default function RegisterForm() {
       />
 
       <StyledTextInput
-        icon={require("../../assets/icons/lock.png")}
+        icon={<LockIcon />}
         placeholder="Senha"
         value={password}
         onChangeText={setPassword}

@@ -3,6 +3,7 @@ import { useModalStore } from '../../states/useModalStore';
 describe('useModalStore', () => {
   beforeEach(() => {
     useModalStore.setState({
+      isAnimating: false,
       isCreatePostModalVisible: false,
       isEditProfileModalVisible: false,
       isNotificationModalVisible: false,
@@ -44,5 +45,35 @@ describe('useModalStore', () => {
 
     setNotificationModalVisible(false);
     expect(useModalStore.getState().isNotificationModalVisible).toBe(false);
+  });
+
+  it('blocks opening modals while animating', () => {
+    const { openCreatePostModal, openEditProfileModal, setNotificationModalVisible } = useModalStore.getState();
+
+    useModalStore.setState({ isAnimating: true });
+    expect(useModalStore.getState().isAnimating).toBe(true);
+
+    openCreatePostModal();
+    expect(useModalStore.getState().isCreatePostModalVisible).toBe(false);
+
+    openEditProfileModal();
+    expect(useModalStore.getState().isEditProfileModalVisible).toBe(false);
+
+    setNotificationModalVisible(true);
+    expect(useModalStore.getState().isNotificationModalVisible).toBe(false);
+  });
+
+  it('allows opening modals when not animating', () => {
+    const { openCreatePostModal } = useModalStore.getState();
+    useModalStore.setState({ isAnimating: false });
+    openCreatePostModal();
+    expect(useModalStore.getState().isCreatePostModalVisible).toBe(true);
+  });
+
+  it('clears isAnimating', () => {
+    const { clearAnimating } = useModalStore.getState();
+    useModalStore.setState({ isAnimating: true });
+    clearAnimating();
+    expect(useModalStore.getState().isAnimating).toBe(false);
   });
 });

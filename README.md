@@ -16,7 +16,8 @@ O **GOSKI-Mobile** é uma plataforma mobile para gerenciamento e exposição de 
 ---
 
 ### Funcionalidades adicionais
-- [ ] **Tema Escuro** 
+- [x] **Tema Escuro** 
+- [x] **Ícones SVG**: Componentes SVG com cores temáticas substituindo PNGs
 - [ ] **Sistema de comentarios** 
 - [ ] **Sistema de localização**
 - [ ] **Sistema de compartilhamento**

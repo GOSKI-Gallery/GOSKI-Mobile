@@ -1,12 +1,13 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import StyledTextInput from '../../../components/ui/StyledTextInput';
+import { EmailIcon } from '../../../components/ui/Icons';
 
 describe('StyledTextInput', () => {
   it('renders with placeholder', () => {
     const { getByPlaceholderText } = render(
       <StyledTextInput
-        icon={require('../../../assets/icons/email.png')}
+        icon={<EmailIcon />}
         placeholder="Email"
       />
     );
@@ -17,7 +18,7 @@ describe('StyledTextInput', () => {
     const onChangeText = jest.fn();
     const { getByPlaceholderText } = render(
       <StyledTextInput
-        icon={require('../../../assets/icons/email.png')}
+        icon={<EmailIcon />}
         placeholder="Email"
         onChangeText={onChangeText}
       />
@@ -28,7 +29,7 @@ describe('StyledTextInput', () => {
 
   it('renders without icon', () => {
     const { getByPlaceholderText } = render(
-      <StyledTextInput placeholder="No icon" icon={require('../../../assets/icons/email.png')} />
+      <StyledTextInput placeholder="No icon" />
     );
     expect(getByPlaceholderText('No icon')).toBeTruthy();
   });
