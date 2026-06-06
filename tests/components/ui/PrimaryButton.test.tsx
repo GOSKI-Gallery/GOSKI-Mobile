@@ -32,4 +32,30 @@ describe('PrimaryButton', () => {
     fireEvent.press(getByText('Entrar'));
     expect(onPress).not.toHaveBeenCalled();
   });
+
+  it('renders outline variant', () => {
+    const { getByText } = render(
+      <PrimaryButton title="Cancelar" variant="outline" />
+    );
+    expect(getByText('Cancelar')).toBeTruthy();
+  });
+
+  it('shows ActivityIndicator when loading in outline variant', () => {
+    const { queryByText } = render(
+      <PrimaryButton title="Cancelar" variant="outline" loading />
+    );
+    expect(queryByText('Cancelar')).toBeNull();
+  });
+
+  it('renders solid variant as default', () => {
+    const { getByText } = render(<PrimaryButton title="Entrar" />);
+    expect(getByText('Entrar')).toBeTruthy();
+  });
+
+  it('applies custom className', () => {
+    const { getByText } = render(
+      <PrimaryButton title="Entrar" className="mt-4" />
+    );
+    expect(getByText('Entrar')).toBeTruthy();
+  });
 });
