@@ -26,7 +26,8 @@ const CreatePostModal = () => {
   const [loading, setLoading] = useState(false);
   const [pendingPost, setPendingPost] = useState<any>(null);
 
-  const { isCreatePostModalVisible, closeCreatePostModal } = useModalStore();
+  const { isCreatePostModalVisible, closeCreatePostModal, clearAnimating } =
+    useModalStore();
   const { addPostOptimistic } = usePostStore();
   const user = useAuthStore((state) => state.user);
 
@@ -79,6 +80,7 @@ const CreatePostModal = () => {
   };
 
   const onModalHide = () => {
+    clearAnimating();
     if (pendingPost) {
       addPostOptimistic(pendingPost);
     }
@@ -94,17 +96,18 @@ const CreatePostModal = () => {
       swipeDirection="down"
       style={{ margin: 0, justifyContent: "flex-end" }}
       backdropOpacity={0.2}
+      animationInTiming={200}
+      animationOutTiming={200}
+      hideModalContentWhileAnimating
     >
       <View className="flex-1 justify-end">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <View
-            className="bg-white rounded-t-[35px] p-6 items-center shadow-2xl"
+            className="bg-white dark:bg-zinc-900 rounded-t-[35px] p-6 items-center shadow-2xl border-t border-t-zinc-100 dark:border-t-zinc-700"
             style={{
               height: height * 0.8,
-              borderTopWidth: 1,
-              borderTopColor: "#f4f4f5",
             }}
           >
             <ScrollView
@@ -113,14 +116,14 @@ const CreatePostModal = () => {
             >
               <View className="w-10 h-1.5 bg-zinc-200 rounded-full mb-6" />
 
-              <Text className="text-zinc-900 text-xl font-bold mb-6">
+              <Text className="text-zinc-900 dark:text-white text-xl font-bold mb-6">
                 Nova Publicação
               </Text>
 
               <UploadButton imageUri={image} onPress={handlePickImage} />
 
               <TextInput
-                className="w-full text-zinc-800 p-4 bg-zinc-50 rounded-2xl mt-6 h-28 border border-zinc-100"
+                className="w-full text-zinc-800 dark:text-white p-4 bg-zinc-50 dark:bg-zinc-800 rounded-2xl mt-6 h-28 border border-zinc-100 dark:border-zinc-700"
                 placeholder="Escreva uma legenda..."
                 placeholderTextColor="#a1a1aa"
                 multiline

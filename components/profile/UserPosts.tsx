@@ -1,5 +1,6 @@
 import { View, FlatList, Image, Dimensions, StyleProp, ViewStyle } from "react-native";
 import React, { useState } from "react";
+import { useThemeStore } from "../../states/useThemeStore";
 
 const { width } = Dimensions.get("window");
 
@@ -22,19 +23,25 @@ export default function UserPosts({
       keyExtractor={(item) => item.id.toString()}
       ListHeaderComponent={ListHeaderComponent}
       contentContainerStyle={contentContainerStyle}
+      className="bg-white dark:bg-zinc-950"
     />
   );
 }
 
 function PostGridItem({ item }: { item: any }) {
   const [error, setError] = useState(false);
+  const isDark = useThemeStore((s) => s.isDark);
   return (
     <View style={{ width: width / 3, height: width / 3 }}>
-      <Image
-        source={error ? require("../../assets/icons/icon.png") : { uri: item.image_url }}
-        onError={() => setError(true)}
-        style={{ flex: 1, margin: 1 }}
-      />
+      {error ? (
+        <View style={{ flex: 1, margin: 1, backgroundColor: isDark ? "#27272a" : "#e4e4e7" }} />
+      ) : (
+        <Image
+          source={{ uri: item.image_url }}
+          onError={() => setError(true)}
+          style={{ flex: 1, margin: 1 }}
+        />
+      )}
     </View>
   );
 }

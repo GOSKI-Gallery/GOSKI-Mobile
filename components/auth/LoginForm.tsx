@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase";
 import { useAuthStore } from "../../states/useAuthStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import StyledTextInput from "../ui/StyledTextInput";
+import { EmailIcon, LockIcon } from "../ui/Icons";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -60,7 +61,7 @@ export default function LoginForm() {
   return (
     <View className="pt-4 gap-3 w-full items-center px-4">
       <StyledTextInput
-        icon={require("../../assets/icons/email.png")}
+        icon={<EmailIcon />}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
@@ -68,7 +69,7 @@ export default function LoginForm() {
         autoCapitalize="none"
       />
       <StyledTextInput
-        icon={require("../../assets/icons/lock.png")}
+        icon={<LockIcon />}
         placeholder="Senha"
         value={password}
         onChangeText={setPassword}

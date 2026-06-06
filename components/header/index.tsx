@@ -7,7 +7,7 @@ import Menu from "./menu";
 
 export default function index() {
   return (
-    <View className="absolute top-0 left-0 right-0 z-50 border-b bg-white border-zinc-200">
+    <View className="absolute top-0 left-0 right-0 z-50 border-b bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
       <View className="flex-row justify-between items-center w-full py-6 px-5 pt-12">
         <Logo />
         <View className="flex-row items-center gap-2">

@@ -14,10 +14,12 @@ import { supabase } from "../../lib/supabase";
 import uploadAvatar from "../../services/avatarService";
 import { useAuthStore } from "../../states/useAuthStore";
 import { useEditProfileStore } from "../../states/useEditProfileStore";
-import { useProfileStore } from "../../states/useProfileStore"; // Importe o useProfileStore
+import { useProfileStore } from "../../states/useProfileStore";
+import { useModalStore } from "../../states/useModalStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import StyledTextInput from "../ui/StyledTextInput";
 import UploadButton from "../ui/UploadButton";
+import { EmailIcon, LockIcon, UserIcon } from "../ui/Icons";
 
 const { height } = Dimensions.get("window");
 
@@ -59,7 +61,8 @@ const EditProfileModal = ({
   const userId = useAuthStore((state) => state.user?.id);
   const user = useAuthStore((state) => state.user);
   const refreshUser = useAuthStore((state) => state.refreshUser);
-  const fetchProfileData = useProfileStore((state) => state.fetchProfileData); // Puxe a função do profile store
+  const fetchProfileData = useProfileStore((state) => state.fetchProfileData);
+  const clearAnimating = useModalStore((s) => s.clearAnimating);
 
   useEffect(() => {
     if (visible && user) {
@@ -118,9 +121,13 @@ const EditProfileModal = ({
       isVisible={visible}
       onBackdropPress={handleClose}
       onSwipeComplete={handleClose}
+      onModalHide={clearAnimating}
       swipeDirection="down"
       style={{ margin: 0, justifyContent: "flex-end" }}
       backdropOpacity={0.2}
+      animationInTiming={200}
+      animationOutTiming={200}
+      hideModalContentWhileAnimating
       avoidKeyboard
     >
       <KeyboardAvoidingView
@@ -128,12 +135,12 @@ const EditProfileModal = ({
         style={{ justifyContent: "flex-end" }}
       >
         <View
-          className="bg-white rounded-t-[35px] p-6 shadow-2xl space-y-6"
+          className="bg-white dark:bg-zinc-900 rounded-t-[35px] p-6 shadow-2xl space-y-6"
           style={{ height: height * 0.85 }}
         >
           <View className="items-center">
             <View className="w-10 h-1.5 bg-zinc-200 rounded-full" />
-            <Text className="text-zinc-900 text-xl font-bold mt-6">
+            <Text className="text-zinc-900 dark:text-white text-xl font-bold mt-6">
               Editar perfil
             </Text>
           </View>
@@ -148,13 +155,13 @@ const EditProfileModal = ({
 
             <View className="space-y-4 px-2 gap-2">
               <StyledTextInput
-                icon={require("../../assets/icons/icon.png")}
+                icon={<UserIcon />}
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
               />
               <StyledTextInput
-                icon={require("../../assets/icons/email.png")}
+                icon={<EmailIcon />}
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
@@ -162,7 +169,7 @@ const EditProfileModal = ({
                 autoCapitalize="none"
               />
               <StyledTextInput
-                icon={require("../../assets/icons/lock.png")}
+                icon={<LockIcon />}
                 placeholder="Nova senha (opcional)"
                 value={password}
                 onChangeText={setPassword}
