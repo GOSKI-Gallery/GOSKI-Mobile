@@ -3,6 +3,7 @@ import { useModalStore } from '../../states/useModalStore';
 describe('useModalStore', () => {
   beforeEach(() => {
     useModalStore.setState({
+      isAnimating: false,
       isCreatePostModalVisible: false,
       isEditProfileModalVisible: false,
       isNotificationModalVisible: false,
