@@ -2,7 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useAuthStore } from "../../../states/useAuthStore";
 import Profile from "../../../components/profile";
 import Header from "../../../components/header";
-import { View } from "react-native";
+import ScreenWrapper from "../../../components/ui/ScreenWrapper";
 
 export default function UserProfile() {
   const { userId } = useLocalSearchParams();
@@ -17,9 +17,9 @@ export default function UserProfile() {
   const isOwnProfile = user ? user.id === id : false;
 
   return (
-    <View style={{ flex: 1 }}>
+    <ScreenWrapper>
       <Header />
       <Profile userId={id} isOwnProfile={isOwnProfile} />
-    </View>
+    </ScreenWrapper>
   );
 }
