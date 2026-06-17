@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "GOSKI",
-    "slug": "GOSKI",
+    "slug": "goski",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,7 +22,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "versionCode": "1"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -31,6 +32,12 @@
     "plugins": [
       "expo-font"
     ],
-    "scheme": "goski"
+    "scheme": "goski",
+    "extra": {
+      "eas": {
+        "projectId": "beca02c1-cd2f-4fa0-bb80-60c31bf8a67b"
+      }
+    },
+    "owner": "carlllos"
   }
 }
