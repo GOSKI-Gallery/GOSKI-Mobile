@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase, ensureProfile } from '../lib/supabase';
 import { decode } from 'base64-arraybuffer';
 import * as FileSystem from 'expo-file-system/legacy'; 
 
@@ -24,14 +24,15 @@ const uploadPost = async (userId: string, imageUri: string, description: string)
       .getPublicUrl(fileName);
 
     const now = new Date().toISOString();
+
+    await ensureProfile(userId);
+
     const { data, error } = await supabase
       .from('posts')
       .insert({
         user_id: userId,
         description: description,
         image_url: publicUrl,
-        moderation_status: 'pending',
-        is_nsfw: false,
         created_at: now,
         updated_at: now,
       })

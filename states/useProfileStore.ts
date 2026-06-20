@@ -30,14 +30,15 @@ export const useProfileStore = create<ProfileState>((set) => ({
         .from('users')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
       if (userError) throw userError;
+      if (!user) throw new Error('Usuário não encontrado');
 
       const { data: posts, error: postsError } = await supabase
         .from('posts')
         .select('*')
         .eq('user_id', userId)
-        .or("moderation_status.is.null,moderation_status.in.(UNKNOWN,VERY_UNLIKELY,UNLIKELY)")
+        .or("moderation_status.is.null,moderation_status.in.(pending,UNKNOWN,VERY_UNLIKELY,UNLIKELY,POSSIBLE)")
         .order('created_at', { ascending: false });
       if (postsError) throw postsError;
 
