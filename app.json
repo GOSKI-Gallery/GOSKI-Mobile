@@ -23,7 +23,8 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "softwareKeyboardLayoutMode": "pan",
-      "versionCode": "1"
+      "versionCode": 1,
+      "package": "carlllos.goski.com"
     },
     "web": {
       "favicon": "./assets/favicon.png",
