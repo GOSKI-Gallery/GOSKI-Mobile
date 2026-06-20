@@ -1,5 +1,5 @@
 import React from "react";
-import { RefreshControl, ScrollView, View, Text } from "react-native";
+import { RefreshControl, ScrollView, Text } from "react-native";
 import PostSkeleton from "../ui/PostSkeleton";
 import SinglePost from "./SinglePost";
 import { useThemeStore } from "../../states/useThemeStore";
