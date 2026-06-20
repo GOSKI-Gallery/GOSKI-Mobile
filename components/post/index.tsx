@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import { usePostStore } from "../../states/usePostStore";
 import PostCard from "./PostCard";
@@ -12,6 +12,7 @@ export default function Post() {
   const setInitialLikes = useLikeStore((state) => state.setInitialLikes);
   const setInitialFollowing = useFollowStore((state) => state.setInitialFollowing);
   const user = useAuthStore((state) => state.user);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     console.log("[Post] useEffect rodou");
@@ -25,9 +26,25 @@ export default function Post() {
     });
   }, [fetchPosts, user, setInitialLikes, setInitialFollowing]);
 
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchPosts();
+    const allPosts = usePostStore.getState().posts;
+    if (user) {
+      setInitialLikes(allPosts, user.id);
+      setInitialFollowing(allPosts, user.id);
+    }
+    setRefreshing(false);
+  }, [fetchPosts, user, setInitialLikes, setInitialFollowing]);
+
   return (
-    <View className="flex-1"> 
-      <PostCard isLoading={isLoading} posts={posts} />
+    <View className="flex-1">
+      <PostCard
+        isLoading={isLoading}
+        refreshing={refreshing}
+        posts={posts}
+        onRefresh={handleRefresh}
+      />
     </View>
   );
 }

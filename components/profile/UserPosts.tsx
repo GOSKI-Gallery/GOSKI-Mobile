@@ -1,4 +1,4 @@
-import { View, FlatList, Image, Dimensions, StyleProp, ViewStyle } from "react-native";
+import { View, FlatList, Image, Dimensions, RefreshControl, StyleProp, ViewStyle } from "react-native";
 import React, { useState } from "react";
 import { useThemeStore } from "../../states/useThemeStore";
 
@@ -6,13 +6,19 @@ const { width } = Dimensions.get("window");
 
 export default function UserPosts({
   posts,
+  refreshing,
+  onRefresh,
   ListHeaderComponent,
   contentContainerStyle,
 }: {
   posts: any[];
+  refreshing: boolean;
+  onRefresh: () => void;
   ListHeaderComponent?: React.ReactElement;
   contentContainerStyle?: StyleProp<ViewStyle>;
 }) {
+  const isDark = useThemeStore((s) => s.isDark);
+
   return (
     <FlatList
       data={posts}
@@ -24,6 +30,14 @@ export default function UserPosts({
       ListHeaderComponent={ListHeaderComponent}
       contentContainerStyle={contentContainerStyle}
       className="bg-white dark:bg-zinc-950"
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor={isDark ? "#a1a1aa" : "#18181b"}
+          colors={[isDark ? "#a1a1aa" : "#18181b"]}
+        />
+      }
     />
   );
 }

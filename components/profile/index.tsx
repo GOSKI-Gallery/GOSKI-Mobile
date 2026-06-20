@@ -36,6 +36,7 @@ export default function Profile({
   const isDark = useThemeStore((s) => s.isDark);
   const isFollowing = following[userId] || false;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -49,7 +50,13 @@ export default function Profile({
     }, [userId, fetchProfileData, clearProfile]),
   );
 
-  if (isLoading) {
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchProfileData(userId);
+    setRefreshing(false);
+  }, [userId, fetchProfileData]);
+
+  if (isLoading && !refreshing && !profileUser) {
     return (
       <View className="flex-1 items-center justify-center bg-white dark:bg-zinc-950">
         <ActivityIndicator testID="loading-indicator" size="large" color="#18181b" />
@@ -144,7 +151,12 @@ export default function Profile({
 
   return (
     <>
-      <UserPosts posts={userPosts} ListHeaderComponent={<ProfileHeader />} />
+      <UserPosts
+        posts={userPosts}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        ListHeaderComponent={<ProfileHeader />}
+      />
       <EditProfileModal
         visible={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}

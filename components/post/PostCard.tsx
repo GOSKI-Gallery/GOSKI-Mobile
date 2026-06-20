@@ -1,31 +1,61 @@
 import React from "react";
-import { ScrollView, View, Text } from "react-native";
+import { RefreshControl, ScrollView, View, Text } from "react-native";
 import PostSkeleton from "../ui/PostSkeleton";
 import SinglePost from "./SinglePost";
-import { useAuthStore } from "../../states/useAuthStore";
+import { useThemeStore } from "../../states/useThemeStore";
 
-export default function PostCard({ isLoading, posts }: { isLoading: boolean, posts: any[] }) {
-  const user = useAuthStore((state) => state.user);
-  const userId = user?.id;
+export default function PostCard({
+  isLoading,
+  refreshing,
+  posts,
+  onRefresh,
+}: {
+  isLoading: boolean;
+  refreshing: boolean;
+  posts: any[];
+  onRefresh: () => void;
+}) {
+  const isDark = useThemeStore((s) => s.isDark);
 
-  if (isLoading) {
+  const refreshControl = (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      tintColor={isDark ? "#a1a1aa" : "#18181b"}
+      colors={[isDark ? "#a1a1aa" : "#18181b"]}
+    />
+  );
+
+  if (isLoading && posts.length === 0) {
     return (
-      <ScrollView className="flex-1 w-full" contentContainerStyle={{ paddingTop: 110 }}>
+      <ScrollView
+        className="flex-1 w-full"
+        contentContainerStyle={{ paddingTop: 110 }}
+        refreshControl={refreshControl}
+      >
         {[1, 2, 3].map((key) => <PostSkeleton key={key} />)}
       </ScrollView>
     );
   }
-  
+
   if (posts.length === 0) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        refreshControl={refreshControl}
+      >
         <Text className="text-zinc-400">Nenhum post registrado</Text>
-      </View>
+      </ScrollView>
     );
   }
 
   return (
-    <ScrollView className="flex-1" contentContainerStyle={{ paddingTop: 110, paddingBottom: 100 }}>
+    <ScrollView
+      className="flex-1"
+      contentContainerStyle={{ paddingTop: 110, paddingBottom: 100 }}
+      refreshControl={refreshControl}
+    >
       {posts.map((post) => (
         <SinglePost key={post.id} post={post} />
       ))}
