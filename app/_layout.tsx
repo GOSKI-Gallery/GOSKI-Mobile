@@ -2,12 +2,13 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import React from "react";
-import { ActivityIndicator, View } from "react-native";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import "../global.css";
 import { supabase } from "../lib/supabase";
 import { useAuthStore } from "../states/useAuthStore";
 import { useThemeStore } from "../states/useThemeStore";
+import SplashScreenComponent from "../components/ui/SplashScreen";
+import CustomAlert from "../components/ui/CustomAlert";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,12 +27,8 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  const isDark = useThemeStore((state) => state.isDark);
-
   if (!loaded) {
-    return (
-      <View style={{ flex: 1, backgroundColor: isDark ? "#18181b" : "#ECECEC" }} />
-    );
+    return <SplashScreenComponent />;
   }
 
   return <RootLayoutNav />;
@@ -94,13 +91,7 @@ function RootLayoutNav() {
   }, [user, segments, authLoaded, router]);
 
   if (!authLoaded) {
-    return (
-      <View
-        style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: isDark ? "#18181b" : "#ECECEC" }}
-      >
-        <ActivityIndicator size="large" color={isDark ? "#a1a1aa" : "#18181b"} />
-      </View>
-    );
+    return <SplashScreenComponent loading />;
   }
 
   return (
@@ -117,6 +108,7 @@ function RootLayoutNav() {
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(main)" options={{ headerShown: false }} />
       </Stack>
+      <CustomAlert />
     </ActionSheetProvider>
   );
 }
