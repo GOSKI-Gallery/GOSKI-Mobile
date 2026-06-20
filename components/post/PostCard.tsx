@@ -30,7 +30,6 @@ export default function PostCard({
     return (
       <ScrollView
         className="flex-1 w-full"
-        contentContainerStyle={{ paddingTop: 110 }}
         refreshControl={refreshControl}
       >
         {[1, 2, 3].map((key) => <PostSkeleton key={key} />)}
@@ -51,11 +50,11 @@ export default function PostCard({
   }
 
   return (
-    <ScrollView
-      className="flex-1"
-      contentContainerStyle={{ paddingTop: 110, paddingBottom: 100 }}
-      refreshControl={refreshControl}
-    >
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ paddingBottom: 100 }}
+        refreshControl={refreshControl}
+      >
       {posts.map((post) => (
         <SinglePost key={post.id} post={post} />
       ))}

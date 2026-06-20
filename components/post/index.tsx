@@ -38,7 +38,7 @@ export default function Post() {
   }, [fetchPosts, user, setInitialLikes, setInitialFollowing]);
 
   return (
-    <View className="flex-1">
+    <View className="flex-1" style={{ paddingTop: 110 }}>
       <PostCard
         isLoading={isLoading}
         refreshing={refreshing}

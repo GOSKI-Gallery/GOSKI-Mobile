@@ -70,7 +70,7 @@ export default function Profile({
 
   const ProfileHeader = () => (
     <View className='flex justify-center bg-white dark:bg-zinc-950'>
-      <View className="pt-32 px-4">
+      <View className="px-4">
         <View className="flex-col items-center gap-4 mb-6">
           <View className="w-32 h-32 rounded-full p-1 bg-zinc-200 dark:bg-zinc-700">
             <View className="w-full h-full rounded-full border-2 border-white dark:border-zinc-900 overflow-hidden bg-zinc-100 dark:bg-zinc-800 items-center justify-center">
@@ -150,7 +150,7 @@ export default function Profile({
   );
 
   return (
-    <>
+    <View className="flex-1" style={{ paddingTop: 110 }}>
       <UserPosts
         posts={userPosts}
         refreshing={refreshing}
@@ -161,6 +161,6 @@ export default function Profile({
         visible={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
       />
-    </>
+    </View>
   );
 }
