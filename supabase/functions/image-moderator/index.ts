@@ -31,7 +31,7 @@ serve(async (req) => {
       image: { source: { imageUri: imageUrl } },
       features: [
         { type: 'SAFE_SEARCH_DETECTION' },
-        { type: 'LABEL_DETECTION', maxResults: 5 } 
+        { type: 'LABEL_DETECTION', maxResults: 10 }
       ],
     });
 
@@ -45,44 +45,43 @@ serve(async (req) => {
 
     if (!safe) throw new Error("Google Vision não retornou dados de SafeSearch.")
 
-    const isUnsafe = 
-      safe.adult === 'LIKELY' || safe.adult === 'VERY_LIKELY' ||
-      safe.violence === 'LIKELY' || safe.violence === 'VERY_LIKELY';
+    const severityScore: Record<string, number> = {
+      'VERY_UNLIKELY': 1,
+      'UNLIKELY': 2,
+      'POSSIBLE': 3,
+      'LIKELY': 4,
+      'VERY_LIKELY': 5,
+    };
+
+    const categories = ['adult', 'violence', 'racy', 'medical'];
+    let maxScore = 0;
+    let moderationStatus = 'UNKNOWN';
+
+    for (const category of categories) {
+      const value = safe[category];
+      if (value && severityScore[value] !== undefined) {
+        const score = severityScore[value];
+        if (score > maxScore) {
+          maxScore = score;
+          moderationStatus = value;
+        }
+      }
+    }
+
+    const isExplicit = maxScore >= 4;
 
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      { db: { schema: 'laravel' } }
     )
 
-    if (isUnsafe) {
-      console.log(`[!] Conteúdo NSFW detectado no Post ${postId}. Iniciando expurgo...`);
-
-      if (filePath) {
-        const { error: storageError } = await supabaseAdmin
-          .storage
-          .from('posts')
-          .remove([filePath]);
-        
-        if (storageError) console.error("Erro ao deletar arquivo do Storage:", storageError.message);
-      }
-
-      await supabaseAdmin
-        .from('posts')
-        .update({ moderation_status: 'rejected', is_nsfw: true })
-        .eq('id', postId);
-
-      return new Response(JSON.stringify({ status: "expelled" }), { headers: { "Content-Type": "application/json" } });
-    }
-
-    await supabaseAdmin
-      .from('posts')
-      .update({ moderation_status: 'approved', is_nsfw: false })
-      .eq('id', postId)
-
     if (labels.length > 0) {
+      const now = new Date().toISOString();
+
       for (const label of labels) {
         const tagName = label.description.toLowerCase().trim();
-        const confidence = label.score; 
+        const confidence = label.score;
 
         const { data: tagData } = await supabaseAdmin
           .from('tags')
@@ -93,18 +92,53 @@ serve(async (req) => {
         if (tagData) {
           await supabaseAdmin
             .from('post_tag')
-            .insert({
-              post_id: postId,
-              tag_id: tagData.id,
-              confidence: confidence
-            });
+            .upsert(
+              {
+                post_id: postId,
+                tag_id: tagData.id,
+                confidence: confidence,
+                created_at: now,
+                updated_at: now,
+              },
+              { onConflict: 'post_id,tag_id' }
+            );
         }
       }
     }
 
-    console.log(`Post ${postId} moderado: approved`);
+    await supabaseAdmin
+      .from('posts')
+      .update({ moderation_status: moderationStatus, is_nsfw: isExplicit })
+      .eq('id', postId)
 
-    return new Response(JSON.stringify({ status: "success" }), { 
+    if (isExplicit) {
+      console.log(`[!] Conteúdo explícito detectado no Post ${postId} (${moderationStatus}). Removendo imagem...`);
+
+      if (filePath) {
+        const { error: storageError } = await supabaseAdmin
+          .storage
+          .from('posts')
+          .remove([filePath]);
+        
+        if (storageError) console.error("Erro ao deletar arquivo do Storage:", storageError.message);
+      }
+
+      return new Response(JSON.stringify({ status: "rejected", moderation_status: moderationStatus }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    if (moderationStatus === 'POSSIBLE') {
+      console.log(`[?] Conteúdo POSSIBLE no Post ${postId}. Encaminhando para revisão manual.`);
+
+      return new Response(JSON.stringify({ status: "pending_review", moderation_status: moderationStatus }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    console.log(`Post ${postId} moderado: ${moderationStatus}`);
+
+    return new Response(JSON.stringify({ status: "success", moderation_status: moderationStatus }), { 
       headers: { "Content-Type": "application/json" } 
     })
 
