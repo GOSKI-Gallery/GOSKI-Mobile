@@ -23,20 +23,25 @@ const mockPost = {
     },
   };
 
+const defaultProps = {
+  refreshing: false,
+  onRefresh: jest.fn(),
+};
+
 describe("PostCard", () => {
   it("renders loading state correctly", () => {
-    const { getAllByTestId } = render(<PostCard isLoading={true} posts={[]} />);
+    const { getAllByTestId } = render(<PostCard isLoading={true} posts={[]} {...defaultProps} />);
     expect(getAllByTestId("post-skeleton")).toHaveLength(3);
   });
 
   it("renders empty state correctly", () => {
-    const { getByText } = render(<PostCard isLoading={false} posts={[]} />);
+    const { getByText } = render(<PostCard isLoading={false} posts={[]} {...defaultProps} />);
     expect(getByText("Nenhum post registrado")).toBeTruthy();
   });
 
   it("renders posts correctly", () => {
     const posts = [mockPost, { ...mockPost, id: "2" }];
-    const { getAllByText } = render(<PostCard isLoading={false} posts={posts} />);
+    const { getAllByText } = render(<PostCard isLoading={false} posts={posts} {...defaultProps} />);
     expect(getAllByText("Test post description").length).toBe(2);
   });
 });

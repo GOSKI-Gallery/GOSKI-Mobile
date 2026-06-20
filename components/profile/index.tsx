@@ -36,6 +36,7 @@ export default function Profile({
   const isDark = useThemeStore((s) => s.isDark);
   const isFollowing = following[userId] || false;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -49,7 +50,13 @@ export default function Profile({
     }, [userId, fetchProfileData, clearProfile]),
   );
 
-  if (isLoading) {
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchProfileData(userId);
+    setRefreshing(false);
+  }, [userId, fetchProfileData]);
+
+  if (isLoading && !refreshing && !profileUser) {
     return (
       <View className="flex-1 items-center justify-center bg-white dark:bg-zinc-950">
         <ActivityIndicator testID="loading-indicator" size="large" color="#18181b" />
@@ -63,7 +70,7 @@ export default function Profile({
 
   const ProfileHeader = () => (
     <View className='flex justify-center bg-white dark:bg-zinc-950'>
-      <View className="pt-32 px-4">
+      <View className="px-4">
         <View className="flex-col items-center gap-4 mb-6">
           <View className="w-32 h-32 rounded-full p-1 bg-zinc-200 dark:bg-zinc-700">
             <View className="w-full h-full rounded-full border-2 border-white dark:border-zinc-900 overflow-hidden bg-zinc-100 dark:bg-zinc-800 items-center justify-center">
@@ -143,12 +150,17 @@ export default function Profile({
   );
 
   return (
-    <>
-      <UserPosts posts={userPosts} ListHeaderComponent={<ProfileHeader />} />
+    <View className="flex-1" style={{ paddingTop: 110 }}>
+      <UserPosts
+        posts={userPosts}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        ListHeaderComponent={<ProfileHeader />}
+      />
       <EditProfileModal
         visible={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
       />
-    </>
+    </View>
   );
 }
