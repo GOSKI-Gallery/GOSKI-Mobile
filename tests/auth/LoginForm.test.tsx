@@ -18,10 +18,17 @@ jest.mock('../../lib/supabase', () => ({
   supabase: {
     auth: {
       signInWithPassword: jest.fn(),
+      getSession: jest.fn().mockResolvedValue({ data: { session: null } }),
     },
     from: jest.fn(() => ({
       select: jest.fn(() => ({
         eq: jest.fn(() => ({
+          single: jest.fn(),
+          maybeSingle: jest.fn(),
+        })),
+      })),
+      insert: jest.fn(() => ({
+        select: jest.fn(() => ({
           single: jest.fn(),
         })),
       })),
@@ -59,6 +66,12 @@ describe('LoginForm', () => {
       select: jest.fn().mockReturnThis(),
       eq: jest.fn().mockReturnThis(),
       single: jest.fn().mockResolvedValue({ data: mockUserData, error: null }),
+      maybeSingle: jest.fn().mockResolvedValue({ data: mockUserData, error: null }),
+      insert: jest.fn(() => ({
+        select: jest.fn(() => ({
+          single: jest.fn().mockResolvedValue({ data: mockUserData, error: null }),
+        })),
+      })),
     });
 
     const { getByPlaceholderText, getByText } = render(<LoginForm />);

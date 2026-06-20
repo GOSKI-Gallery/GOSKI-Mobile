@@ -6,6 +6,7 @@ jest.mock('../../lib/supabase', () => ({
   supabase: {
     from: jest.fn(),
   },
+  ensureProfile: jest.fn().mockResolvedValue(undefined),
 }));
 
 jest.spyOn(Alert, 'alert');
