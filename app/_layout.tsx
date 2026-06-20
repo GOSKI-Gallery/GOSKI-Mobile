@@ -2,6 +2,7 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import React from "react";
+import { View } from "react-native";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import "../global.css";
 import { supabase } from "../lib/supabase";
@@ -96,19 +97,21 @@ function RootLayoutNav() {
 
   return (
     <ActionSheetProvider>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: {
-            backgroundColor: isDark ? "#18181b" : "#ECECEC",
-            flex: 1,
-          },
-        }}
-      >
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(main)" options={{ headerShown: false }} />
-      </Stack>
-      <CustomAlert />
+      <View className="flex-1">
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: {
+              backgroundColor: isDark ? "#18181b" : "#ECECEC",
+              flex: 1,
+            },
+          }}
+        >
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(main)" options={{ headerShown: false }} />
+        </Stack>
+        <CustomAlert />
+      </View>
     </ActionSheetProvider>
   );
 }
