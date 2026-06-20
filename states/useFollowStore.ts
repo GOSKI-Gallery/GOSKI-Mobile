@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { supabase } from "../lib/supabase";
+import { supabase, ensureProfile } from "../lib/supabase";
 import { Alert } from "react-native";
 
 interface FollowState {
@@ -50,6 +50,7 @@ export const useFollowStore = create<FollowState>((set, get) => ({
 
         if (error) throw error;
       } else {
+        await ensureProfile(followerId);
         const { error } = await supabase
           .from("follows")
           .insert({ follower_id: followerId, followed_id: followedId, created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
