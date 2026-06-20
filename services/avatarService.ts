@@ -27,10 +27,11 @@ const uploadAvatar = async (userId: string, imageUri: string) => {
       .from('users')
       .update({
         profile_photo_url: publicUrl,
+        updated_at: new Date().toISOString(),
       })
       .eq('id', userId)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
     return data;

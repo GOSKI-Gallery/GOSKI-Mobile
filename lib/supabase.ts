@@ -25,6 +25,26 @@ export const supabase = createClient(supabaseUrl || "", supabaseAnonKey || "", {
   },
 })
 
+export async function ensureProfile(userId: string) {
+  const { data: sessionData } = await supabase.auth.getSession()
+  const user = sessionData?.session?.user
+  if (!user) return
+
+  const meta = user.user_metadata || {}
+  const email = user.email || meta.email || `user_${userId.slice(0, 8)}`
+  const username = meta.username || email.split('@')[0]
+
+  const { error } = await supabase.from('users').insert({
+    id: userId,
+    username,
+    email,
+    updated_at: new Date().toISOString(),
+  })
+  if (error && error.code !== '23505') {
+    console.warn('[ensureProfile] insert error (RLS?):', error)
+  }
+}
+
 // Tells Supabase Auth to continuously refresh the session automatically
 // if the app is in the foreground. When this is added, you will continue
 // to receive `onAuthStateChange` events with the `TOKEN_REFRESHED` or

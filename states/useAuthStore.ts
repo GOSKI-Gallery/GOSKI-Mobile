@@ -43,20 +43,14 @@ export const useAuthStore = create<AuthState>()(
                 const { user } = get();
                 if (!user?.id) return;
 
-                try {
-                    const { data: updatedUserData, error } = await supabase
-                        .from('users')
-                        .select('id, email, username, profile_photo_url')
-                        .eq('id', user.id)
-                        .single();
+                const { data: updatedUserData } = await supabase
+                    .from('users')
+                    .select('id, email, username, profile_photo_url')
+                    .eq('id', user.id)
+                    .maybeSingle();
 
-                    if (error) throw error;
-                    
-                    if (updatedUserData) {
-                        set((state) => ({ ...state, user: updatedUserData }));
-                    }
-                } catch (error) {
-                    console.error('Error refreshing user data:', error);
+                if (updatedUserData) {
+                    set((state) => ({ ...state, user: updatedUserData }));
                 }
             },
         }),
@@ -64,23 +58,20 @@ export const useAuthStore = create<AuthState>()(
             name: 'goski-auth-storage',
             storage: createJSONStorage(() => AsyncStorage),
             onRehydrateStorage: (state) => {
-                return (rehydratedState, error) => {
+                return async (rehydratedState, error) => {
                     if (error) {
                         console.error('Failed to rehydrate auth store:', error);
                         return;
                     }
-                    const refreshSession = async () => {
+                    try {
                         const { data: { session } } = await supabase.auth.getSession();
                         if (session) {
-                            const { data: userData, error: userError } = await supabase
+                            const { data: userData } = await supabase
                                 .from('users')
                                 .select('*')
                                 .eq('id', session.user.id)
-                                .single();
-                            if (userError) {
-                                console.error('Error refreshing user data, signing out', userError);
-                                rehydratedState?.signOut();
-                            } else {
+                                .maybeSingle();
+                            if (userData) {
                                 rehydratedState?.setAuth(
                                     {
                                         id: userData.id,
@@ -90,12 +81,37 @@ export const useAuthStore = create<AuthState>()(
                                     },
                                     session.access_token
                                 );
+                            } else {
+                                const now = new Date().toISOString();
+                                const username = session.user.user_metadata?.username || session.user.email?.split('@')[0] || 'user';
+                                await supabase.from('users').upsert({
+                                    id: session.user.id,
+                                    username,
+                                    email: session.user.email,
+                                    created_at: now,
+                                    updated_at: now,
+                                });
+                                rehydratedState?.setAuth(
+                                    {
+                                        id: session.user.id,
+                                        email: session.user.email,
+                                        username,
+                                    },
+                                    session.access_token
+                                );
                             }
                         } else {
-                           rehydratedState?.clearAuth();
+                            rehydratedState?.clearAuth();
                         }
-                    };
-                    refreshSession();
+                    } catch (err) {
+                        console.error('Session refresh failed:', err);
+                        rehydratedState?.clearAuth();
+                        await AsyncStorage.multiRemove([
+                            'supabase.auth.token',
+                            'supabase.auth.token-code-verifier',
+                            'supabase.auth.token-user',
+                        ]);
+                    }
                 };
             },
         }
