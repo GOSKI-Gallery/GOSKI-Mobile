@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { colorScheme } from "react-native-css-interop";
-import { systemColorScheme } from "react-native-css-interop/dist/runtime/native/appearance-observables";
+import { colorScheme } from "nativewind";
 
 interface ThemeState {
   isDark: boolean;
@@ -11,7 +10,6 @@ interface ThemeState {
 
 function applyColorScheme(value: "light" | "dark") {
   colorScheme.set(value);
-  systemColorScheme.set(value);
 }
 
 export const useThemeStore = create<ThemeState>()(
