@@ -7,13 +7,16 @@ import { useAuthStore } from "../../states/useAuthStore";
 import { useFollowStore } from "../../states/useFollowStore";
 
 export default function Post() {
+  console.log("[Post] Componente montou");
   const { posts, isLoading, fetchPosts } = usePostStore();
   const setInitialLikes = useLikeStore((state) => state.setInitialLikes);
   const setInitialFollowing = useFollowStore((state) => state.setInitialFollowing);
   const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
+    console.log("[Post] useEffect rodou");
     fetchPosts().then(() => {
+      console.log("[Post] fetchPosts concluiu");
       const allPosts = usePostStore.getState().posts;
       if (user) {
         setInitialLikes(allPosts, user.id);

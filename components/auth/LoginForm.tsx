@@ -29,26 +29,44 @@ export default function LoginForm() {
     }
 
     if (authData.session && authData.user) {
-      const { data: userData, error: userError } = await supabase
+      let { data: userData } = await supabase
         .from("users")
         .select("*")
         .eq("id", authData.user.id)
-        .single();
+        .maybeSingle();
 
-      if (userError) {
-        Alert.alert("Error fetching user data", userError.message);
-      } else if (userData) {
-        setAuth(
-          {
-            id: userData.id,
-            email: userData.email,
-            username: userData.username,
-            profile_photo_url: userData.profile_photo_url,
-          },
-          authData.session.access_token
-        );
-        router.replace("/(main)");
+      if (!userData) {
+        const now = new Date().toISOString();
+        const { data: newUser, error: insertError } = await supabase
+          .from("users")
+          .insert({
+            id: authData.user.id,
+            username: authData.user.user_metadata?.username || authData.user.email?.split('@')[0] || 'user',
+            email: authData.user.email,
+            created_at: now,
+            updated_at: now,
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          Alert.alert("Erro ao criar perfil", insertError.message);
+          setLoading(false);
+          return;
+        }
+        userData = newUser;
       }
+
+      setAuth(
+        {
+          id: userData.id,
+          email: userData.email,
+          username: userData.username,
+          profile_photo_url: userData.profile_photo_url,
+        },
+        authData.session.access_token
+      );
+      router.replace("/(main)");
     } else {
       Alert.alert(
         "Erro de Login",

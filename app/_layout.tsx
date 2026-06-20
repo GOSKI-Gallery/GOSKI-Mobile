@@ -45,6 +45,20 @@ function RootLayoutNav() {
   const isDark = useThemeStore((state) => state.isDark);
 
   useEffect(() => {
+    let mounted = true;
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      if (session) {
+        setAuth(session.user, session.access_token);
+      }
+      setAuthLoaded(true);
+    }).catch(() => {
+      if (!mounted) return;
+      clearAuth();
+      setAuthLoaded(true);
+    });
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -61,7 +75,10 @@ function RootLayoutNav() {
       setAuthLoaded(true);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [setAuth, clearAuth]);
 
   useEffect(() => {

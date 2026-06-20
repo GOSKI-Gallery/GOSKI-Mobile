@@ -36,16 +36,31 @@ export default function RegisterForm() {
 
       if (authError) throw authError;
 
-      if (authData.user && authData.session) {
-        setAuth(
-          {
-            id: authData.user.id,
-            email: authData.user.email,
-            username: authData.user.user_metadata.username,
-          },
-          authData.session.access_token
-        );
-        router.replace("/(main)");
+      if (authData.user) {
+        const now = new Date().toISOString();
+        const { error: profileError } = await supabase.from('users').insert({
+          id: authData.user.id,
+          username: username.trim(),
+          email: email.trim(),
+          created_at: now,
+          updated_at: now,
+        });
+
+        if (profileError && profileError.code !== '23505') throw profileError;
+
+        if (authData.session) {
+          setAuth(
+            {
+              id: authData.user.id,
+              email: authData.user.email,
+              username: username.trim(),
+            },
+            authData.session.access_token
+          );
+          router.replace("/(main)");
+        } else {
+          Alert.alert("Verifique seu email", "Enviamos um link de confirmação para seu email.");
+        }
       } else {
         throw new Error("Não foi possível registrar o usuário.");
       }

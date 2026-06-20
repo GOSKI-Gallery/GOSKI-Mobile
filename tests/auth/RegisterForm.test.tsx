@@ -14,6 +14,9 @@ jest.mock('../../lib/supabase', () => ({
     auth: {
       signUp: jest.fn(),
     },
+    from: jest.fn(() => ({
+      insert: jest.fn().mockResolvedValue({ error: null }),
+    })),
   },
 }));
 

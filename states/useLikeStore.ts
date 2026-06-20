@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { supabase } from "../lib/supabase";
+import { supabase, ensureProfile } from "../lib/supabase";
 import { Alert } from "react-native";
 
 interface LikeState {
@@ -48,6 +48,7 @@ export const useLikeStore = create<LikeState>((set, get) => ({
 
     try {
       if (!isLiked) {
+        await ensureProfile(userId);
         const { error } = await supabase
           .from("likes")
           .insert({ post_id: postId, user_id: userId, created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
