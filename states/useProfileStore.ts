@@ -35,9 +35,9 @@ export const useProfileStore = create<ProfileState>((set) => ({
 
       const { data: posts, error: postsError } = await supabase
         .from('posts')
-        .select('*, users (id, username, profile_photo_url)')
+        .select('*')
         .eq('user_id', userId)
-        .eq('moderation_status', 'approved')
+        .or("moderation_status.is.null,moderation_status.in.(UNKNOWN,VERY_UNLIKELY,UNLIKELY)")
         .order('created_at', { ascending: false });
       if (postsError) throw postsError;
 

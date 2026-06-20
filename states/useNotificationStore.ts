@@ -36,7 +36,7 @@ export const useNotificationStore = create<NotificationStore>()(
       fetchNotifications: async (userId) => {
         const { data: follows, error: followsError } = await supabase
           .from("follows")
-          .select("*, follower:users!follows_follower_id_foreign(*)")
+          .select("*")
           .eq("followed_id", userId);
 
         if (followsError) {
@@ -44,29 +44,45 @@ export const useNotificationStore = create<NotificationStore>()(
           return;
         }
 
-        const { data: likes, error: likesError } = await supabase
-          .from("likes")
-          .select("*, user:users!inner(*), post:posts!inner(*)")
-          .eq("post.user_id", userId)
-          .neq("user_id", userId);
+        const followerIds = [...new Set((follows || []).map((f: any) => f.follower_id))];
+        const { data: followersData } = followerIds.length > 0
+          ? await supabase.from("users").select("id, username, profile_photo_url").in("id", followerIds)
+          : { data: [] };
+        const followersMap = new Map((followersData || []).map((u: any) => [u.id, u]));
 
-        if (likesError) {
-          console.error("Error fetching likes:", likesError);
-          return;
+        const { data: userPosts } = await supabase
+          .from("posts")
+          .select("id")
+          .eq("user_id", userId);
+        const userPostIds = (userPosts || []).map((p: any) => p.id);
+
+        let likes: any[] = [];
+        if (userPostIds.length > 0) {
+          const { data } = await supabase
+            .from("likes")
+            .select("*")
+            .in("post_id", userPostIds);
+          likes = (data || []).filter((l: any) => l.user_id !== userId);
         }
+
+        const likeUserIds = [...new Set(likes.map((l: any) => l.user_id))];
+        const { data: likesUsersData } = likeUserIds.length > 0
+          ? await supabase.from("users").select("id, username, profile_photo_url").in("id", likeUserIds)
+          : { data: [] };
+        const likesUsersMap = new Map((likesUsersData || []).map((u: any) => [u.id, u]));
 
         const followNotifications: Notification[] = (follows || []).map((follow: any) => ({
           id: `follow_${follow.id}`,
           type: "follow",
-          user: follow.follower,
+          user: followersMap.get(follow.follower_id) || { id: follow.follower_id, username: "Usuário", profile_photo_url: "" },
           created_at: follow.created_at,
           is_read: false,
         }));
 
-        const likeNotifications: Notification[] = (likes || []).map((like: any) => ({
+        const likeNotifications: Notification[] = likes.map((like: any) => ({
           id: `like_${like.id}`,
           type: "like",
-          user: like.user,
+          user: likesUsersMap.get(like.user_id) || { id: like.user_id, username: "Usuário", profile_photo_url: "" },
           post_id: like.post_id,
           created_at: like.created_at,
           is_read: false,
