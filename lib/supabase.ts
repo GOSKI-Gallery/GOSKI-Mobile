@@ -10,7 +10,10 @@ function createNoopClient() {
   return createClient(
     "https://placeholder.supabase.co",
     "placeholder-anon-key",
-    { auth: { storage: AsyncStorage, autoRefreshToken: true, persistSession: true, detectSessionInUrl: false } }
+    {
+      auth: { storage: AsyncStorage, autoRefreshToken: true, persistSession: true, detectSessionInUrl: false },
+      db: { schema: 'laravel' },
+    }
   );
 }
 
