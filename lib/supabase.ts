@@ -6,24 +6,34 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error(
-    "[Supabase] ERRO: EXPO_PUBLIC_SUPABASE_URL ou EXPO_PUBLIC_SUPABASE_ANON_KEY não definidos.",
-    { url: supabaseUrl ? `${supabaseUrl.slice(0, 20)}...` : "undefined", keyDefined: !!supabaseAnonKey }
+function createNoopClient() {
+  return createClient(
+    "https://placeholder.supabase.co",
+    "placeholder-anon-key",
+    { auth: { storage: AsyncStorage, autoRefreshToken: true, persistSession: true, detectSessionInUrl: false } }
   );
 }
 
-export const supabase = createClient(supabaseUrl || "", supabaseAnonKey || "", {
-  auth: {
-    storage: AsyncStorage,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false,
-  },
-  db: {
-    schema: 'laravel',
-  },
-})
+export const supabase = (() => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error(
+      "[Supabase] ERRO: EXPO_PUBLIC_SUPABASE_URL ou EXPO_PUBLIC_SUPABASE_ANON_KEY não definidos.",
+      { url: supabaseUrl ? `${supabaseUrl.slice(0, 20)}...` : "undefined", keyDefined: !!supabaseAnonKey }
+    );
+    return createNoopClient();
+  }
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      storage: AsyncStorage,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
+    db: {
+      schema: 'laravel',
+    },
+  });
+})()
 
 export async function ensureProfile(userId: string) {
   const { data: sessionData } = await supabase.auth.getSession()
