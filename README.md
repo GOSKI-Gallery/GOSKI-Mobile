@@ -57,7 +57,7 @@ Cronograma estimado para o desenvolvimento do MVP (Minimum Viable Product) focad
 | **Sprint 5** | **Social Engine:** Lógica de Likes, Follows. | 1 semanas | ✅ |
 | **Sprint 6** | **Engajamento:** Sistema de Notificações de interações entre usuários. | 1 semanas | ✅ |
 | **Sprint 7** | **Inteligência:** Sistema de Recomendação baseado nas Tags da IA. | 2 semanas | ✅ |
-| **Sprint 8** | **Finalização:** Refinamento de UI/UX, Testes e Documentação. | 1 semana | 📅 |
+| **Sprint 8** | **Finalização:** Refinamento de UI/UX, Testes e Documentação. | 1 semana | ✅ |
 
 ---
 
