@@ -22,6 +22,7 @@ export const supabase = (() => {
     );
     return createNoopClient();
   }
+  console.log("[Supabase] Cliente inicializado com URL:", supabaseUrl.slice(0, 30) + "...");
   return createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       storage: AsyncStorage,
