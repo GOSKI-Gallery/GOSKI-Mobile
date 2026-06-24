@@ -1,8 +1,9 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Alert, View } from "react-native";
+import { View } from "react-native";
 import { supabase } from "../../lib/supabase";
 import { useAuthStore } from "../../states/useAuthStore";
+import { useAlertStore } from "../../states/useAlertStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import StyledTextInput from "../ui/StyledTextInput";
 import { EmailIcon, LockIcon, UserIcon } from "../ui/Icons";
@@ -18,7 +19,7 @@ export default function RegisterForm() {
 
   const handleRegister = async () => {
     if (!username.trim() || !email.trim() || !password.trim()) {
-      Alert.alert("Por favor, preencha todos os campos.");
+      useAlertStore.getState().showAlert({ title: "Aviso", message: "Por favor, preencha todos os campos." });
       return;
     }
 
@@ -46,7 +47,9 @@ export default function RegisterForm() {
           updated_at: now,
         });
 
-        if (profileError && profileError.code !== '23505') throw profileError;
+        if (profileError) {
+          console.warn('[Register] Profile insert error (RLS?):', profileError.message);
+        }
 
         if (authData.session) {
           setAuth(
@@ -59,16 +62,16 @@ export default function RegisterForm() {
           );
           router.replace("/(main)");
         } else {
-          Alert.alert("Verifique seu email", "Enviamos um link de confirmação para seu email.");
+          useAlertStore.getState().showAlert({ title: "Verifique seu email", message: "Enviamos um link de confirmação para seu email." });
         }
       } else {
         throw new Error("Não foi possível registrar o usuário.");
       }
     } catch (error: any) {
-      Alert.alert(
-        "Erro no registro",
-        error.message || "Ocorreu um erro inesperado."
-      );
+      useAlertStore.getState().showAlert({
+        title: "Erro no registro",
+        message: error.message || "Ocorreu um erro inesperado."
+      });
     } finally {
       setLoading(false);
     }
