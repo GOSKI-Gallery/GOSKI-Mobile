@@ -1,7 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Alert,
   Dimensions,
   KeyboardAvoidingView,
   Platform,
@@ -13,12 +12,14 @@ import Modal from "react-native-modal";
 import { supabase } from "../../lib/supabase";
 import uploadAvatar from "../../services/avatarService";
 import { useAuthStore } from "../../states/useAuthStore";
+import { useAlertStore } from "../../states/useAlertStore";
 import { useEditProfileStore } from "../../states/useEditProfileStore";
 import { useProfileStore } from "../../states/useProfileStore";
 import { useModalStore } from "../../states/useModalStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import StyledTextInput from "../ui/StyledTextInput";
 import UploadButton from "../ui/UploadButton";
+import ImageCropper from "../ui/ImageCropper";
 import { EmailIcon, LockIcon, UserIcon } from "../ui/Icons";
 
 const { height } = Dimensions.get("window");
@@ -45,16 +46,16 @@ const EditProfileModal = ({
     reset,
   } = useEditProfileStore();
 
+  const [pickedImageUri, setPickedImageUri] = useState<string | null>(null);
+
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
       quality: 0.8,
     });
 
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+      setPickedImageUri(result.assets[0].uri);
     }
   };
 
@@ -107,37 +108,47 @@ const EditProfileModal = ({
 
       handleClose();
     } catch (error: any) {
-      Alert.alert(
-        "Erro ao atualizar",
-        error.message || "Ocorreu um erro inesperado.",
-      );
+      useAlertStore.getState().showAlert({
+        title: "Erro ao atualizar",
+        message: error.message || "Ocorreu um erro inesperado.",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal
-      isVisible={visible}
-      onBackdropPress={handleClose}
-      onSwipeComplete={handleClose}
-      onModalHide={clearAnimating}
-      swipeDirection="down"
-      style={{ margin: 0, justifyContent: "flex-end" }}
-      backdropOpacity={0.2}
-      animationInTiming={200}
-      animationOutTiming={200}
-      hideModalContentWhileAnimating
-      avoidKeyboard
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ justifyContent: "flex-end" }}
+    <>
+      <ImageCropper
+        visible={!!pickedImageUri}
+        imageUri={pickedImageUri || ''}
+        onCrop={(uri) => {
+          setImageUri(uri);
+          setPickedImageUri(null);
+        }}
+        onCancel={() => setPickedImageUri(null)}
+      />
+      <Modal
+        isVisible={visible}
+        onBackdropPress={handleClose}
+        onSwipeComplete={handleClose}
+        onModalHide={clearAnimating}
+        swipeDirection="down"
+        style={{ margin: 0, justifyContent: "flex-end" }}
+        backdropOpacity={0.2}
+        animationInTiming={200}
+        animationOutTiming={200}
+        hideModalContentWhileAnimating
+        avoidKeyboard
       >
-        <View
-          className="bg-white dark:bg-zinc-900 rounded-t-[35px] p-6 shadow-2xl space-y-6"
-          style={{ height: height * 0.85 }}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ justifyContent: "flex-end" }}
         >
+          <View
+            className="bg-white dark:bg-zinc-900 rounded-t-[35px] p-6 shadow-2xl space-y-6"
+            style={{ height: height * 0.85 }}
+          >
           <View className="items-center">
             <View className="w-10 h-1.5 bg-zinc-200 rounded-full" />
             <Text className="text-zinc-900 dark:text-white text-xl font-bold mt-6">
@@ -188,6 +199,7 @@ const EditProfileModal = ({
         </View>
       </KeyboardAvoidingView>
     </Modal>
+    </>
   );
 };
 export default EditProfileModal;
