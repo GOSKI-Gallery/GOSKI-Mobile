@@ -22,7 +22,7 @@ const UploadButton: React.FC<UploadButtonProps> = ({
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      className={`w-full aspect-square bg-zinc-50 dark:bg-zinc-800 rounded-3xl border border-dashed border-zinc-200 dark:border-zinc-600 items-center justify-center overflow-hidden ${className}`}
+      className={`w-full aspect-square bg-zinc-50 dark:bg-zinc-900 rounded-xl border-2 border-dashed border-zinc-200 dark:border-zinc-700 items-center justify-center overflow-hidden ${className}`}
       {...props}
     >
       {imageUri ? (

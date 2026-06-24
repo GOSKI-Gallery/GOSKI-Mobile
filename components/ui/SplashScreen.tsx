@@ -12,7 +12,7 @@ export default function SplashScreen({ loading = false }: SplashScreenProps) {
   return (
     <View
       className="flex-1 items-center justify-center"
-      style={{ backgroundColor: isDark ? "#18181b" : "#ECECEC" }}
+      style={{ backgroundColor: isDark ? "#27272a" : "#FAFAFA" }}
     >
       <Image
         source={require("../../assets/icon.png")}

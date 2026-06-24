@@ -14,7 +14,7 @@ export default function ScreenWrapper({
   return (
     <View
       className={`flex-1 ${className}`}
-      style={{ backgroundColor: isDark ? "#18181b" : "#ECECEC" }}
+      style={{ backgroundColor: isDark ? "#27272a" : "#FAFAFA" }}
     >
       {children}
     </View>

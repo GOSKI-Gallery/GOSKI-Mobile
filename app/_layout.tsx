@@ -102,7 +102,7 @@ function RootLayoutNav() {
           screenOptions={{
             headerShown: false,
             contentStyle: {
-              backgroundColor: isDark ? "#18181b" : "#ECECEC",
+                backgroundColor: isDark ? "#27272a" : "#FAFAFA",
               flex: 1,
             },
           }}

@@ -25,19 +25,17 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   const isSolid = variant === "solid";
 
   const buttonClasses = isSolid
-    ? "bg-zinc-900 dark:bg-zinc-200 border-zinc-900 dark:border-zinc-200"
-    : "bg-transparent border-zinc-900 dark:border-zinc-200";
+    ? "bg-zinc-900 dark:bg-zinc-950 border-zinc-900 dark:border-zinc-700"
+    : "bg-transparent border-zinc-900 dark:border-zinc-700";
 
   const textClasses = isSolid
-    ? "text-white dark:text-zinc-900"
+    ? "text-white"
     : "text-zinc-900 dark:text-zinc-200";
 
   const isButtonDisabled = disabled || loading;
 
   const indicatorColor = isSolid
-    ? isDark
-      ? "#18181b"
-      : "white"
+    ? "#ffffff"
     : isDark
       ? "#f4f4f5"
       : "#18181b";

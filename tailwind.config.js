@@ -13,6 +13,10 @@ module.exports = {
       fontFamily: {
         krona: ["KronaOne-Regular"],
       },
+      borderRadius: {
+        xl: '1rem',
+        '2xl': '1.5rem',
+      },
     },
   },
   plugins: [],
