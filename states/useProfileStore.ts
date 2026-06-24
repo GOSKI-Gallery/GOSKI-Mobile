@@ -38,7 +38,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
         .from('posts')
         .select('*')
         .eq('user_id', userId)
-        .or("moderation_status.is.null,moderation_status.in.(pending,UNKNOWN,VERY_UNLIKELY,UNLIKELY,POSSIBLE)")
+        .or("moderation_status.is.null,moderation_status.in.(UNKNOWN,VERY_UNLIKELY,UNLIKELY)")
         .order('created_at', { ascending: false });
       if (postsError) throw postsError;
 
