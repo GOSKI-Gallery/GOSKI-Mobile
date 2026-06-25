@@ -28,9 +28,8 @@ export const useThemeStore = create<ThemeState>()(
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => {
         return (state) => {
-          if (state) {
-            applyColorScheme(state.isDark ? "dark" : "light");
-          }
+          const isDark = typeof state?.isDark === "boolean" ? state.isDark : false;
+          applyColorScheme(isDark ? "dark" : "light");
         };
       },
     },
