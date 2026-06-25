@@ -15,7 +15,7 @@ function applyColorScheme(value: "light" | "dark") {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      isDark: false,
+      isDark: colorScheme.get() === "dark",
       toggleTheme: () =>
         set((state) => {
           const newIsDark = !state.isDark;
