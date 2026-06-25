@@ -20,7 +20,7 @@ function createNoopClient() {
 export const supabase = (() => {
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error(
-      "[Supabase] ERRO: EXPO_PUBLIC_SUPABASE_URL ou EXPO_PUBLIC_SUPABASE_ANON_KEY não definidos.",
+      "[Supabase] ERROR: EXPO_PUBLIC_SUPABASE_URL or EXPO_PUBLIC_SUPABASE_ANON_KEY not defined.",
       { url: supabaseUrl ? `${supabaseUrl.slice(0, 20)}...` : "undefined", keyDefined: !!supabaseAnonKey }
     );
     return createNoopClient();
