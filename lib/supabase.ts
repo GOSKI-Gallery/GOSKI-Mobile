@@ -54,6 +54,9 @@ export async function ensureProfile(userId: string) {
     email,
     updated_at: new Date().toISOString(),
   })
+  // Ignore PostgreSQL 23505 (unique_violation): this can happen when the profile
+  // row already exists (e.g., retried sign-in / repeated ensureProfile call).
+  // In this flow, duplicate-key means "already provisioned", which is acceptable.
   if (error && error.code !== '23505') {
     console.warn('[ensureProfile] insert error (RLS?):', error)
   }
