@@ -18,11 +18,10 @@ export const usePostStore = create<PostStore>((set) => ({
     try {
       const user = useAuthStore.getState().user;
 
-      console.log("[Feed] Buscando posts (schema laravel)...");
       const { data: postsData, error: postsError } = await supabase
         .from("posts")
         .select("*")
-        .or("moderation_status.is.null,moderation_status.in.(pending,UNKNOWN,VERY_UNLIKELY,UNLIKELY,POSSIBLE)")
+        .or("moderation_status.is.null,moderation_status.in.(UNKNOWN,VERY_UNLIKELY,UNLIKELY)")
         .order("created_at", { ascending: false });
 
       if (postsError) {
@@ -132,7 +131,6 @@ export const usePostStore = create<PostStore>((set) => ({
         });
       }
 
-      console.log(`[Feed] Posts finais: ${posts.length}`);
       set({ posts });
     } catch (error) {
       console.error("[Feed] Erro no catch:", error);

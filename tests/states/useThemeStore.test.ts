@@ -1,9 +1,5 @@
-jest.mock('react-native-css-interop', () => ({
-  colorScheme: { set: jest.fn() },
-}));
-
-jest.mock('react-native-css-interop/dist/runtime/native/appearance-observables', () => ({
-  systemColorScheme: { set: jest.fn() },
+jest.mock('nativewind', () => ({
+  colorScheme: { get: jest.fn().mockReturnValue('light'), set: jest.fn() },
 }));
 
 import { useThemeStore } from '../../states/useThemeStore';

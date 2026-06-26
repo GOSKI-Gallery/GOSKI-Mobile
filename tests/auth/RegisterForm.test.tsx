@@ -3,7 +3,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import RegisterForm from '../../components/auth/RegisterForm';
 import { supabase } from '../../lib/supabase';
 import { useRouter } from 'expo-router';
-import { Alert } from 'react-native';
+import { useAlertStore } from '../../states/useAlertStore';
 
 jest.mock('expo-router', () => ({
   useRouter: jest.fn(),
@@ -25,8 +25,6 @@ jest.mock('../../states/useAuthStore', () => ({
   useAuthStore: (selector: any) => selector({ setAuth: mockSetAuth }),
 }));
 
-jest.spyOn(Alert, 'alert');
-
 describe('RegisterForm', () => {
   const mockReplace = jest.fn();
 
@@ -36,12 +34,15 @@ describe('RegisterForm', () => {
   });
 
   it('should show an alert if trying to register with empty fields', () => {
+    const showAlertSpy = jest.spyOn(useAlertStore.getState(), 'showAlert');
     const { getByText } = render(<RegisterForm />);
     
     const button = getByText('Registrar');
     fireEvent.press(button);
 
-    expect(Alert.alert).toHaveBeenCalledWith("Por favor, preencha todos os campos.");
+    expect(showAlertSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ message: "Por favor, preencha todos os campos." })
+    );
   });
 
   it('should register successfully and redirect to home', async () => {

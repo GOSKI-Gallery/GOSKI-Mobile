@@ -27,7 +27,7 @@ export default function CustomAlert() {
       useNativeDriver
     >
       <View
-        className={`rounded-2xl p-6 mx-4 ${isDark ? "bg-zinc-900" : "bg-white"}`}
+        className={`rounded-2xl p-6 mx-4 border border-zinc-200 dark:border-zinc-700 ${isDark ? "bg-zinc-950" : "bg-white"}`}
       >
         <Text
           className={`text-lg font-bold text-center mb-2 ${isDark ? "text-white" : "text-zinc-900"}`}

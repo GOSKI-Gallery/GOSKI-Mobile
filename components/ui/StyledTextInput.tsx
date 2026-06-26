@@ -26,7 +26,7 @@ const StyledTextInput: React.FC<styledTextInputProps> = ({
       : icon;
 
   return (
-    <View className="flex-row items-center bg-zinc-200 dark:bg-zinc-800 rounded-xl w-full px-4 h-14">
+    <View className="flex-row items-center bg-white dark:bg-zinc-900 rounded-xl w-full px-4 h-14 border border-zinc-200 dark:border-zinc-700">
       {themedIcon && <View className="mr-3 opacity-30">{themedIcon}</View>}
       <TextInput
         placeholderTextColor="#a1a1aa"

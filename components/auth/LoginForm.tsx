@@ -1,8 +1,9 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Alert, View } from "react-native";
+import { View } from "react-native";
 import { supabase } from "../../lib/supabase";
 import { useAuthStore } from "../../states/useAuthStore";
+import { useAlertStore } from "../../states/useAlertStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import StyledTextInput from "../ui/StyledTextInput";
 import { EmailIcon, LockIcon } from "../ui/Icons";
@@ -23,7 +24,7 @@ export default function LoginForm() {
     });
 
     if (authError) {
-      Alert.alert(authError.message);
+      useAlertStore.getState().showAlert({ title: 'Erro', message: authError.message });
       setLoading(false);
       return;
     }
@@ -50,11 +51,16 @@ export default function LoginForm() {
           .single();
 
         if (insertError) {
-          Alert.alert("Erro ao criar perfil", insertError.message);
-          setLoading(false);
-          return;
+          console.warn('[Login] Profile insert error (RLS?):', insertError.message);
+          userData = {
+            id: authData.user.id,
+            username: authData.user.user_metadata?.username || authData.user.email?.split('@')[0] || 'user',
+            email: authData.user.email,
+            profile_photo_url: null,
+          };
+        } else {
+          userData = newUser;
         }
-        userData = newUser;
       }
 
       setAuth(
@@ -68,10 +74,10 @@ export default function LoginForm() {
       );
       router.replace("/(main)");
     } else {
-      Alert.alert(
-        "Erro de Login",
-        "Não foi possível obter os dados do usuário."
-      );
+      useAlertStore.getState().showAlert({
+        title: "Erro de Login",
+        message: "Não foi possível obter os dados do usuário."
+      });
     }
     setLoading(false);
   }

@@ -59,7 +59,7 @@ export default function Profile({
   if (isLoading && !refreshing && !profileUser) {
     return (
       <View className="flex-1 items-center justify-center bg-white dark:bg-zinc-950">
-        <ActivityIndicator testID="loading-indicator" size="large" color="#18181b" />
+        <ActivityIndicator testID="loading-indicator" size="large" color={isDark ? "#a1a1aa" : "#18181b"} />
       </View>
     );
   }

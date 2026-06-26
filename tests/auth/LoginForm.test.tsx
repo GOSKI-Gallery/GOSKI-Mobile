@@ -3,7 +3,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import LoginForm from '../../components/auth/LoginForm';
 import { supabase } from '../../lib/supabase';
 import { useRouter } from 'expo-router';
-import { Alert } from 'react-native';
+import { useAlertStore } from '../../states/useAlertStore';
 
 jest.mock('expo-router', () => ({
   useRouter: jest.fn(),
@@ -35,8 +35,6 @@ jest.mock('../../lib/supabase', () => ({
     })),
   },
 }));
-
-jest.spyOn(Alert, 'alert');
 
 describe('LoginForm', () => {
   const mockReplace = jest.fn();
@@ -94,6 +92,8 @@ describe('LoginForm', () => {
   });
 
   it('should show an alert for invalid credentials', async () => {
+    const showAlertSpy = jest.spyOn(useAlertStore.getState(), 'showAlert');
+
     (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValue({
       data: { user: null, session: null },
       error: { message: 'Invalid login credentials' },
@@ -106,7 +106,9 @@ describe('LoginForm', () => {
     fireEvent.press(getByText('Entrar'));
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith('Invalid login credentials');
+      expect(showAlertSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Invalid login credentials' })
+      );
     });
   });
 });
