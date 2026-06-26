@@ -45,7 +45,7 @@ export async function ensureProfile(userId: string) {
   if (!user) return
 
   const meta = user.user_metadata || {}
-  const email = user.email || meta.email || `user_${userId.slice(0, 8)}`
+  const email = user.email || meta.email || `user_${userId.slice(0, 8)}@placeholder.local`
   const username = meta.username || email.split('@')[0]
 
   const { error } = await supabase.from('users').insert({
