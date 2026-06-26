@@ -7,14 +7,9 @@ const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
 
 function createNoopClient() {
-  return createClient(
-    "https://placeholder.supabase.co",
-    "placeholder-anon-key",
-    {
-      auth: { storage: AsyncStorage, autoRefreshToken: true, persistSession: true, detectSessionInUrl: false },
-      db: { schema: 'laravel' },
-    }
-  );
+  throw new Error(
+    '[Supabase] Configuração ausente: defina EXPO_PUBLIC_SUPABASE_URL e EXPO_PUBLIC_SUPABASE_ANON_KEY para inicializar o cliente.'
+  )
 }
 
 export const supabase = (() => {
