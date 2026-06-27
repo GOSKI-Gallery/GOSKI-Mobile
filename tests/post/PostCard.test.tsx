@@ -35,8 +35,8 @@ describe("PostCard", () => {
   });
 
   it("renders empty state correctly", () => {
-    const { getByText } = render(<PostCard isLoading={false} posts={[]} {...defaultProps} />);
-    expect(getByText("Nenhum post registrado")).toBeTruthy();
+    const { getAllByTestId } = render(<PostCard isLoading={false} posts={[]} {...defaultProps} />);
+    expect(getAllByTestId("post-skeleton")).toHaveLength(3);
   });
 
   it("renders posts correctly", () => {

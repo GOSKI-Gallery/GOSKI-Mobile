@@ -1,5 +1,5 @@
 import React from "react";
-import { RefreshControl, ScrollView, Text } from "react-native";
+import { RefreshControl, ScrollView } from "react-native";
 import PostSkeleton from "../ui/PostSkeleton";
 import SinglePost from "./SinglePost";
 import { useThemeStore } from "../../states/useThemeStore";
@@ -40,11 +40,10 @@ export default function PostCard({
   if (posts.length === 0) {
     return (
       <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        className="flex-1 w-full"
         refreshControl={refreshControl}
       >
-        <Text className="text-zinc-400">Nenhum post registrado</Text>
+        {[1, 2, 3].map((key) => <PostSkeleton key={key} />)}
       </ScrollView>
     );
   }
