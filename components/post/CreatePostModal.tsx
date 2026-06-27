@@ -15,18 +15,18 @@ import { useAuthStore } from "../../states/useAuthStore";
 import { useAlertStore } from "../../states/useAlertStore";
 import { useModalStore } from "../../states/useModalStore";
 import { usePostStore } from "../../states/usePostStore";
+import { useThemeStore } from "../../states/useThemeStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import UploadButton from "../ui/UploadButton";
-import ImageCropper from "../ui/ImageCropper";
 
 const { height } = Dimensions.get("window");
 
 const CreatePostModal = () => {
   const [image, setImage] = useState<string | null>(null);
-  const [pickedImageUri, setPickedImageUri] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [pendingPost, setPendingPost] = useState<any>(null);
+  const { isDark } = useThemeStore();
 
   const { isCreatePostModalVisible, closeCreatePostModal, clearAnimating } =
     useModalStore();
@@ -35,7 +35,6 @@ const CreatePostModal = () => {
 
   const reset = () => {
     setImage(null);
-    setPickedImageUri(null);
     setDescription("");
     setLoading(false);
     setPendingPost(null);
@@ -43,12 +42,14 @@ const CreatePostModal = () => {
 
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       quality: 0.8,
+      allowsEditing: true,
+      aspect: [1, 1],
     });
 
     if (!result.canceled) {
-      setPickedImageUri(result.assets[0].uri);
+      setImage(result.assets[0].uri);
     }
   };
 
@@ -90,15 +91,6 @@ const CreatePostModal = () => {
 
   return (
     <>
-      <ImageCropper
-        visible={!!pickedImageUri}
-        imageUri={pickedImageUri || ''}
-        onCrop={(uri) => {
-          setImage(uri);
-          setPickedImageUri(null);
-        }}
-        onCancel={() => setPickedImageUri(null)}
-      />
       <Modal
         isVisible={isCreatePostModalVisible}
         onBackdropPress={closeCreatePostModal}
@@ -131,7 +123,9 @@ const CreatePostModal = () => {
                   Nova Publicação
                 </Text>
 
-                <UploadButton imageUri={image} onPress={handlePickImage} />
+                <View className={image ? "bg-zinc-200 dark:bg-zinc-800 rounded-2xl p-2" : ""}>
+                  <UploadButton imageUri={image} onPress={handlePickImage} />
+                </View>
 
                 <TextInput
                   className="w-full text-zinc-800 dark:text-white p-4 bg-zinc-50 dark:bg-zinc-800 rounded-2xl mt-6 h-28 border border-zinc-100 dark:border-zinc-700"

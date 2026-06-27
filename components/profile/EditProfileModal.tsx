@@ -1,5 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Dimensions,
   KeyboardAvoidingView,
@@ -19,7 +19,6 @@ import { useModalStore } from "../../states/useModalStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import StyledTextInput from "../ui/StyledTextInput";
 import UploadButton from "../ui/UploadButton";
-import ImageCropper from "../ui/ImageCropper";
 import { EmailIcon, LockIcon, UserIcon } from "../ui/Icons";
 
 const { height } = Dimensions.get("window");
@@ -46,16 +45,16 @@ const EditProfileModal = ({
     reset,
   } = useEditProfileStore();
 
-  const [pickedImageUri, setPickedImageUri] = useState<string | null>(null);
-
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       quality: 0.8,
+      allowsEditing: true,
+      aspect: [1, 1],
     });
 
     if (!result.canceled) {
-      setPickedImageUri(result.assets[0].uri);
+      setImageUri(result.assets[0].uri);
     }
   };
 
@@ -119,15 +118,6 @@ const EditProfileModal = ({
 
   return (
     <>
-      <ImageCropper
-        visible={!!pickedImageUri}
-        imageUri={pickedImageUri || ''}
-        onCrop={(uri) => {
-          setImageUri(uri);
-          setPickedImageUri(null);
-        }}
-        onCancel={() => setPickedImageUri(null)}
-      />
       <Modal
         isVisible={visible}
         onBackdropPress={handleClose}
@@ -160,7 +150,7 @@ const EditProfileModal = ({
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 20 }}
           >
-            <View className="items-center mb-6 pt-2">
+            <View className={`items-center mb-6 pt-2 ${imageUri ? "bg-zinc-200 dark:bg-zinc-800 rounded-2xl p-2" : ""}`}>
               <UploadButton imageUri={imageUri} onPress={handlePickImage} />
             </View>
 
