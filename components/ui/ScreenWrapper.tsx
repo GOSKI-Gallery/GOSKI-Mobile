@@ -1,6 +1,5 @@
 import React from "react";
 import { View } from "react-native";
-import { useThemeStore } from "../../states/useThemeStore";
 
 export default function ScreenWrapper({
   children,
@@ -9,13 +8,8 @@ export default function ScreenWrapper({
   children: React.ReactNode;
   className?: string;
 }) {
-  const isDark = useThemeStore((state) => state.isDark);
-
   return (
-    <View
-      className={`flex-1 ${className}`}
-      style={{ backgroundColor: isDark ? "#27272a" : "#FAFAFA" }}
-    >
+    <View className={`flex-1 bg-zinc-50 dark:bg-zinc-800 ${className}`}>
       {children}
     </View>
   );

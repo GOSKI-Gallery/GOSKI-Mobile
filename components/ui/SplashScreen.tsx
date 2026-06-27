@@ -11,10 +11,7 @@ export default function SplashScreen({ loading = false }: SplashScreenProps) {
   const isDark = useThemeStore((s) => s.isDark);
 
   return (
-    <View
-      className="flex-1 items-center justify-center"
-      style={{ backgroundColor: isDark ? "#27272a" : "#FAFAFA" }}
-    >
+    <View className="flex-1 items-center justify-center bg-zinc-50 dark:bg-zinc-800">
       <LogoSvg color={isDark ? "#ffffff" : "#18181b"} size={48} />
 
       <Text className="text-3xl text-zinc-900 dark:text-white mb-8">

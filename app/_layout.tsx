@@ -97,7 +97,7 @@ function RootLayoutNav() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView className="flex-1">
       <ActionSheetProvider>
         <View className="flex-1">
           <Stack
