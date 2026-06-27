@@ -150,7 +150,7 @@ export default function Profile({
   );
 
   return (
-    <View className="flex-1" style={{ paddingTop: 110 }}>
+    <View className="flex-1 pt-[110px]">
       <UserPosts
         posts={userPosts}
         refreshing={refreshing}
