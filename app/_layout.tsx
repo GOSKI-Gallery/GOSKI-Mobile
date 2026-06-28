@@ -3,6 +3,7 @@ import { SplashScreen, Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import React from "react";
 import { View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import "../global.css";
 import { supabase } from "../lib/supabase";
@@ -96,22 +97,24 @@ function RootLayoutNav() {
   }
 
   return (
-    <ActionSheetProvider>
-      <View className="flex-1">
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: {
-                backgroundColor: isDark ? "#27272a" : "#FAFAFA",
-              flex: 1,
-            },
-          }}
-        >
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(main)" options={{ headerShown: false }} />
-        </Stack>
-        <CustomAlert />
-      </View>
-    </ActionSheetProvider>
+    <GestureHandlerRootView className="flex-1">
+      <ActionSheetProvider>
+        <View className="flex-1">
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: {
+                  backgroundColor: isDark ? "#27272a" : "#FAFAFA",
+                flex: 1,
+              },
+            }}
+          >
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(main)" options={{ headerShown: false }} />
+          </Stack>
+          <CustomAlert />
+        </View>
+      </ActionSheetProvider>
+    </GestureHandlerRootView>
   );
 }

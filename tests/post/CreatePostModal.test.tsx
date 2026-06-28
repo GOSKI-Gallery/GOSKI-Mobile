@@ -11,20 +11,6 @@ jest.mock('expo-image-picker');
 jest.mock('../../services/postService');
 jest.mock('../../states/useAuthStore');
 jest.mock('../../states/useModalStore');
-jest.mock('../../components/ui/ImageCropper', () => {
-  const React = require('react');
-  return {
-    __esModule: true,
-    default: (props: any) => {
-      React.useEffect(() => {
-        if (props.visible && props.imageUri) {
-          props.onCrop(props.imageUri);
-        }
-      }, [props.visible, props.imageUri]);
-      return null;
-    },
-  };
-});
 
 const useAuthStoreMock = useAuthStore as unknown as jest.Mock;
 const useModalStoreMock = useModalStore as unknown as jest.Mock;
