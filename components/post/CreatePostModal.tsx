@@ -15,7 +15,6 @@ import { useAuthStore } from "../../states/useAuthStore";
 import { useAlertStore } from "../../states/useAlertStore";
 import { useModalStore } from "../../states/useModalStore";
 import { usePostStore } from "../../states/usePostStore";
-import { useThemeStore } from "../../states/useThemeStore";
 import PrimaryButton from "../ui/PrimaryButton";
 import UploadButton from "../ui/UploadButton";
 
@@ -26,7 +25,6 @@ const CreatePostModal = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [pendingPost, setPendingPost] = useState<any>(null);
-  const { isDark } = useThemeStore();
 
   const { isCreatePostModalVisible, closeCreatePostModal, clearAnimating } =
     useModalStore();
