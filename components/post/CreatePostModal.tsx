@@ -15,6 +15,7 @@ import { useAuthStore } from "../../states/useAuthStore";
 import { useAlertStore } from "../../states/useAlertStore";
 import { useModalStore } from "../../states/useModalStore";
 import { usePostStore } from "../../states/usePostStore";
+import ImageCropper from "../ui/ImageCropper";
 import PrimaryButton from "../ui/PrimaryButton";
 import UploadButton from "../ui/UploadButton";
 
@@ -22,6 +23,8 @@ const { height } = Dimensions.get("window");
 
 const CreatePostModal = () => {
   const [image, setImage] = useState<string | null>(null);
+  const [pendingCropUri, setPendingCropUri] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [pendingPost, setPendingPost] = useState<any>(null);
@@ -33,6 +36,8 @@ const CreatePostModal = () => {
 
   const reset = () => {
     setImage(null);
+    setPendingCropUri(null);
+    setShowCropper(false);
     setDescription("");
     setLoading(false);
     setPendingPost(null);
@@ -42,13 +47,23 @@ const CreatePostModal = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       quality: 0.8,
-      allowsEditing: true,
-      aspect: [1, 1],
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      setPendingCropUri(result.assets[0].uri);
+      setShowCropper(true);
     }
+  };
+
+  const handleCropComplete = (croppedUri: string) => {
+    setImage(croppedUri);
+    setShowCropper(false);
+    setPendingCropUri(null);
+  };
+
+  const handleCropCancel = () => {
+    setShowCropper(false);
+    setPendingCropUri(null);
   };
 
   const handlePublish = async () => {
@@ -89,6 +104,14 @@ const CreatePostModal = () => {
 
   return (
     <>
+      {showCropper && pendingCropUri && (
+        <ImageCropper
+          imageUri={pendingCropUri}
+          aspect={[1, 1]}
+          onCrop={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
       <Modal
         isVisible={isCreatePostModalVisible}
         onBackdropPress={closeCreatePostModal}
