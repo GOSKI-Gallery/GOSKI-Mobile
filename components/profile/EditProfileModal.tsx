@@ -1,5 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   KeyboardAvoidingView,
@@ -16,6 +16,7 @@ import { useAlertStore } from "../../states/useAlertStore";
 import { useEditProfileStore } from "../../states/useEditProfileStore";
 import { useProfileStore } from "../../states/useProfileStore";
 import { useModalStore } from "../../states/useModalStore";
+import ImageCropper from "../ui/ImageCropper";
 import PrimaryButton from "../ui/PrimaryButton";
 import StyledTextInput from "../ui/StyledTextInput";
 import UploadButton from "../ui/UploadButton";
@@ -45,17 +46,30 @@ const EditProfileModal = ({
     reset,
   } = useEditProfileStore();
 
+  const [pendingCropUri, setPendingCropUri] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
+
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       quality: 0.8,
-      allowsEditing: true,
-      aspect: [1, 1],
     });
 
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+      setPendingCropUri(result.assets[0].uri);
+      setShowCropper(true);
     }
+  };
+
+  const handleCropComplete = (croppedUri: string) => {
+    setImageUri(croppedUri);
+    setShowCropper(false);
+    setPendingCropUri(null);
+  };
+
+  const handleCropCancel = () => {
+    setShowCropper(false);
+    setPendingCropUri(null);
   };
 
   const userId = useAuthStore((state) => state.user?.id);
@@ -118,6 +132,14 @@ const EditProfileModal = ({
 
   return (
     <>
+      {showCropper && pendingCropUri && (
+        <ImageCropper
+          imageUri={pendingCropUri}
+          aspect={[1, 1]}
+          onCrop={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
       <Modal
         isVisible={visible}
         onBackdropPress={handleClose}
