@@ -33,6 +33,8 @@ const uploadPost = async (userId: string, imageUri: string, description: string)
         user_id: userId,
         description: description,
         image_url: publicUrl,
+        moderation_status: 'POSSIBLE',
+        is_nsfw: false,
         created_at: now,
         updated_at: now,
       })
