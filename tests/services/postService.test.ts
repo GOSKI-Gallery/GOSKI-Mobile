@@ -4,6 +4,9 @@ jest.mock('../../lib/supabase', () => ({
       from: jest.fn(),
     },
     from: jest.fn(),
+    functions: {
+      invoke: jest.fn().mockResolvedValue({ data: null, error: null }),
+    },
   },
   ensureProfile: jest.fn().mockResolvedValue(undefined),
 }));
@@ -44,6 +47,9 @@ describe('uploadPost', () => {
 
     expect(result).toEqual(mockPost);
     expect(supabase.from).toHaveBeenCalledWith('posts');
+    expect(supabase.functions.invoke).toHaveBeenCalledWith('image-moderator', {
+      body: { record: { id: mockPost.id, image_url: mockPost.image_url } },
+    });
   });
 
   it('throws on storage error', async () => {

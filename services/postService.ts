@@ -33,6 +33,8 @@ const uploadPost = async (userId: string, imageUri: string, description: string)
         user_id: userId,
         description: description,
         image_url: publicUrl,
+        moderation_status: 'POSSIBLE',
+        is_nsfw: false,
         created_at: now,
         updated_at: now,
       })
@@ -40,6 +42,18 @@ const uploadPost = async (userId: string, imageUri: string, description: string)
       .single();
 
     if (error) throw error;
+
+    // Trigger the image-moderator edge function so the post gets classified
+    // and moderated. This guarantees moderation runs for mobile-created posts
+    // even when the database webhook is not configured to fire for them.
+    try {
+      await supabase.functions.invoke('image-moderator', {
+        body: { record: { id: data.id, image_url: data.image_url } },
+      });
+    } catch (modErr) {
+      console.warn('[uploadPost] Falha ao acionar image-moderator:', modErr);
+    }
+
     return data;
 
   } catch (error) {
