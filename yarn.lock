@@ -6500,7 +6500,7 @@ shebang-regex@^3.0.0:
 shell-quote@^1.8.4:
   version "1.8.4"
   resolved "https://registry.npmjs.org/shell-quote/-/shell-quote-1.8.4.tgz"
-  integrity sha512-VpfwZaEKFe2wXat0BPqfEb6L68w8YI9Ie6Wp9Y8gAnA9KCh0wN7bS4vD6Bw2uYAnLInR6RNo1bI6ZmsmJ+pYwQ==
+  integrity sha512-VsC6n6vz1ihYYyZZwX7YZSF5l5x36ca17OC+a69h94YqB7X6XLwf+5MOgynYir2SLFUbl8gIYvBo8K8RoNQ6bQ== sha1-Lt2aTc78lmSeLiyxL2N7Hx2SoZA=
 
 signal-exit@^3.0.2, signal-exit@^3.0.3, signal-exit@^3.0.7:
   version "3.0.7"
