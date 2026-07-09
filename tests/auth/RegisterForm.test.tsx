@@ -45,6 +45,22 @@ describe('RegisterForm', () => {
     );
   });
 
+  it('should show an alert if passwords do not match', () => {
+    const showAlertSpy = jest.spyOn(useAlertStore.getState(), 'showAlert');
+    const { getByPlaceholderText, getByText } = render(<RegisterForm />);
+
+    fireEvent.changeText(getByPlaceholderText('Username'), 'carlos');
+    fireEvent.changeText(getByPlaceholderText('Email'), 'carlos@goski.com');
+    fireEvent.changeText(getByPlaceholderText('Senha'), 'senha123');
+    fireEvent.changeText(getByPlaceholderText('Confirmar Senha'), 'senha456');
+
+    fireEvent.press(getByText('Registrar'));
+
+    expect(showAlertSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ message: "As senhas não conferem." })
+    );
+  });
+
   it('should register successfully and redirect to home', async () => {
     (supabase.auth.signUp as jest.Mock).mockResolvedValue({
       data: {
@@ -59,6 +75,7 @@ describe('RegisterForm', () => {
     fireEvent.changeText(getByPlaceholderText('Username'), 'carlos');
     fireEvent.changeText(getByPlaceholderText('Email'), 'carlos@goski.com');
     fireEvent.changeText(getByPlaceholderText('Senha'), 'senha123');
+    fireEvent.changeText(getByPlaceholderText('Confirmar Senha'), 'senha123');
     
     fireEvent.press(getByText('Registrar'));
 
