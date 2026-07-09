@@ -12,14 +12,20 @@ export default function RegisterForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const setAuth = useAuthStore((state) => state.setAuth);
 
   const handleRegister = async () => {
-    if (!username.trim() || !email.trim() || !password.trim()) {
+    if (!username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
       useAlertStore.getState().showAlert({ title: "Aviso", message: "Por favor, preencha todos os campos." });
+      return;
+    }
+
+    if (password.trim() !== confirmPassword.trim()) {
+      useAlertStore.getState().showAlert({ title: "Aviso", message: "As senhas não conferem." });
       return;
     }
 
@@ -100,6 +106,14 @@ export default function RegisterForm() {
         placeholder="Senha"
         value={password}
         onChangeText={setPassword}
+        secureTextEntry
+      />
+
+      <StyledTextInput
+        icon={<LockIcon />}
+        placeholder="Confirmar Senha"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
         secureTextEntry
       />
 
