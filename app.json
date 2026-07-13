@@ -30,7 +30,14 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#18181b"
+        }
+      ]
     ],
     "scheme": "goski",
     "extra": {
