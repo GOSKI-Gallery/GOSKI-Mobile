@@ -96,6 +96,28 @@ export function UserIcon({ color = "#18181b", size = 24 }: IconProps) {
   );
 }
 
+export function CommentIcon({ color = "#18181b", size = 24 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l3 3 3-3h5c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
+export function SendIcon({ color = "#18181b", size = 24 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M2 21l21-9L2 3v7l15 2-15 2v7z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
 export function LogoSvg({ color = "#18181b", size = 48 }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 64 64">
