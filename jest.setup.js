@@ -19,4 +19,17 @@ jest.spyOn(Animated, 'timing').mockImplementation(() => ({
   },
 }));
 
+jest.mock('expo-device', () => ({
+  isDevice: false,
+}));
+
+jest.mock('expo-notifications', () => ({
+  getPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
+  requestPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
+  getExpoPushTokenAsync: jest.fn().mockResolvedValue({ data: 'ExponentPushToken[test-token]' }),
+  setNotificationChannelAsync: jest.fn().mockResolvedValue(undefined),
+  setNotificationHandler: jest.fn(),
+  AndroidImportance: { MAX: 5 },
+}));
+
 
