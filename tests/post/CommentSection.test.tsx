@@ -65,9 +65,9 @@ describe('CommentSection', () => {
     (useThemeStore as jest.Mock).mockImplementation((selector: any) => selector({ isDark: false }));
   });
 
-  it('renders comments list', async () => {
+  it('renders comments list when expanded', async () => {
     const { getByText, getAllByText, getByTestId } = render(
-      <CommentSection visible postId={1} postUserId="user1" onClose={onClose} />
+      <CommentSection expanded postId={1} postUserId="user1" onClose={onClose} />
     );
 
     expect(getByTestId('comment-section')).toBeTruthy();
@@ -81,9 +81,17 @@ describe('CommentSection', () => {
     expect(getAllByText('1m atrás').length).toBe(2);
   });
 
-  it('shows delete button only for own comments and post owner', async () => {
+  it('renders comment section when expanded', () => {
+    const { getByTestId } = render(
+      <CommentSection expanded postId={1} postUserId="user1" onClose={onClose} />
+    );
+
+    expect(getByTestId('comment-section')).toBeTruthy();
+  });
+
+  it('shows delete button for own comments and post owner', async () => {
     const { queryByTestId } = render(
-      <CommentSection visible postId={1} postUserId="user1" onClose={onClose} />
+      <CommentSection expanded postId={1} postUserId="user1" onClose={onClose} />
     );
 
     await waitFor(() => {
@@ -94,10 +102,10 @@ describe('CommentSection', () => {
 
   it('calls addComment when send button is pressed', async () => {
     const { getByPlaceholderText, getByTestId } = render(
-      <CommentSection visible postId={1} postUserId="user1" onClose={onClose} />
+      <CommentSection expanded postId={1} postUserId="user1" onClose={onClose} />
     );
 
-    fireEvent.changeText(getByPlaceholderText('Adicionar comentário...'), 'New comment!');
+    fireEvent.changeText(getByPlaceholderText('Escreva um comentário...'), 'New comment!');
     fireEvent.press(getByTestId('send-comment'));
 
     await waitFor(() => {
@@ -107,7 +115,7 @@ describe('CommentSection', () => {
 
   it('does not send empty comments', () => {
     const { getByTestId } = render(
-      <CommentSection visible postId={1} postUserId="user1" onClose={onClose} />
+      <CommentSection expanded postId={1} postUserId="user1" onClose={onClose} />
     );
 
     fireEvent.press(getByTestId('send-comment'));
@@ -115,13 +123,65 @@ describe('CommentSection', () => {
     expect(mockAddComment).not.toHaveBeenCalled();
   });
 
-  it('calls onClose when close button is pressed', () => {
+  it('shows loading indicator while fetching comments', () => {
+    (useCommentStore as jest.Mock).mockImplementation((selector?: any) => {
+      const state = {
+        comments: {},
+        commentCounts: {},
+        fetchComments: mockFetchComments,
+        addComment: mockAddComment,
+        deleteComment: mockDeleteComment,
+      };
+      return selector ? selector(state) : state;
+    });
+
     const { getByText } = render(
-      <CommentSection visible postId={1} postUserId="user1" onClose={onClose} />
+      <CommentSection expanded postId={1} postUserId="user1" onClose={onClose} />
     );
 
-    fireEvent.press(getByText('Fechar'));
-
-    expect(onClose).toHaveBeenCalled();
+    expect(getByText('Carregando...')).toBeTruthy();
   });
+
+  it('shows error state when fetch fails', async () => {
+    const mockFailedFetch = jest.fn().mockRejectedValue(new Error('Fetch failed'));
+
+    (useCommentStore as jest.Mock).mockImplementation((selector?: any) => {
+      const state = {
+        comments: {},
+        commentCounts: {},
+        fetchComments: mockFailedFetch,
+        addComment: mockAddComment,
+        deleteComment: mockDeleteComment,
+      };
+      return selector ? selector(state) : state;
+    });
+
+    const { getByText, findByText } = render(
+      <CommentSection expanded postId={1} postUserId="user1" onClose={onClose} />
+    );
+
+    expect(await findByText('Erro ao carregar comentários.')).toBeTruthy();
+  });
+
+  it('shows empty state when there are no comments', async () => {
+    (useCommentStore as jest.Mock).mockImplementation((selector?: any) => {
+      const state = {
+        comments: { 1: [] },
+        commentCounts: { 1: 0 },
+        fetchComments: mockFetchComments,
+        addComment: mockAddComment,
+        deleteComment: mockDeleteComment,
+      };
+      return selector ? selector(state) : state;
+    });
+
+    const { getByText } = render(
+      <CommentSection expanded postId={1} postUserId="user1" onClose={onClose} />
+    );
+
+    await waitFor(() => {
+      expect(getByText('Nenhum comentário ainda. Seja o primeiro!')).toBeTruthy();
+    });
+  });
+
 });
