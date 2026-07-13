@@ -11,6 +11,11 @@ jest.mock('expo-router');
 jest.mock('../../states/useAuthStore');
 jest.mock('../../states/useLikeStore');
 jest.mock('../../states/useFollowStore');
+jest.mock('../../components/post/CommentSection', () => {
+  const MockCommentSection = () => null;
+  MockCommentSection.displayName = 'CommentSection';
+  return MockCommentSection;
+});
 
 const useAuthStoreMock = useAuthStore as unknown as jest.Mock;
 const useLikeStoreMock = useLikeStore as unknown as jest.Mock;
@@ -23,6 +28,7 @@ describe('SinglePost', () => {
     users: { id: '456', username: 'testuser', profile_photo_url: 'test-url' },
     image_url: 'test-image-url',
     description: 'Test description',
+    comment_count: 3,
   };
 
   const mockPush = jest.fn();
@@ -56,6 +62,20 @@ describe('SinglePost', () => {
     expect(getAllByText('testuser')[0]).toBeTruthy();
     expect(getAllByText('Test description')[0]).toBeTruthy();
     expect(getByTestId('like-button')).toBeTruthy();
+    expect(getByTestId('comment-button')).toBeTruthy();
+  });
+
+  it('shows comment count', () => {
+    const { getByText, getByTestId } = render(<SinglePost post={mockPost} />);
+    expect(getByTestId('comment-button')).toBeTruthy();
+    expect(getByText('3')).toBeTruthy();
+  });
+
+  it('opens CommentSection on comment button press', () => {
+    const { getByTestId, queryByTestId } = render(<SinglePost post={mockPost} />);
+    expect(queryByTestId('comment-section')).toBeNull();
+    fireEvent.press(getByTestId('comment-button'));
+    expect(queryByTestId('comment-section')).toBeNull();
   });
 
   it('navigates to profile on press', () => {

@@ -6,11 +6,13 @@ import { timeAgo } from "../../lib/time";
 import { useRouter } from "expo-router";
 import { useLikeStore } from "../../states/useLikeStore";
 import { useFollowStore } from "../../states/useFollowStore";
-import { LikeIcon, UserIcon } from "../ui/Icons";
+import { CommentIcon, LikeIcon, UserIcon } from "../ui/Icons";
+import CommentSection from "./CommentSection";
 
 const SinglePost = ({ post }: { post: any }) => {
   const [profileError, setProfileError] = useState(false);
   const [postImageError, setPostImageError] = useState(false);
+  const [showComments, setShowComments] = useState(false);
   const user = useAuthStore((state) => state.user);
   const isDark = useThemeStore((s) => s.isDark);
   const currentUserId = user?.id;
@@ -19,6 +21,8 @@ const SinglePost = ({ post }: { post: any }) => {
   const { likes, likeCounts, toggleLike } = useLikeStore();
   const isLiked = likes[post.id] || false;
   const likeCount = likeCounts[post.id] || 0;
+
+  const commentCount = post.comment_count || 0;
 
   const { following, toggleFollow } = useFollowStore();
   const isFollowing = following[post.users.id] || false;
@@ -107,9 +111,31 @@ const SinglePost = ({ post }: { post: any }) => {
               {likeCount}
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setShowComments(true)}
+            className="flex-row items-center gap-2 pr-3 py-2 rounded-xl active:bg-zinc-100 dark:active:bg-zinc-800 transition-all"
+            testID="comment-button"
+          >
+            <CommentIcon
+              color={isDark ? "#d4d4d8" : "#18181b"}
+              size={24}
+            />
+            <Text className="text-sm font-black text-zinc-700 dark:text-zinc-300">
+              {commentCount}
+            </Text>
+          </TouchableOpacity>
         </View>
         
       </View>
+
+      {showComments && (
+        <CommentSection
+          visible={showComments}
+          postId={post.id}
+          postUserId={post.users.id}
+          onClose={() => setShowComments(false)}
+        />
+      )}
 
     </View>
   );
