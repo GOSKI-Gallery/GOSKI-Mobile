@@ -33,6 +33,13 @@ const mockNotifications = [
     is_read: true,
     created_at: new Date().toISOString(),
   },
+  {
+    id: '3',
+    user: { username: 'user3', profile_photo_url: '' },
+    type: 'comment',
+    is_read: false,
+    created_at: new Date().toISOString(),
+  },
 ];
 
 describe('NotificationModal', () => {
@@ -91,6 +98,12 @@ describe('NotificationModal', () => {
       
       expect(await findByText('user1')).toBeTruthy();
       expect(await findByText('user2')).toBeTruthy();
+    });
+
+    it('should render comment notification text', async () => {
+      const { findByText } = render(<NotificationModal />);
+
+      expect(await findByText(/comentou em sua publicação/)).toBeTruthy();
     });
 
     it('should call markAllAsRead when "Mark as read" is pressed', async () => {

@@ -128,6 +128,8 @@ const NotificationModal = () => {
                     </Text>
                     {notification.type === "like"
                       ? " curtiu sua publicação."
+                      : notification.type === "comment"
+                      ? " comentou em sua publicação."
                       : " começou a seguir você."}
                     <Text className="text-sm text-gray-500 dark:text-zinc-400">
                       {" "}
