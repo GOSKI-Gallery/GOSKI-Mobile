@@ -12,7 +12,12 @@ jest.mock('../../states/useAuthStore');
 jest.mock('../../states/useLikeStore');
 jest.mock('../../states/useFollowStore');
 jest.mock('../../components/post/CommentSection', () => {
-  const MockCommentSection = () => null;
+  const { View, Text } = require('react-native');
+  const MockCommentSection = ({ expanded }: { expanded: boolean }) => (
+    <View testID="comment-section-mock">
+      <Text testID="expanded-state">{expanded ? 'true' : 'false'}</Text>
+    </View>
+  );
   MockCommentSection.displayName = 'CommentSection';
   return MockCommentSection;
 });
@@ -71,11 +76,21 @@ describe('SinglePost', () => {
     expect(getByText('3')).toBeTruthy();
   });
 
-  it('opens CommentSection on comment button press', () => {
-    const { getByTestId, queryByTestId } = render(<SinglePost post={mockPost} />);
-    expect(queryByTestId('comment-section')).toBeNull();
+  it('renders CommentSection always, initially collapsed', () => {
+    const { getByTestId } = render(<SinglePost post={mockPost} />);
+    expect(getByTestId('comment-section-mock')).toBeTruthy();
+    expect(getByTestId('expanded-state')).toHaveTextContent('false');
+  });
+
+  it('toggles CommentSection on comment button press', () => {
+    const { getByTestId } = render(<SinglePost post={mockPost} />);
+    expect(getByTestId('expanded-state')).toHaveTextContent('false');
+
     fireEvent.press(getByTestId('comment-button'));
-    expect(queryByTestId('comment-section')).toBeNull();
+    expect(getByTestId('expanded-state')).toHaveTextContent('true');
+
+    fireEvent.press(getByTestId('comment-button'));
+    expect(getByTestId('expanded-state')).toHaveTextContent('false');
   });
 
   it('navigates to profile on press', () => {
