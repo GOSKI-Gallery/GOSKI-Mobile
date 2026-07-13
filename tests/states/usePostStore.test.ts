@@ -78,13 +78,14 @@ describe('usePostStore', () => {
       callIdx++;
       switch (callIdx) {
         case 1: return makeChain({ data: mockPosts, error: null });
-        case 2: return makeChain({ data: [{ id: 'u1', username: 'user1', profile_photo_url: null }], error: null });
-        case 3: return makeChain({ data: [{ post_id: 1, user_id: 'u2' }], error: null });
-        case 4: return makeChain({ data: [{ follower_id: 'me', followed_id: 'u1' }], error: null });
-        case 5: return makeChain({ data: [{ follower_id: 'u2', followed_id: 'u1' }], error: null });
-        case 6: return makeChain({ data: [{ post_id: 1 }], error: null });
-        case 7: return makeChain({ data: [{ tag_id: 10 }], error: null });
-        case 8: return makeChain({ data: [{ post_id: 1, tag_id: 10 }], error: null });
+        case 2: return makeChain({ data: [{ post_id: 1 }], error: null });
+        case 3: return makeChain({ data: [{ id: 'u1', username: 'user1', profile_photo_url: null }], error: null });
+        case 4: return makeChain({ data: [{ post_id: 1, user_id: 'u2' }], error: null });
+        case 5: return makeChain({ data: [{ follower_id: 'me', followed_id: 'u1' }], error: null });
+        case 6: return makeChain({ data: [{ follower_id: 'u2', followed_id: 'u1' }], error: null });
+        case 7: return makeChain({ data: [{ post_id: 1 }], error: null });
+        case 8: return makeChain({ data: [{ tag_id: 10 }], error: null });
+        case 9: return makeChain({ data: [{ post_id: 1, tag_id: 10 }], error: null });
         default: return makeChain({ data: null, error: null });
       }
     });
@@ -96,5 +97,6 @@ describe('usePostStore', () => {
     expect(posts[0].users.username).toBe('user1');
     expect(posts[0].likes).toEqual([{ user_id: 'u2' }]);
     expect(posts[0].post_tag).toEqual([{ post_id: 1, tag_id: 10 }]);
+    expect(posts[0].comment_count).toBe(1);
   });
 });

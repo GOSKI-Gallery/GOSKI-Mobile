@@ -36,6 +36,16 @@ export const usePostStore = create<PostStore>((set) => ({
         const postIds = posts.map((p: any) => p.id);
         const userIds = [...new Set(posts.map((p: any) => p.user_id))];
 
+        const { data: commentCountsData } = await supabase
+          .from("comments")
+          .select("post_id")
+          .in("post_id", postIds);
+
+        const commentCounts: Record<string, number> = {};
+        (commentCountsData || []).forEach((c: any) => {
+          commentCounts[c.post_id] = (commentCounts[c.post_id] || 0) + 1;
+        });
+
         const [usersResult, likesResult, followsResult, allFollowsResult] = await Promise.all([
           supabase.from("users").select("id, username, profile_photo_url").in("id", userIds),
           supabase.from("likes").select("post_id, user_id").in("post_id", postIds),
@@ -111,6 +121,7 @@ export const usePostStore = create<PostStore>((set) => ({
 
           return {
             ...post,
+            comment_count: commentCounts[post.id] || 0,
             users: {
               id: userData?.id || post.user_id,
               username: userData?.username || "Usuário",
