@@ -11,6 +11,7 @@ import { useAuthStore } from "../states/useAuthStore";
 import { useThemeStore } from "../states/useThemeStore";
 import SplashScreenComponent from "../components/ui/SplashScreen";
 import CustomAlert from "../components/ui/CustomAlert";
+import { registerForPushNotificationsAsync, setupNotificationHandler } from "../lib/notifications";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -79,6 +80,16 @@ function RootLayoutNav() {
       subscription.unsubscribe();
     };
   }, [setAuth, clearAuth]);
+
+  useEffect(() => {
+    setupNotificationHandler();
+  }, []);
+
+  useEffect(() => {
+    if (user?.id) {
+      registerForPushNotificationsAsync(user.id).catch(() => {});
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     if (!authLoaded) return;

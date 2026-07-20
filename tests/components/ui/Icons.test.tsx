@@ -10,6 +10,7 @@ import {
   ExitIcon,
   UserIcon,
   LogoSvg,
+  CommentIcon,
 } from '../../../components/ui/Icons';
 
 describe('Icons', () => {
@@ -51,6 +52,10 @@ describe('Icons', () => {
 
   it('renders LogoSvg', () => {
     const { getByTestId } = render(<LogoSvg />);
+  });
+
+  it('renders CommentIcon', () => {
+    const { getByTestId } = render(<CommentIcon />);
   });
 
   it('renders with custom color and size', () => {

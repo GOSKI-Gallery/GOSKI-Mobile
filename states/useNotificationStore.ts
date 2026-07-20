@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface Notification {
   id: string;
-  type: "like" | "follow";
+  type: "like" | "follow" | "comment";
   user: {
     id: string;
     username: string;
@@ -88,9 +88,33 @@ export const useNotificationStore = create<NotificationStore>()(
           is_read: false,
         }));
 
+        let comments: any[] = [];
+        if (userPostIds.length > 0) {
+          const { data } = await supabase
+            .from("comments")
+            .select("*")
+            .in("post_id", userPostIds);
+          comments = (data || []).filter((c: any) => c.user_id !== userId);
+        }
+
+        const commentUserIds = [...new Set(comments.map((c: any) => c.user_id))];
+        const { data: commentsUsersData } = commentUserIds.length > 0
+          ? await supabase.from("users").select("id, username, profile_photo_url").in("id", commentUserIds)
+          : { data: [] };
+        const commentsUsersMap = new Map((commentsUsersData || []).map((u: any) => [u.id, u]));
+
+        const commentNotifications: Notification[] = comments.map((comment: any) => ({
+          id: `comment_${comment.id}`,
+          type: "comment",
+          user: commentsUsersMap.get(comment.user_id) || { id: comment.user_id, username: "Usuário", profile_photo_url: "" },
+          post_id: comment.post_id,
+          created_at: comment.created_at,
+          is_read: false,
+        }));
+
         const { dismissedIds, readIds } = get();
 
-        const allNotifications = [...followNotifications, ...likeNotifications]
+        const allNotifications = [...followNotifications, ...likeNotifications, ...commentNotifications]
           .filter(n => !dismissedIds.includes(n.id))
           .map(n => ({ ...n, is_read: readIds.includes(n.id) }))
           .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());

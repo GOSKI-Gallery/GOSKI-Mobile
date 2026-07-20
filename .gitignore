@@ -46,3 +46,9 @@ coverage/
 
 .idx/
 .vscode/
+
+# lockfiles
+package-lock.json
+
+# plans
+.opencode/plans/
