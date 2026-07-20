@@ -49,7 +49,7 @@ describe('CommentSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    (useCommentStore as jest.Mock).mockImplementation((selector?: any) => {
+    (useCommentStore as unknown as jest.Mock).mockImplementation((selector?: any) => {
       const state = {
         comments: { 1: mockCommentsData },
         commentCounts: { 1: 2 },
@@ -60,9 +60,9 @@ describe('CommentSection', () => {
       return selector ? selector(state) : state;
     });
 
-    (useAuthStore as jest.Mock).mockReturnValue({ user: { id: 'user1', username: 'carlos' } });
+    (useAuthStore as unknown as jest.Mock).mockReturnValue({ user: { id: 'user1', username: 'carlos' } });
 
-    (useThemeStore as jest.Mock).mockImplementation((selector: any) => selector({ isDark: false }));
+    (useThemeStore as unknown as jest.Mock).mockImplementation((selector: any) => selector({ isDark: false }));
   });
 
   it('renders comments list when expanded', async () => {
@@ -124,7 +124,7 @@ describe('CommentSection', () => {
   });
 
   it('shows loading indicator while fetching comments', () => {
-    (useCommentStore as jest.Mock).mockImplementation((selector?: any) => {
+    (useCommentStore as unknown as jest.Mock).mockImplementation((selector?: any) => {
       const state = {
         comments: {},
         commentCounts: {},
@@ -145,7 +145,7 @@ describe('CommentSection', () => {
   it('shows error state when fetch fails', async () => {
     const mockFailedFetch = jest.fn().mockRejectedValue(new Error('Fetch failed'));
 
-    (useCommentStore as jest.Mock).mockImplementation((selector?: any) => {
+    (useCommentStore as unknown as jest.Mock).mockImplementation((selector?: any) => {
       const state = {
         comments: {},
         commentCounts: {},
@@ -164,7 +164,7 @@ describe('CommentSection', () => {
   });
 
   it('shows empty state when there are no comments', async () => {
-    (useCommentStore as jest.Mock).mockImplementation((selector?: any) => {
+    (useCommentStore as unknown as jest.Mock).mockImplementation((selector?: any) => {
       const state = {
         comments: { 1: [] },
         commentCounts: { 1: 0 },
