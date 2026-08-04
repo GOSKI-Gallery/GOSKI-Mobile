@@ -1,7 +1,7 @@
 ---
 description: Handles git branching, commits, and pull request creation
 mode: subagent
-model: github/deepseek-v4
+model: opencode/deepseek-v4-flash-free
 temperature: 0.1
 permission:
   read: allow

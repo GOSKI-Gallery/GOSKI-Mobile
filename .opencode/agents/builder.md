@@ -1,7 +1,7 @@
 ---
 description: Implements code following TDD (test-first) and project conventions
 mode: subagent
-model: github/deepseek-v4
+model: opencode/deepseek-v4-flash-free
 temperature: 0.3
 permission:
   read: allow
