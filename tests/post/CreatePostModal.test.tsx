@@ -24,14 +24,6 @@ jest.mock('expo-location', () => ({
   Accuracy: { Balanced: 3 },
 }));
 
-const mockShowActionSheet = jest.fn();
-jest.mock('@expo/react-native-action-sheet', () => ({
-  useActionSheet: () => ({
-    showActionSheetWithOptions: mockShowActionSheet,
-    showShareActionSheetWithOptions: jest.fn(),
-  }),
-}));
-
 const useAuthStoreMock = useAuthStore as unknown as jest.Mock;
 const useModalStoreMock = useModalStore as unknown as jest.Mock;
 const uploadPostMock = uploadPost as jest.Mock;
@@ -41,11 +33,6 @@ const manipulateAsyncMock = manipulateAsync as jest.Mock;
 const requestForegroundPermissionsAsyncMock = Location.requestForegroundPermissionsAsync as jest.Mock;
 const getCurrentPositionAsyncMock = Location.getCurrentPositionAsync as jest.Mock;
 const reverseGeocodeAsyncMock = Location.reverseGeocodeAsync as jest.Mock;
-
-const triggerActionSheet = (index: number) => {
-  const cb = mockShowActionSheet.mock.calls[mockShowActionSheet.mock.calls.length - 1]?.[1];
-  cb?.(index);
-};
 
 describe('CreatePostModal', () => {
   beforeEach(() => {
@@ -66,12 +53,13 @@ describe('CreatePostModal', () => {
     });
   });
 
-  it('opens an action sheet when the upload button is pressed', () => {
+  it('opens the source picker when the upload button is pressed', () => {
     const { getByText } = render(<CreatePostModal />);
 
     fireEvent.press(getByText('Escolher foto'));
 
-    expect(mockShowActionSheet).toHaveBeenCalled();
+    expect(getByText('Tirar foto')).toBeTruthy();
+    expect(getByText('Escolher da galeria')).toBeTruthy();
   });
 
   it('takes a photo with the camera when "Tirar foto" is selected', async () => {
@@ -82,7 +70,7 @@ describe('CreatePostModal', () => {
     const { getByText } = render(<CreatePostModal />);
 
     fireEvent.press(getByText('Escolher foto'));
-    triggerActionSheet(0);
+    fireEvent.press(getByText('Tirar foto'));
 
     await waitFor(() => expect(launchCameraAsyncMock).toHaveBeenCalled());
     await waitFor(() => expect(getByText('Confirmar')).not.toBeDisabled());
@@ -96,9 +84,28 @@ describe('CreatePostModal', () => {
     const { getByText } = render(<CreatePostModal />);
 
     fireEvent.press(getByText('Escolher foto'));
-    triggerActionSheet(1);
+    fireEvent.press(getByText('Escolher da galeria'));
 
     await waitFor(() => expect(launchImageLibraryAsyncMock).toHaveBeenCalled());
+  });
+
+  it('keeps the composer open after cropping', async () => {
+    launchImageLibraryAsyncMock.mockResolvedValueOnce({
+      canceled: false,
+      assets: [{ uri: 'test-image-uri' }],
+    });
+
+    const { getByText, queryByText } = render(<CreatePostModal />);
+
+    fireEvent.press(getByText('Escolher foto'));
+    fireEvent.press(getByText('Escolher da galeria'));
+    await waitFor(() => expect(getByText('Confirmar')).not.toBeDisabled());
+
+    fireEvent.press(getByText('Confirmar'));
+
+    await waitFor(() => expect(queryByText('Confirmar')).toBeNull());
+    expect(getByText('Publicar')).toBeTruthy();
+    expect(getByText('Nova Publicação')).toBeTruthy();
   });
 
   it('handles image picking, cropping, and post publishing', async () => {
@@ -111,7 +118,7 @@ describe('CreatePostModal', () => {
     const { getByText, getByPlaceholderText, queryByText } = render(<CreatePostModal />);
 
     fireEvent.press(getByText('Escolher foto'));
-    triggerActionSheet(1);
+    fireEvent.press(getByText('Escolher da galeria'));
     await waitFor(() => expect(launchImageLibraryAsyncMock).toHaveBeenCalled());
 
     await waitFor(() => {
@@ -198,7 +205,7 @@ describe('CreatePostModal', () => {
     const { getByText, getByPlaceholderText, getByTestId } = render(<CreatePostModal />);
 
     fireEvent.press(getByText('Escolher foto'));
-    triggerActionSheet(1);
+    fireEvent.press(getByText('Escolher da galeria'));
     await waitFor(() => expect(getByText('Confirmar')).not.toBeDisabled());
     fireEvent.press(getByText('Confirmar'));
     await waitFor(() => expect(getByPlaceholderText('Escreva uma legenda...')).toBeTruthy());

@@ -11,7 +11,6 @@ import {
   View,
 } from "react-native";
 import Modal from "react-native-modal";
-import { useActionSheet } from "@expo/react-native-action-sheet";
 import uploadPost from "../../services/postService";
 import { getLocationName, ResolvedLocation } from "../../lib/location";
 import { useAuthStore } from "../../states/useAuthStore";
@@ -20,6 +19,7 @@ import { useModalStore } from "../../states/useModalStore";
 import { usePostStore } from "../../states/usePostStore";
 import ImageCropper from "../ui/ImageCropper";
 import PrimaryButton from "../ui/PrimaryButton";
+import SourcePickerSheet from "../ui/SourcePickerSheet";
 import UploadButton from "../ui/UploadButton";
 
 const { height } = Dimensions.get("window");
@@ -33,12 +33,12 @@ const CreatePostModal = () => {
   const [pendingPost, setPendingPost] = useState<any>(null);
   const [location, setLocation] = useState<ResolvedLocation | null>(null);
   const [locating, setLocating] = useState(false);
+  const [showSourcePicker, setShowSourcePicker] = useState(false);
 
   const { isCreatePostModalVisible, closeCreatePostModal, clearAnimating } =
     useModalStore();
   const { addPostOptimistic } = usePostStore();
   const user = useAuthStore((state) => state.user);
-  const { showActionSheetWithOptions } = useActionSheet();
 
   const reset = () => {
     setImage(null);
@@ -49,6 +49,7 @@ const CreatePostModal = () => {
     setPendingPost(null);
     setLocation(null);
     setLocating(false);
+    setShowSourcePicker(false);
   };
 
   const handlePickFromLibrary = async () => {
@@ -82,18 +83,13 @@ const CreatePostModal = () => {
     }
   };
 
-  const handleChooseSource = () => {
-    const options = ["Tirar foto", "Escolher da galeria", "Cancelar"];
-    showActionSheetWithOptions(
-      { options, cancelButtonIndex: 2 },
-      (buttonIndex?: number) => {
-        if (buttonIndex === 0) {
-          handleTakePhoto();
-        } else if (buttonIndex === 1) {
-          handlePickFromLibrary();
-        }
-      }
-    );
+  const handleChooseSource = (key: string) => {
+    setShowSourcePicker(false);
+    if (key === "camera") {
+      handleTakePhoto();
+    } else if (key === "gallery") {
+      handlePickFromLibrary();
+    }
   };
 
   const handleCropComplete = (croppedUri: string) => {
@@ -176,50 +172,44 @@ const CreatePostModal = () => {
   };
 
   return (
-    <>
-      {showCropper && pendingCropUri && (
-        <ImageCropper
-          imageUri={pendingCropUri}
-          aspect={[1, 1]}
-          onCrop={handleCropComplete}
-          onCancel={handleCropCancel}
-        />
-      )}
-      <Modal
-        isVisible={isCreatePostModalVisible}
-        onBackdropPress={closeCreatePostModal}
-        onSwipeComplete={closeCreatePostModal}
-        onModalHide={onModalHide}
-        swipeDirection="down"
-        style={{ margin: 0, justifyContent: "flex-end" }}
-        backdropOpacity={0.2}
-        animationInTiming={200}
-        animationOutTiming={200}
-        hideModalContentWhileAnimating
-      >
-        <View className="flex-1 justify-end">
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <Modal
+      isVisible={isCreatePostModalVisible}
+      onBackdropPress={closeCreatePostModal}
+      onSwipeComplete={closeCreatePostModal}
+      onModalHide={onModalHide}
+      swipeDirection="down"
+      style={{ margin: 0, justifyContent: "flex-end" }}
+      backdropOpacity={0.2}
+      animationInTiming={200}
+      animationOutTiming={200}
+      hideModalContentWhileAnimating
+    >
+      <View className="flex-1 justify-end">
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <View
+            className="bg-white dark:bg-zinc-900 rounded-t-[35px] p-6 items-center shadow-2xl border-t border-t-zinc-100 dark:border-t-zinc-700"
+            style={{
+              height: height * 0.8,
+            }}
           >
-            <View
-              className="bg-white dark:bg-zinc-900 rounded-t-[35px] p-6 items-center shadow-2xl border-t border-t-zinc-100 dark:border-t-zinc-700"
-              style={{
-                height: height * 0.8,
-              }}
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ alignItems: "center" }}
             >
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ alignItems: "center" }}
-              >
-                <View className="w-10 h-1.5 bg-zinc-200 rounded-full mb-6" />
+              <View className="w-10 h-1.5 bg-zinc-200 rounded-full mb-6" />
 
-                <Text className="text-zinc-900 dark:text-white text-xl font-bold mb-6">
-                  Nova Publicação
-                </Text>
+              <Text className="text-zinc-900 dark:text-white text-xl font-bold mb-6">
+                Nova Publicação
+              </Text>
 
-                <View className={image ? "bg-zinc-200 dark:bg-zinc-800 rounded-2xl p-2" : ""}>
-                  <UploadButton imageUri={image} onPress={handleChooseSource} />
-                </View>
+              <View className={image ? "bg-zinc-200 dark:bg-zinc-800 rounded-2xl p-2" : ""}>
+                <UploadButton
+                  imageUri={image}
+                  onPress={() => setShowSourcePicker(true)}
+                />
+              </View>
 
                 <TextInput
                   className="w-full text-zinc-800 dark:text-white p-4 bg-zinc-50 dark:bg-zinc-800 rounded-2xl mt-6 h-28 border border-zinc-100 dark:border-zinc-700"
@@ -269,9 +259,27 @@ const CreatePostModal = () => {
               </ScrollView>
             </View>
           </KeyboardAvoidingView>
+        {showCropper && pendingCropUri && (
+          <ImageCropper
+            className="absolute inset-0 z-50"
+            imageUri={pendingCropUri}
+            aspect={[1, 1]}
+            onCrop={handleCropComplete}
+            onCancel={handleCropCancel}
+          />
+        )}
+        {showSourcePicker && (
+          <SourcePickerSheet
+            options={[
+              { label: "Tirar foto", key: "camera" },
+              { label: "Escolher da galeria", key: "gallery" },
+            ]}
+            onSelect={handleChooseSource}
+            onCancel={() => setShowSourcePicker(false)}
+          />
+        )}
         </View>
       </Modal>
-    </>
   );
 };
 export default CreatePostModal;
