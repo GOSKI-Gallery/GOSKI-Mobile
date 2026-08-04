@@ -5,12 +5,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Switch,
   Text,
   TextInput,
   View,
 } from "react-native";
 import Modal from "react-native-modal";
+import { useActionSheet } from "@expo/react-native-action-sheet";
 import uploadPost from "../../services/postService";
+import { getLocationName, ResolvedLocation } from "../../lib/location";
 import { useAuthStore } from "../../states/useAuthStore";
 import { useAlertStore } from "../../states/useAlertStore";
 import { useModalStore } from "../../states/useModalStore";
@@ -28,11 +31,14 @@ const CreatePostModal = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [pendingPost, setPendingPost] = useState<any>(null);
+  const [location, setLocation] = useState<ResolvedLocation | null>(null);
+  const [locating, setLocating] = useState(false);
 
   const { isCreatePostModalVisible, closeCreatePostModal, clearAnimating } =
     useModalStore();
   const { addPostOptimistic } = usePostStore();
   const user = useAuthStore((state) => state.user);
+  const { showActionSheetWithOptions } = useActionSheet();
 
   const reset = () => {
     setImage(null);
@@ -41,9 +47,11 @@ const CreatePostModal = () => {
     setDescription("");
     setLoading(false);
     setPendingPost(null);
+    setLocation(null);
+    setLocating(false);
   };
 
-  const handlePickImage = async () => {
+  const handlePickFromLibrary = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       quality: 0.8,
@@ -53,6 +61,39 @@ const CreatePostModal = () => {
       setPendingCropUri(result.assets[0].uri);
       setShowCropper(true);
     }
+  };
+
+  const handleTakePhoto = async () => {
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ["images"],
+        quality: 0.8,
+      });
+
+      if (!result.canceled) {
+        setPendingCropUri(result.assets[0].uri);
+        setShowCropper(true);
+      }
+    } catch {
+      useAlertStore.getState().showAlert({
+        title: "Câmera indisponível",
+        message: "Não foi possível acessar a câmera. Verifique as permissões.",
+      });
+    }
+  };
+
+  const handleChooseSource = () => {
+    const options = ["Tirar foto", "Escolher da galeria", "Cancelar"];
+    showActionSheetWithOptions(
+      { options, cancelButtonIndex: 2 },
+      (buttonIndex?: number) => {
+        if (buttonIndex === 0) {
+          handleTakePhoto();
+        } else if (buttonIndex === 1) {
+          handlePickFromLibrary();
+        }
+      }
+    );
   };
 
   const handleCropComplete = (croppedUri: string) => {
@@ -66,12 +107,44 @@ const CreatePostModal = () => {
     setPendingCropUri(null);
   };
 
+  const handleToggleLocation = async () => {
+    if (location) {
+      setLocation(null);
+      return;
+    }
+
+    setLocating(true);
+    try {
+      const resolved = await getLocationName();
+      if (resolved) {
+        setLocation(resolved);
+      } else {
+        useAlertStore.getState().showAlert({
+          title: "Localização indisponível",
+          message: "Não foi possível obter sua localização. Verifique as permissões.",
+        });
+      }
+    } catch {
+      useAlertStore.getState().showAlert({
+        title: "Localização indisponível",
+        message: "Não foi possível obter sua localização. Tente novamente.",
+      });
+    } finally {
+      setLocating(false);
+    }
+  };
+
   const handlePublish = async () => {
     if (!image || !description || !user) return;
 
     setLoading(true);
     try {
-      const newPost = await uploadPost(user.id, image, description);
+      const newPost = await uploadPost(
+        user.id,
+        image,
+        description,
+        location ?? undefined
+      );
       if (newPost) {
         setPendingPost({
           ...newPost,
@@ -145,7 +218,7 @@ const CreatePostModal = () => {
                 </Text>
 
                 <View className={image ? "bg-zinc-200 dark:bg-zinc-800 rounded-2xl p-2" : ""}>
-                  <UploadButton imageUri={image} onPress={handlePickImage} />
+                  <UploadButton imageUri={image} onPress={handleChooseSource} />
                 </View>
 
                 <TextInput
@@ -157,6 +230,36 @@ const CreatePostModal = () => {
                   value={description}
                   onChangeText={setDescription}
                 />
+
+                <View className="w-full flex-row items-center justify-between px-1 mt-4">
+                  <View className="flex-row items-center gap-2 flex-shrink">
+                    {location ? (
+                      <Text
+                        testID="location-name"
+                        className="text-sm text-blue-600 dark:text-blue-400"
+                      >
+                        {location.location_name || "Localização adicionada"}
+                      </Text>
+                    ) : locating ? (
+                      <Text
+                        testID="location-loading"
+                        className="text-sm text-zinc-400"
+                      >
+                        Obtendo localização...
+                      </Text>
+                    ) : (
+                      <Text className="text-sm text-zinc-500 dark:text-zinc-400">
+                        Adicionar localização
+                      </Text>
+                    )}
+                  </View>
+                  <Switch
+                    testID="location-toggle"
+                    value={!!location}
+                    disabled={locating}
+                    onValueChange={handleToggleLocation}
+                  />
+                </View>
 
                 <PrimaryButton
                   onPress={handlePublish}
