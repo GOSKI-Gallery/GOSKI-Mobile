@@ -24,6 +24,13 @@ describe('tileMap', () => {
   });
 
   it('builds a valid tile url', () => {
-    expect(tileUrl(2, 1, 15)).toBe('https://tile.openstreetmap.org/15/2/1.png');
+    const url = tileUrl(2, 1, 15);
+    expect(url).toContain('basemaps.cartocdn.com/rastertiles/voyager/15/2/1.png');
+    expect(url).toMatch(/^https:\/\/[abcd]\.basemaps\.cartocdn\.com\/rastertiles\/voyager\/15\/2\/1\.png$/);
+  });
+
+  it('builds a valid tile url with negative tile coordinates', () => {
+    const url = tileUrl(-2, -1, 15);
+    expect(url).toMatch(/^https:\/\/[abcd]\.basemaps\.cartocdn\.com\/rastertiles\/voyager\/15\/-2\/-1\.png$/);
   });
 });

@@ -45,5 +45,9 @@ export const getMapTiles = (
   return tiles;
 };
 
-export const tileUrl = (x: number, y: number, zoom: number) =>
-  `https://tile.openstreetmap.org/${zoom}/${x}/${y}.png`;
+const CARTO_SUBDOMAINS = ["a", "b", "c", "d"];
+
+export const tileUrl = (x: number, y: number, zoom: number) => {
+  const subdomain = CARTO_SUBDOMAINS[Math.abs(x + y) % CARTO_SUBDOMAINS.length];
+  return `https://${subdomain}.basemaps.cartocdn.com/rastertiles/voyager/${zoom}/${x}/${y}.png`;
+};
