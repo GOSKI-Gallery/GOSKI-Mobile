@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
-  Modal,
   Text,
   TouchableOpacity,
   View,
@@ -14,6 +13,7 @@ import { useThemeStore } from "../../states/useThemeStore";
 interface ImageCropperProps {
   imageUri: string;
   aspect?: [number, number];
+  className?: string;
   onCrop: (croppedUri: string) => void;
   onCancel: () => void;
 }
@@ -21,6 +21,7 @@ interface ImageCropperProps {
 const ImageCropper: React.FC<ImageCropperProps> = ({
   imageUri,
   aspect = [1, 1],
+  className = "",
   onCrop,
   onCancel,
 }) => {
@@ -266,15 +267,14 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   const borderColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.4)";
 
   return (
-    <Modal visible animationType="slide" statusBarTranslucent>
-      <View className="flex-1 bg-[#FAFAFA] dark:bg-zinc-800">
-        <View
-          className="flex-1"
-          onLayout={(e) => {
-            const { width, height } = e.nativeEvent.layout;
-            setContainerSize({ width, height });
-          }}
-        >
+    <View className={`flex-1 bg-[#FAFAFA] dark:bg-zinc-800 ${className}`}>
+      <View
+        className="flex-1"
+        onLayout={(e) => {
+          const { width, height } = e.nativeEvent.layout;
+          setContainerSize({ width, height });
+        }}
+      >
           <View
             className="flex-1"
             onTouchStart={handleTouchStart}
@@ -387,7 +387,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
           </View>
         </View>
       </View>
-    </Modal>
   );
 };
 

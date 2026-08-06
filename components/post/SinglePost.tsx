@@ -6,13 +6,15 @@ import { timeAgo } from "../../lib/time";
 import { useRouter } from "expo-router";
 import { useLikeStore } from "../../states/useLikeStore";
 import { useFollowStore } from "../../states/useFollowStore";
-import { CommentIcon, LikeIcon, UserIcon } from "../ui/Icons";
+import { CommentIcon, LikeIcon, PinIcon, UserIcon } from "../ui/Icons";
 import CommentSection from "./CommentSection";
+import LocationMapModal from "./LocationMapModal";
 
 const SinglePost = ({ post }: { post: any }) => {
   const [profileError, setProfileError] = useState(false);
   const [postImageError, setPostImageError] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [showLocationMap, setShowLocationMap] = useState(false);
   const commentScale = useRef(new Animated.Value(1)).current;
   const user = useAuthStore((state) => state.user);
   const isDark = useThemeStore((s) => s.isDark);
@@ -109,6 +111,20 @@ const SinglePost = ({ post }: { post: any }) => {
             <Text className="font-bold">{post.users?.username} </Text>
             <Text className="text-zinc-500 dark:text-zinc-400">{post.description}</Text>
           </Text>
+          {post.latitude != null &&
+            post.longitude != null &&
+            post.location_name && (
+              <TouchableOpacity
+                onPress={() => setShowLocationMap(true)}
+                testID="post-location"
+                className="flex-row items-center gap-1.5 mt-1.5"
+              >
+                <PinIcon color="#2563eb" size={16} />
+                <Text className="text-blue-600 dark:text-blue-400 text-sm font-semibold">
+                  {post.location_name}
+                </Text>
+              </TouchableOpacity>
+            )}
         </View>
         <View className="flex-row items-center gap-2">
           <TouchableOpacity
@@ -151,6 +167,14 @@ const SinglePost = ({ post }: { post: any }) => {
         postId={post.id}
         postUserId={post.users.id}
         onClose={() => setExpanded(false)}
+      />
+
+      <LocationMapModal
+        visible={showLocationMap}
+        latitude={post.latitude}
+        longitude={post.longitude}
+        locationName={post.location_name}
+        onClose={() => setShowLocationMap(false)}
       />
 
     </View>

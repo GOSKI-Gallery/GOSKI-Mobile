@@ -131,28 +131,20 @@ const EditProfileModal = ({
   };
 
   return (
-    <>
-      {showCropper && pendingCropUri && (
-        <ImageCropper
-          imageUri={pendingCropUri}
-          aspect={[1, 1]}
-          onCrop={handleCropComplete}
-          onCancel={handleCropCancel}
-        />
-      )}
-      <Modal
-        isVisible={visible}
-        onBackdropPress={handleClose}
-        onSwipeComplete={handleClose}
-        onModalHide={clearAnimating}
-        swipeDirection="down"
-        style={{ margin: 0, justifyContent: "flex-end" }}
-        backdropOpacity={0.2}
-        animationInTiming={200}
-        animationOutTiming={200}
-        hideModalContentWhileAnimating
-        avoidKeyboard
-      >
+    <Modal
+      isVisible={visible}
+      onBackdropPress={handleClose}
+      onSwipeComplete={handleClose}
+      onModalHide={clearAnimating}
+      swipeDirection="down"
+      style={{ margin: 0, justifyContent: "flex-end" }}
+      backdropOpacity={0.2}
+      animationInTiming={200}
+      animationOutTiming={200}
+      hideModalContentWhileAnimating
+      avoidKeyboard
+    >
+      <View className="flex-1 justify-end">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           style={{ justifyContent: "flex-end" }}
@@ -208,10 +200,19 @@ const EditProfileModal = ({
               loading={loading}
             />
           </View>
-        </View>
-      </KeyboardAvoidingView>
+          </View>
+        </KeyboardAvoidingView>
+        {showCropper && pendingCropUri && (
+          <ImageCropper
+            className="absolute inset-0 z-50"
+            imageUri={pendingCropUri}
+            aspect={[1, 1]}
+            onCrop={handleCropComplete}
+            onCancel={handleCropCancel}
+          />
+        )}
+      </View>
     </Modal>
-    </>
   );
 };
 export default EditProfileModal;

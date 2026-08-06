@@ -2,7 +2,7 @@
   "expo": {
     "name": "GOSKI",
     "slug": "goski",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -13,7 +13,12 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Precisamos da câmera para você tirar fotos nas suas publicações.",
+        "NSPhotoLibraryUsageDescription": "Precisamos da galeria para você escolher fotos para as suas publicações.",
+        "NSLocationWhenInUseUsageDescription": "Precisamos da sua localização para adicioná-la às suas publicações."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +28,14 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "softwareKeyboardLayoutMode": "pan",
-      "package": "carlllos.goski.com"
+      "package": "carlllos.goski.com",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",

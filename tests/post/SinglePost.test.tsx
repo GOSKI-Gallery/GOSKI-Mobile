@@ -110,4 +110,21 @@ describe('SinglePost', () => {
     fireEvent.press(getByText('Seguir'));
     expect(mockToggleFollow).toHaveBeenCalledWith(mockPost.users.id, '123');
   });
+
+  it('does not render location when the post has no location', () => {
+    const { queryByTestId } = render(<SinglePost post={mockPost} />);
+    expect(queryByTestId('post-location')).toBeNull();
+  });
+
+  it('renders the location name when the post has one', () => {
+    const post = {
+      ...mockPost,
+      latitude: -14.8871,
+      longitude: -47.8071,
+      location_name: 'Alto Paraíso de Goiás, Goiás, Brazil',
+    };
+    const { getByTestId, getByText } = render(<SinglePost post={post} />);
+    expect(getByTestId('post-location')).toBeTruthy();
+    expect(getByText('Alto Paraíso de Goiás, Goiás, Brazil')).toBeTruthy();
+  });
 });
