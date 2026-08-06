@@ -1,7 +1,8 @@
-import React from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { Image, LayoutChangeEvent, Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 import { PinIcon } from "../ui/Icons";
+import { getMapTiles, tileUrl } from "../../lib/tileMap";
 
 interface LocationMapModalProps {
   visible: boolean;
@@ -11,8 +12,7 @@ interface LocationMapModalProps {
   onClose: () => void;
 }
 
-const staticMapUrl = (latitude: number, longitude: number) =>
-  `https://staticmap.openstreetmap.de/staticmap.php?center=${latitude},${longitude}&zoom=15&size=600x400&maptype=mapnik&markers=${latitude},${longitude},red`;
+const ZOOM = 15;
 
 const LocationMapModal = ({
   visible,
@@ -21,6 +21,17 @@ const LocationMapModal = ({
   locationName,
   onClose,
 }: LocationMapModalProps) => {
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  const handleLayout = (e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout;
+    if (width > 0 && height > 0) {
+      setSize({ width, height });
+    }
+  };
+
+  const tiles = getMapTiles(latitude, longitude, ZOOM, size.width, size.height);
+
   return (
     <Modal
       isVisible={visible}
@@ -46,12 +57,40 @@ const LocationMapModal = ({
             </TouchableOpacity>
           </View>
 
-          <Image
-            source={{ uri: staticMapUrl(latitude, longitude) }}
-            testID="location-map-image"
-            className="w-full aspect-square bg-zinc-100 dark:bg-zinc-800"
-            resizeMode="cover"
-          />
+          <View
+            className="w-full aspect-square bg-zinc-100 dark:bg-zinc-800 overflow-hidden"
+            testID="location-map-area"
+            onLayout={handleLayout}
+          >
+            {size.width > 0 &&
+              tiles.map((tile) => (
+                <Image
+                  key={`${tile.x}-${tile.y}`}
+                  source={{ uri: tileUrl(tile.x, tile.y, ZOOM) }}
+                  testID="location-map-image"
+                  style={{
+                    position: "absolute",
+                    width: 256,
+                    height: 256,
+                    left: tile.left,
+                    top: tile.top,
+                  }}
+                  resizeMode="cover"
+                />
+              ))}
+            <View
+              className="absolute items-center justify-center"
+              style={{
+                left: size.width / 2 - 18,
+                top: size.height / 2 - 32,
+                width: 36,
+                height: 36,
+              }}
+              pointerEvents="none"
+            >
+              <PinIcon color="#2563eb" size={36} />
+            </View>
+          </View>
 
           <View className="px-5 py-4 flex-row items-center gap-2">
             <PinIcon color="#2563eb" size={18} />

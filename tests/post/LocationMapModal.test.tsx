@@ -6,12 +6,16 @@ import LocationMapModal from '../../components/post/LocationMapModal';
 describe('LocationMapModal', () => {
   const onClose = jest.fn();
 
+  const layoutProps = {
+    nativeEvent: { layout: { width: 300, height: 300 } },
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders the static map image with the correct OSM url', () => {
-    const { getByTestId } = render(
+it('renders OSM tiles from the tile server', () => {
+    const { queryAllByTestId } = render(
       <LocationMapModal
         visible
         latitude={-14.8871}
@@ -21,10 +25,10 @@ describe('LocationMapModal', () => {
       />
     );
 
-    const image = getByTestId('location-map-image');
-    expect(image.props.source.uri).toBe(
-      'https://staticmap.openstreetmap.de/staticmap.php?center=-14.8871,-47.8071&zoom=15&size=600x400&maptype=mapnik&markers=-14.8871,-47.8071,red'
-    );
+    const images = queryAllByTestId('location-map-image');
+    expect(images.length).toBe(0);
+
+    // After layout measurement, tiles render referencing the OSM tile server
   });
 
   it('shows the location name', () => {
@@ -54,5 +58,26 @@ describe('LocationMapModal', () => {
 
     fireEvent.press(getByTestId('close-location-map'));
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('renders tiles after the map area is measured', () => {
+    const { getByTestId, getAllByTestId } = render(
+      <LocationMapModal
+        visible
+        latitude={-14.8871}
+        longitude={-47.8071}
+        locationName="Alto Paraíso de Goiás"
+        onClose={onClose}
+      />
+    );
+
+    const mapArea = getByTestId('location-map-area');
+    fireEvent(mapArea, 'layout', layoutProps);
+
+    const images = getAllByTestId('location-map-image');
+    expect(images.length).toBeGreaterThan(0);
+    for (const image of images) {
+      expect(image.props.source.uri).toMatch(/^https:\/\/tile\.openstreetmap\.org\/15\//);
+    }
   });
 });
