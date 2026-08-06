@@ -44,6 +44,47 @@ describe('getLocationName', () => {
     });
   });
 
+  it('prefers the full name when reverse geocode returns one', async () => {
+    requestForegroundPermissionsAsyncMock.mockResolvedValue({ status: 'granted' });
+    getCurrentPositionAsyncMock.mockResolvedValue({
+      coords: { latitude: -14.887123456, longitude: -47.807123456 },
+    });
+    reverseGeocodeAsyncMock.mockResolvedValue([
+      {
+        name: 'Rua das Flores, Bairro Centro',
+        subregion: 'Bairro Centro',
+        district: 'Distrito Alto',
+        city: 'Alto Paraíso de Goiás',
+        region: 'Goiás',
+        country: 'Brazil',
+      },
+    ]);
+
+    const result = await getLocationName();
+
+    expect(result?.location_name).toBe('Rua das Flores, Bairro Centro');
+  });
+
+  it('falls back to subregion/district/city/region hierarchy when name is absent', async () => {
+    requestForegroundPermissionsAsyncMock.mockResolvedValue({ status: 'granted' });
+    getCurrentPositionAsyncMock.mockResolvedValue({
+      coords: { latitude: -14.887123456, longitude: -47.807123456 },
+    });
+    reverseGeocodeAsyncMock.mockResolvedValue([
+      {
+        name: '',
+        subregion: 'Zona Sul',
+        city: 'São Paulo',
+        region: 'São Paulo',
+        country: 'Brazil',
+      },
+    ]);
+
+    const result = await getLocationName();
+
+    expect(result?.location_name).toBe('Zona Sul, São Paulo, São Paulo, Brazil');
+  });
+
   it('returns coordinates only when reverse geocode fails', async () => {
     requestForegroundPermissionsAsyncMock.mockResolvedValue({ status: 'granted' });
     getCurrentPositionAsyncMock.mockResolvedValue({

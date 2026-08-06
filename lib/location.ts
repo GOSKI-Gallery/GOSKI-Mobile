@@ -42,7 +42,11 @@ export async function getLocationName(): Promise<ResolvedLocation | null> {
     });
 
     if (place) {
-      const name = [place.city, place.region, place.country].filter(Boolean).join(", ");
+      const name =
+        place.name ||
+        [place.subregion, place.district, place.city, place.region, place.country]
+          .filter(Boolean)
+          .join(", ");
       location_name = name || undefined;
     }
   } catch {
