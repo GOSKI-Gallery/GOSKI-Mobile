@@ -191,12 +191,12 @@ const CreatePostModal = () => {
           <View
             className="bg-white dark:bg-zinc-900 rounded-t-[35px] p-6 items-center shadow-2xl border-t border-t-zinc-100 dark:border-t-zinc-700"
             style={{
-              height: height * 0.8,
+              maxHeight: height * 0.9,
             }}
           >
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ alignItems: "center" }}
+              contentContainerStyle={{ alignItems: "center", paddingBottom: 120 }}
             >
               <View className="w-10 h-1.5 bg-zinc-200 rounded-full mb-6" />
 
