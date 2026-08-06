@@ -90,6 +90,13 @@ const LocationMapModal = ({
             >
               <PinIcon color="#2563eb" size={36} />
             </View>
+            <Text
+              className="absolute bottom-1 left-1 bg-white/70 dark:bg-zinc-900/70 px-1 rounded text-[10px] text-zinc-500 dark:text-zinc-400"
+              testID="map-attribution"
+              pointerEvents="none"
+            >
+              © OpenStreetMap contributors © CARTO
+            </Text>
           </View>
 
           <View className="px-5 py-4 flex-row items-center gap-2">

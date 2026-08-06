@@ -14,7 +14,7 @@ describe('LocationMapModal', () => {
     jest.clearAllMocks();
   });
 
-it('renders OSM tiles from the tile server', () => {
+  it('does not render tiles before the map area is measured', () => {
     const { queryAllByTestId } = render(
       <LocationMapModal
         visible
@@ -27,8 +27,6 @@ it('renders OSM tiles from the tile server', () => {
 
     const images = queryAllByTestId('location-map-image');
     expect(images.length).toBe(0);
-
-    // After layout measurement, tiles render referencing the OSM tile server
   });
 
   it('shows the location name', () => {
@@ -77,7 +75,21 @@ it('renders OSM tiles from the tile server', () => {
     const images = getAllByTestId('location-map-image');
     expect(images.length).toBeGreaterThan(0);
     for (const image of images) {
-      expect(image.props.source.uri).toMatch(/^https:\/\/tile\.openstreetmap\.org\/15\//);
+      expect(image.props.source.uri).toMatch(/^https:\/\/[abcd]\.basemaps\.cartocdn\.com\/rastertiles\/voyager\/15\//);
     }
+  });
+
+  it('shows the CARTO attribution inside the map area', () => {
+    const { getByText } = render(
+      <LocationMapModal
+        visible
+        latitude={-14.8871}
+        longitude={-47.8071}
+        locationName="Alto Paraíso de Goiás"
+        onClose={onClose}
+      />
+    );
+
+    expect(getByText('© OpenStreetMap contributors © CARTO')).toBeTruthy();
   });
 });
