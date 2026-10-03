@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Image, LayoutChangeEvent, Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 import { PinIcon } from "../ui/Icons";
-import { getMapTiles, tileUrl } from "../../lib/tileMap";
+import { getMapTiles, tileUrl, DEFAULT_MAP_ZOOM, getCartoApiKey } from "../../lib/tileMap";
 
 interface LocationMapModalProps {
   visible: boolean;
@@ -11,8 +11,6 @@ interface LocationMapModalProps {
   locationName?: string | null;
   onClose: () => void;
 }
-
-const ZOOM = 15;
 
 const LocationMapModal = ({
   visible,
@@ -30,7 +28,8 @@ const LocationMapModal = ({
     }
   };
 
-  const tiles = getMapTiles(latitude, longitude, ZOOM, size.width, size.height);
+  const apiKey = getCartoApiKey();
+  const tiles = getMapTiles(latitude, longitude, DEFAULT_MAP_ZOOM, size.width, size.height);
 
   return (
     <Modal
@@ -66,7 +65,7 @@ const LocationMapModal = ({
               tiles.map((tile) => (
                 <Image
                   key={`${tile.x}-${tile.y}`}
-                  source={{ uri: tileUrl(tile.x, tile.y, ZOOM) }}
+                  source={{ uri: tileUrl(tile.x, tile.y, DEFAULT_MAP_ZOOM, apiKey) }}
                   testID="location-map-image"
                   style={{
                     position: "absolute",

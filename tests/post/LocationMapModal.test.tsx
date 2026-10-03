@@ -75,7 +75,7 @@ describe('LocationMapModal', () => {
     const images = getAllByTestId('location-map-image');
     expect(images.length).toBeGreaterThan(0);
     for (const image of images) {
-      expect(image.props.source.uri).toMatch(/^https:\/\/[abcd]\.basemaps\.cartocdn\.com\/rastertiles\/voyager\/15\//);
+      expect(image.props.source.uri).toMatch(/^https:\/\/[abcd]\.basemaps\.cartocdn\.com\/rastertiles\/voyager\/17\//);
     }
   });
 
