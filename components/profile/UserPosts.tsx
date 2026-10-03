@@ -48,13 +48,16 @@ function PostGridItem({ item }: { item: any }) {
   return (
     <View style={{ width: width / 3, height: width / 3 }}>
       {error ? (
-        <View style={{ flex: 1, margin: 1, backgroundColor: isDark ? "#27272a" : "#e4e4e7" }} />
+        <View style={{ flex: 1, margin: 1, backgroundColor: isDark ? "#27272a" : "#e4e4e7", borderRadius: 12 }} />
       ) : (
-        <Image
-          source={{ uri: item.image_url }}
-          onError={() => setError(true)}
-          style={{ flex: 1, margin: 1 }}
-        />
+        <View style={{ flex: 1, margin: 1, borderRadius: 12, overflow: 'hidden' }}>
+          <Image
+            source={{ uri: item.image_url }}
+            onError={() => setError(true)}
+            style={{ flex: 1 }}
+            resizeMode="cover"
+          />
+        </View>
       )}
     </View>
   );

@@ -95,14 +95,16 @@ const SinglePost = ({ post }: { post: any }) => {
       </View>
 
       {postImageError ? (
-        <View className="w-full aspect-square bg-zinc-50 dark:bg-zinc-800" />
+        <View className="w-full aspect-square bg-zinc-50 dark:bg-zinc-800 rounded-xl" />
       ) : (
-        <Image
-          source={{ uri: post.image_url }}
-          onError={() => setPostImageError(true)}
-          className="w-full aspect-square bg-zinc-50 dark:bg-zinc-800"
-          resizeMode="cover"
-        />
+        <View className="w-full aspect-square bg-zinc-50 dark:bg-zinc-800 rounded-xl overflow-hidden">
+          <Image
+            source={{ uri: post.image_url }}
+            onError={() => setPostImageError(true)}
+            className="w-full h-full"
+            resizeMode="cover"
+          />
+        </View>
       )}
 
       <View className="flex-row justify-between items-center mt-3 px-2">
