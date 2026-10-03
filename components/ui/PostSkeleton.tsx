@@ -12,7 +12,7 @@ export default function PostSkeleton() {
         <View className="w-16 h-8 bg-zinc-200 dark:bg-zinc-800 rounded-full" />
       </View>
 
-      <View className="w-full aspect-square bg-zinc-200 dark:bg-zinc-800 rounded-2xl" />
+      <View className="w-full aspect-square bg-zinc-200 dark:bg-zinc-800 rounded-xl" />
 
       <View className="mt-3 space-y-2 gap-5">
         <View className="w-3/4 h-4 bg-zinc-200 dark:bg-zinc-800 rounded" />
