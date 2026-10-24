@@ -8,8 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest",
-    "test:coverage": "jest --coverage",
-    "postinstall": "node scripts/patch-image-size.js"
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@expo-google-fonts/krona-one": "^0.4.1",
@@ -93,7 +92,7 @@
   },
   "resolutions": {
     "postcss": "^8.5.23",
-    "image-size": "^2.0.3",
+    "image-size": "1.1.1",
     "shell-quote": "^1.11.0",
     "brace-expansion": "^2.1.4",
     "expo-constants": "^18.0.14",
